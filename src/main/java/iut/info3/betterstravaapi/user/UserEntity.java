@@ -3,20 +3,41 @@ package iut.info3.betterstravaapi.user;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Entity(name = "utilisateurs")
+@Entity
+@Table(name = "utilisateurs")
 public class UserEntity {
 
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String email;
     private String nom;
     private String prenom;
     private String motDePasse;
+
+    /**
+     * Constructeur par défaut pour permettre la compilation.
+     */
+    public UserEntity() { }
+
+    /**
+     *
+     * @param email
+     * @param nom
+     * @param prenom
+     * @param motDePasse
+     */
+    public UserEntity(String email, String nom, String prenom, String motDePasse) {
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.motDePasse = motDePasse;
+    }
 
     public Integer getId() {
         return id;
