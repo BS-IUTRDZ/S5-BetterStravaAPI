@@ -3,6 +3,8 @@ package iut.info3.betterstravaapi.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Service associé à la gestion des utilisateurs.
  */
@@ -25,4 +27,8 @@ public class UserService {
         return user != null;
     }
 
+
+    public List<UserEntity> findByEmailAndPassword(String email, String password) {
+        return userRepository.findByEmailAndPassword(email,password);
+    }
 }
