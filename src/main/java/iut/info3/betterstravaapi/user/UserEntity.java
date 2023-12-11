@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "utilisateurs")
@@ -15,9 +17,20 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotEmpty(message = "Le champs [email] est obligatoire et ne doit pas être vide")
+    @Size(min = 2, max = 100, message = "[email] doit faire entre 2 et 100 caractères")
     private String email;
+
+    @NotEmpty(message = "Le champs [nom] est obligatoire et ne doit pas être vide")
+    @Size(min = 2, max = 50, message = "[nom] doit faire entre 2 et 50 caractères")
     private String nom;
+
+    @NotEmpty(message = "Le champs [prenom] est obligatoire et ne doit pas être vide")
+    @Size(min = 2, max = 50, message = "[prenom] doit faire entre 2 et 50 caractères")
     private String prenom;
+
+    @NotEmpty(message = "Le champs [motDePasse] est obligatoire et ne doit pas être vide")
+    @Size(min = 8, max = 80, message = "[motDePasse] doit faire entre 8 et 80 caractères")
     private String motDePasse;
 
     /**
@@ -79,4 +92,14 @@ public class UserEntity {
         this.motDePasse = motDePasse;
     }
 
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", motDePasse='" + motDePasse + '\'' +
+                '}';
+    }
 }
