@@ -2,6 +2,8 @@ package iut.info3.betterstravaapi.user;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -12,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +24,8 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/users")
 public class UserController {
+
+    private static final String ERROR_MESSAGE_USER_NOT_FOUND = "Utilisateur inconnu(e)";
 
     /**
      * Repository associé à la table utilisateur de la base MySQL.
@@ -36,6 +38,20 @@ public class UserController {
      */
     @Autowired
     private UserService userService;
+
+
+
+
+    @GetMapping(path = "/login")
+    public String authenticate(@RequestParam String email,@RequestParam String password) {
+        String passwordEncode = userService.encryptPassword(password);
+        List<UserEntity> listUserCo = userService.findByEmailAndPassword(email, passwordEncode);
+
+        if (listUserCo.size() == 0){
+            return ERROR_MESSAGE_USER_NOT_FOUND;
+        }
+        return userService.generateToken(listUserCo.get((0)));
+    }
 
     /**
      * Route de création d'un utilisateur.
@@ -96,9 +112,6 @@ public class UserController {
         return errors;
     }
 
-    @GetMapping(path = "/login")
-    public List<UserEntity> authenticate(@RequestParam String email, @RequestParam String password) {
-        return userService.findByEmailAndPassword(email,password);
-    }
+
 
 }
