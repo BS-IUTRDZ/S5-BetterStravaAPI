@@ -33,7 +33,7 @@ public class UserControllerTest {
                                 "test@mail.com",
                                 "nomTest",
                                 "prenomTest",
-                                "1c98e58f8acd1a04871a9afedee12293474964b0144a83ac7bed7af2ae640a5d")))
+                                "motDePasse")))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isCreated());
@@ -48,7 +48,7 @@ public class UserControllerTest {
                                 "test@mail.com",
                                 "nomTest",
                                 null,
-                                "1c98e58f8acd1a04871a9afedee12293474964b0144a83ac7bed7af2ae640a5d")))
+                                "motDePasse")))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest());
@@ -64,7 +64,7 @@ public class UserControllerTest {
                                 "utilisateur@test.com",
                                 "nomTest",
                                 "prenomTest",
-                                "1c98e58f8acd1a04871a9afedee12293474964b0144a83ac7bed7af2ae640a5d")))
+                                "motDePasse")))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isConflict());

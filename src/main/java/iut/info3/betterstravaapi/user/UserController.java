@@ -38,7 +38,7 @@ public class UserController {
         Map<String, String> responseBody = new HashMap<>();
 
         if (userService.checkPresenceEmail(email)) {
-            responseBody.put("Message", "Un utilisateur existe déjà pour cette adresse email");
+            responseBody.put("message", "Un utilisateur existe déjà pour cette adresse email");
             return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
         }
 
@@ -60,7 +60,7 @@ public class UserController {
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
+            String fieldName = "erreur";
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });

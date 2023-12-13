@@ -17,20 +17,20 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotEmpty(message = "Le champs [email] est obligatoire et ne doit pas être vide")
-    @Size(min = 2, max = 100, message = "[email] doit faire entre 2 et 100 caractères")
+    @NotEmpty(message = "Le champ \"email\" est obligatoire et ne doit pas être vide")
+    @Size(min = 2, max = 100, message = "L' \"email\" doit faire entre 2 et 100 caractères")
     private String email;
 
-    @NotEmpty(message = "Le champs [nom] est obligatoire et ne doit pas être vide")
-    @Size(min = 2, max = 50, message = "[nom] doit faire entre 2 et 50 caractères")
+    @NotEmpty(message = "Le champ \"nom\" est obligatoire et ne doit pas être vide")
+    @Size(min = 2, max = 50, message = "Le \"nom\" doit faire entre 2 et 50 caractères")
     private String nom;
 
-    @NotEmpty(message = "Le champs [prenom] est obligatoire et ne doit pas être vide")
-    @Size(min = 2, max = 50, message = "[prenom] doit faire entre 2 et 50 caractères")
+    @NotEmpty(message = "Le champ \"prenom\" est obligatoire et ne doit pas être vide")
+    @Size(min = 2, max = 50, message = "Le \"prenom\" doit faire entre 2 et 50 caractères")
     private String prenom;
 
-    @NotEmpty(message = "Le champs [motDePasse] est obligatoire et ne doit pas être vide")
-    @Size(min = 8, max = 80, message = "[motDePasse] doit faire entre 8 et 80 caractères")
+    @NotEmpty(message = "Le champ \"mot de passe\" est obligatoire et ne doit pas être vide")
+    @Size(min = 8, max = 80, message = "Le \"mot de passe\" doit faire entre 8 et 80 caractères")
     private String motDePasse;
 
     /**
