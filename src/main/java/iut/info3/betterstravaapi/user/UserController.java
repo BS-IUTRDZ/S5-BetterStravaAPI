@@ -1,12 +1,18 @@
 package iut.info3.betterstravaapi.user;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +28,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping (path="/createAccount")
-    public ResponseEntity<Object> getAllUsers(@Validated @RequestBody UserEntity userBody) {
+    public ResponseEntity<Object> createAccount(@Validated @RequestBody UserEntity userBody) {
 
         String email = userBody.getEmail();
         String nom = userBody.getNom();
@@ -36,7 +42,7 @@ public class UserController {
             return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
         }
 
-        String passwordCrypt = userService.encryptPassword(password);
+        String passwordCrypt = DigestUtils.sha256Hex(password);
 
         UserEntity user = new UserEntity(email, nom, prenom, passwordCrypt);
         userRepository.save(user);
