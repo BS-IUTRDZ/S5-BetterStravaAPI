@@ -1,7 +1,10 @@
 package iut.info3.betterstravaapi.user;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,12 +13,19 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/users")
 public class UserController {
+
+    private static final String ERROR_MESSAGE_USER_NOT_FOUND = "Utilisateur inconnu(e)";
 
     @Autowired
     private UserService userService;
@@ -32,9 +42,16 @@ public class UserController {
     }
 
     @GetMapping(path = "/login")
-    public UserEntity authenticate(@RequestParam String email,@RequestParam String password) {
-        return userService.findByEmailAndPassword(email, password);
+    public String authenticate(@RequestParam String email,@RequestParam String password) {
+        String passwordEncode = userService.encryptPassword(password);
+        List<UserEntity> listUserCo = userService.findByEmailAndPassword(email, passwordEncode);
+
+        if (listUserCo.size() == 0){
+            return ERROR_MESSAGE_USER_NOT_FOUND;
+        }
+        return userService.generateToken(listUserCo.get((0)));
     }
+
     @PostMapping (path="/createAccount")
     public ResponseEntity<Object> getAllUsers(@Validated @RequestBody UserEntity userBody) {
 

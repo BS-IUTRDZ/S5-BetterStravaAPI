@@ -1,16 +1,27 @@
 package iut.info3.betterstravaapi.user;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 public class UserService {
+
+    @Value("${SECRET_SENTENCE}")
+    private String secretSentence;
+
+    @Value("${TOKEN_EXPIRATION_DURATION}")
+    private long tokenExpirationDuration;
 
     @Autowired
     private UserRepository userRepository;
@@ -18,6 +29,14 @@ public class UserService {
     public boolean checkPresenceEmail(String email) {
         UserEntity user = userRepository.findByEmail(email);
         return user != null;
+    }
+
+    public List<UserEntity> findAll() {
+        return userRepository.findAll();
+    }
+
+    public List<UserEntity> findByEmailAndPassword(String email, String password) {
+        return userRepository.findByEmailAndPassword(email,password);
     }
 
     public String encryptPassword(String password) {
@@ -39,5 +58,16 @@ public class UserService {
         }
 
         return passwordHash.toString();
+    }
+
+    public String generateToken(UserEntity user) {
+        Algorithm algorithm = Algorithm.HMAC256(secretSentence);
+        String jwt = JWT.create()
+                .withClaim("id", user.getId() )
+                .withClaim("email", user.getEmail())
+                .withClaim("datetime-claim", Instant.now())
+                .withExpiresAt(Instant.now().plus(tokenExpirationDuration, ChronoUnit.SECONDS))
+                .sign(algorithm);
+        return jwt;
     }
 }
