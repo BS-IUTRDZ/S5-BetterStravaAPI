@@ -3,6 +3,7 @@ package iut.info3.betterstravaapi.user;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.apache.catalina.User;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -43,7 +49,7 @@ public class UserController {
 
     @GetMapping(path = "/login")
     public String authenticate(@RequestParam String email,@RequestParam String password) {
-        String passwordEncode = userService.encryptPassword(password);
+        String passwordEncode = DigestUtils.sha256Hex(password);
         List<UserEntity> listUserCo = userService.findByEmailAndPassword(email, passwordEncode);
 
         if (listUserCo.size() == 0){
@@ -53,7 +59,7 @@ public class UserController {
     }
 
     @PostMapping (path="/createAccount")
-    public ResponseEntity<Object> getAllUsers(@Validated @RequestBody UserEntity userBody) {
+    public ResponseEntity<Object> createAccount(@Validated @RequestBody UserEntity userBody) {
 
         String email = userBody.getEmail();
         String nom = userBody.getNom();
@@ -67,7 +73,7 @@ public class UserController {
             return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
         }
 
-        String passwordCrypt = userService.encryptPassword(password);
+        String passwordCrypt = DigestUtils.sha256Hex(password);
 
         UserEntity user = new UserEntity(email, nom, prenom, passwordCrypt);
         userRepository.save(user);
