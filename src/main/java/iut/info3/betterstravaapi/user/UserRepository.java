@@ -26,8 +26,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @param password mdp de l'utilisateur.
      * @return la list des utilisateur trouve.
      */
-    @Query(value = "SELECT * from utilisateurs WHERE email = ?1" +
-            " AND mot_de_passe = ?2",nativeQuery = true)
+    @Query(value = "SELECT * from utilisateurs WHERE email = ?1"
+           + " AND mot_de_passe = ?2", nativeQuery = true)
     List<UserEntity> findByEmailAndPassword(String email,
                                                    String password);
 }

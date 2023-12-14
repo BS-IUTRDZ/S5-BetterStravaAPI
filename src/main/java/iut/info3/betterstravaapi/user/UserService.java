@@ -15,9 +15,15 @@ import java.util.List;
 @Service
 public class UserService {
 
+    /**
+     * Phrase secrete pour codage jwt.
+     */
     @Value("${SECRET_SENTENCE}")
     private String secretSentence;
 
+    /**
+     * Duree de validite du token.
+     */
     @Value("${TOKEN_EXPIRATION_DURATION}")
     private long tokenExpirationDuration;
 
@@ -45,7 +51,7 @@ public class UserService {
      */
     public List<UserEntity> findByEmailAndPassword(final String email,
                                                    final String password) {
-        return userRepository.findByEmailAndPassword(email,password);
+        return userRepository.findByEmailAndPassword(email, password);
     }
 
     /**

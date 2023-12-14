@@ -8,9 +8,20 @@ import org.springframework.core.io.FileSystemResource;
 @Configuration
 public class AppConfig {
 
+    /**
+     * Constructeur par defaut.
+     */
+    protected AppConfig() { };
+
+    /**
+     * Recuperation de variables d'environements pour les fichiers du main.
+     * @return la configuration.
+     */
     @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+    public static PropertySourcesPlaceholderConfigurer
+    propertySourcesPlaceholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer configurer =
+                new PropertySourcesPlaceholderConfigurer();
         configurer.setLocation(new FileSystemResource(".env"));
         return configurer;
     }
