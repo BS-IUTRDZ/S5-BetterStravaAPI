@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,17 +42,31 @@ public class UserController {
     private UserService userService;
 
 
-
-
+    /**
+     * methode d'authefication d'un utilisateur
+     *
+     * @param email email entree par l'utilisateur
+     * @param password mot de pass entree par l'utilisateur
+     * @return une reponse http contenant le token
+     * et le code 202 si la connexion est effectuer,
+     * un message d'erreur et un code 401
+     */
     @GetMapping(path = "/login")
-    public String authenticate(@RequestParam String email,@RequestParam String password) {
-        String passwordEncode = userService.encryptPassword(password);
+    public ResponseEntity<Object> authenticate(
+            @RequestParam("email") final String email,
+            @RequestParam("password") final String password) {
+
+        String passwordEncode = DigestUtils.sha256Hex(password);
         List<UserEntity> listUserCo = userService.findByEmailAndPassword(email, passwordEncode);
+        Map<String, String> responseBody = new HashMap<>();
 
         if (listUserCo.size() == 0){
-            return ERROR_MESSAGE_USER_NOT_FOUND;
+            responseBody.put("erreur",ERROR_MESSAGE_USER_NOT_FOUND);
+            return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
         }
-        return userService.generateToken(listUserCo.get((0)));
+        String token = userService.generateToken(listUserCo.get((0)), Instant.now());
+        responseBody.put("token",token);
+        return new ResponseEntity<>(responseBody, HttpStatus.ACCEPTED);
     }
 
     /**
@@ -111,7 +127,6 @@ public class UserController {
 
         return errors;
     }
-
 
 
 }

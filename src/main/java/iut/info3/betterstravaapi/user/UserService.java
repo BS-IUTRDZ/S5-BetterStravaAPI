@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,21 +38,17 @@ public class UserService {
         return user != null;
     }
 
-    public List<UserEntity> findAll() {
-        return userRepository.findAll();
-    }
-
     public List<UserEntity> findByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email,password);
     }
 
-    public String generateToken(UserEntity user) {
+    public String generateToken(UserEntity user, Instant currentDate) {
         Algorithm algorithm = Algorithm.HMAC256(secretSentence);
         String jwt = JWT.create()
                 .withClaim("id", user.getId() )
                 .withClaim("email", user.getEmail())
-                .withClaim("datetime-claim", Instant.now())
-                .withExpiresAt(Instant.now().plus(tokenExpirationDuration, ChronoUnit.SECONDS))
+                .withClaim("datetime-claim", currentDate)
+                .withExpiresAt(currentDate.plus(tokenExpirationDuration, ChronoUnit.SECONDS))
                 .sign(algorithm);
         return jwt;
     }
