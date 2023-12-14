@@ -1,12 +1,10 @@
 package iut.info3.betterstravaapi.user;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import org.apache.catalina.User;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,12 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +25,9 @@ import java.util.Map;
 @RequestMapping(value = "/api/users")
 public class UserController {
 
-    private static final String ERROR_MESSAGE_USER_NOT_FOUND = "Utilisateur inconnu(e)";
+    /** Message d'erreur pour utilisateur non trouver lors d'une requête sql. */
+    private static final String ERROR_MESSAGE_USER_NOT_FOUND
+            = "Utilisateur inconnu(e)";
 
     @Autowired
     private UserService userService;
@@ -41,7 +37,7 @@ public class UserController {
 
 
     /**
-     * methode d'authefication d'un utilisateur
+     * Methode d'authefication d'un utilisateur.
      *
      * @param email email entree par l'utilisateur
      * @param password mot de pass entree par l'utilisateur
@@ -55,15 +51,17 @@ public class UserController {
             @RequestParam("password") final String password) {
 
         String passwordEncode = DigestUtils.sha256Hex(password);
-        List<UserEntity> listUserCo = userService.findByEmailAndPassword(email, passwordEncode);
+        List<UserEntity> listUserCo =
+                userService.findByEmailAndPassword(email, passwordEncode);
         Map<String, String> responseBody = new HashMap<>();
 
-        if (listUserCo.size() == 0){
-            responseBody.put("erreur",ERROR_MESSAGE_USER_NOT_FOUND);
+        if (listUserCo.size() == 0) {
+            responseBody.put("erreur", ERROR_MESSAGE_USER_NOT_FOUND);
             return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
         }
-        String token = userService.generateToken(listUserCo.get((0)),Instant.now());
-        responseBody.put("token",token);
+        String token = userService.generateToken(listUserCo.get((0)),
+                Instant.now());
+        responseBody.put("token", token);
         return new ResponseEntity<>(responseBody, HttpStatus.ACCEPTED);
     }
 
@@ -78,7 +76,9 @@ public class UserController {
         Map<String, String> responseBody = new HashMap<>();
 
         if (userService.checkPresenceEmail(email)) {
-            responseBody.put("Message", "Un utilisateur existe déjà pour cette adresse email");
+            responseBody.put(
+                    "Message",
+                    "Un utilisateur existe déjà pour cette adresse email");
             return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
         }
 
