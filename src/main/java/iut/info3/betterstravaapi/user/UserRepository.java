@@ -20,6 +20,14 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
             nativeQuery = true)
     UserEntity findByEmail(String email);
 
-    @Query(value = "SELECT * from utilisateurs WHERE email = ?1 AND mot_de_passe = ?2",nativeQuery = true)
-    public List<UserEntity> findByEmailAndPassword(String email, String password);
+    /**
+     * questionement de la bd sur l'existence d'un utilisateur.
+     * @param email email de l'utilisateur.
+     * @param password mdp de l'utilisateur.
+     * @return la list des utilisateur trouve.
+     */
+    @Query(value = "SELECT * from utilisateurs WHERE email = ?1" +
+            " AND mot_de_passe = ?2",nativeQuery = true)
+    List<UserEntity> findByEmailAndPassword(String email,
+                                                   String password);
 }

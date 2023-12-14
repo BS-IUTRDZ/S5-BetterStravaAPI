@@ -38,17 +38,32 @@ public class UserService {
         return user != null;
     }
 
-    public List<UserEntity> findByEmailAndPassword(String email, String password) {
+    /**
+     * recherche d'un utilisatur a partir se son mail et mdp.
+     * @param email mail de l'utilisateur.
+     * @param password mdp de l'utilisateur.
+     * @return la list des utilisateur trouve.
+     */
+    public List<UserEntity> findByEmailAndPassword(final String email,
+                                                   final String password) {
         return userRepository.findByEmailAndPassword(email,password);
     }
 
-    public String generateToken(UserEntity user, Instant currentDate) {
+    /**
+     * generation dun token jwt.
+     * @param user l'utilisateur concerne par le jwt.
+     * @param currentDate la dte au moment de la creation du token.
+     * @return une string correspondant au token.
+     */
+    public String generateToken(final UserEntity user,
+                                final Instant currentDate) {
         Algorithm algorithm = Algorithm.HMAC256(secretSentence);
         String jwt = JWT.create()
-                .withClaim("id", user.getId() )
+                .withClaim("id", user.getId())
                 .withClaim("email", user.getEmail())
                 .withClaim("datetime-claim", currentDate)
-                .withExpiresAt(currentDate.plus(tokenExpirationDuration, ChronoUnit.SECONDS))
+                .withExpiresAt(currentDate.plus(tokenExpirationDuration,
+                                                ChronoUnit.SECONDS))
                 .sign(algorithm);
         return jwt;
     }

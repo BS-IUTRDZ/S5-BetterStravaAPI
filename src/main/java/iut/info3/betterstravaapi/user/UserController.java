@@ -43,7 +43,7 @@ public class UserController {
 
 
     /**
-     * methode d'authefication d'un utilisateur
+     * methode d'authefication d'un utilisateur.
      *
      * @param email email entree par l'utilisateur
      * @param password mot de pass entree par l'utilisateur
