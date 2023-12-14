@@ -34,3 +34,10 @@ build/
 
 ### ENV ###
 .env
+*.properties
+pom.xml
+*.db
+
+## autres ##
+downDockerIut.bat
+runDockerIut.bat
