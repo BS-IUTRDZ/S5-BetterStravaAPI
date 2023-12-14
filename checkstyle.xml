@@ -161,8 +161,14 @@
 
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sourceforge.net/config_design.html -->
-        <module name="DesignForExtension"/>
+        <module name="DesignForExtension">
+            <property name="ignoredAnnotations" value="Override"/>
+        </module>
         <module name="FinalClass"/>
+        <module name="SuppressionXpathFilter">
+            <property name="file" value="suppressions.xml"/>
+            <property name="optional" value="false"/>
+        </module>
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier"/>
