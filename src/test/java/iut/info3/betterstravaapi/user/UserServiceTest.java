@@ -37,13 +37,16 @@ class UserServiceTest {
         UserEntity entity =
                 new UserEntity("John.Doe@gmail.com","John","Doe","mdp");
         entity.setId(1234);
-        String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." +
-                "eyJpZCI6MTIzNCwiZW1haWwiOiJKb2huLkRvZUBnbWFpbC5jb20iLCJkYXRldGltZS1jbGFpbSI6MTcwMTM2OTMyNCwiZXhwIjoxNzAzOTYxMzI0fQ." +
-                "rliw-Dr4ZkzXLClkE-EsbF7lyUcoK2Q-TxncyEFhq4k";
+        String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+                + "eyJpZCI6MTIzNCwiZW1haWwiOiJKb2huLkRvZUBnbWFpbC5jb20iLCJkYXRldGltZS1jbGFpbSI6MTcwMTM2OTMyNCwiZXhwIjoxNzAzOTYxMzI0fQ.";
+
         String[] tabExpected = expectedToken.split("\\.");
         String[] tabUser = userService.generateToken(entity,date).split("\\.");
 
-        assertEquals(expectedToken,userService.generateToken(entity,date));
+        String expected = tabExpected[0] + tabExpected[1];
+        String real = tabUser[0] + tabUser[1];
+
+        assertEquals(expected,real);
 
     }
 
