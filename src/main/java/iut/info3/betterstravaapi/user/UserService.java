@@ -16,16 +16,10 @@ import java.util.List;
 public class UserService {
 
     /**
-     * Phrase secrete pour codage jwt.
-     */
-    @Value("${SECRET_SENTENCE}")
-    private String secretSentence;
-
-    /**
-     * Duree de validite du token.
-     */
-    @Value("${TOKEN_EXPIRATION_DURATION}")
-    private long tokenExpirationDuration;
+     * Service associé a la recuperation des variables d'environement.
+      */
+    @Autowired
+    private EnvGetter envGetter;
 
     /**
      * Repository associé à la table utilisateur de la base MySQL.
@@ -62,12 +56,12 @@ public class UserService {
      */
     public String generateToken(final UserEntity user,
                                 final Instant currentDate) {
-        Algorithm algorithm = Algorithm.HMAC256(secretSentence);
+        Algorithm algorithm = Algorithm.HMAC256(envGetter.getSentence());
         String jwt = JWT.create()
                 .withClaim("id", user.getId())
                 .withClaim("email", user.getEmail())
                 .withClaim("datetime-claim", currentDate)
-                .withExpiresAt(currentDate.plus(tokenExpirationDuration,
+                .withExpiresAt(currentDate.plus(envGetter.getExpiration(),
                                                 ChronoUnit.SECONDS))
                 .sign(algorithm);
         return jwt;

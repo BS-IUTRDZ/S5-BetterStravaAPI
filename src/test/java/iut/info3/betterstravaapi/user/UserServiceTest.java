@@ -3,13 +3,18 @@ package iut.info3.betterstravaapi.user;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class UserServiceTest {
+
+    @MockBean
+    private EnvGetter envGetter;
 
     @Autowired
     private UserService userService;
@@ -33,18 +38,17 @@ class UserServiceTest {
 
     @Test
     public void testCreationTokenValid() {
+        when(envGetter.getSentence()).thenReturn("LeSanglier");
+        when(envGetter.getExpiration()).thenReturn(123456789L);
         Instant date = Instant.parse("2023-11-30T18:35:24.00Z");
         UserEntity entity =
                 new UserEntity("John.Doe@gmail.com","John","Doe","mdp");
         entity.setId(1234);
-        String expectedToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
-                + "eyJpZCI6MTIzNCwiZW1haWwiOiJKb2huLkRvZUBnbWFpbC5jb20iLCJkYXRldGltZS1jbGFpbSI6MTcwMTM2OTMyNCwiZXhwIjoxNzAzOTYxMzI0fQ.";
+        String expected = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+                + "eyJpZCI6MTIzNCwiZW1haWwiOiJKb2huLkRvZUBnbWFpbC5jb20iLCJkYXRldGltZS1jbGFpbSI6MTcwMTM2OTMyNCwiZXhwIjoxODI0ODI2MTEzfQ."
+                + "SVcbXATQKfSKquE9c90q1cmYhh_iclSqFq--_FNwFwQ";
 
-        String[] tabExpected = expectedToken.split("\\.");
-        String[] tabUser = userService.generateToken(entity,date).split("\\.");
-
-        String expected = tabExpected[0] + tabExpected[1];
-        String real = tabUser[0] + tabUser[1];
+        String real = userService.generateToken(entity,date);
 
         assertEquals(expected,real);
 
