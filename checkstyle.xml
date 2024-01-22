@@ -169,7 +169,7 @@
             <property name="file" value="suppressions.xml"/>
             <property name="optional" value="false"/>
         </module>
-        <module name="HideUtilityClassConstructor"/>
+        <module name="HideUtilityClassConstruc:xtor"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier"/>
 
