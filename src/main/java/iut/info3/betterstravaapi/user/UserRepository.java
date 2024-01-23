@@ -30,4 +30,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
            + " AND mot_de_passe = ?2", nativeQuery = true)
     List<UserEntity> findByEmailAndPassword(String email,
                                                    String password);
+
 }

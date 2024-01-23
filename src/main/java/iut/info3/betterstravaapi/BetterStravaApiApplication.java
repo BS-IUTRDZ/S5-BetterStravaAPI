@@ -17,4 +17,5 @@ public class BetterStravaApiApplication {
         SpringApplication.run(BetterStravaApiApplication.class, args);
     }
 
+
 }

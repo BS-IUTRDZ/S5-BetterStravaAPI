@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.beans.factory.annotation.Value;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -16,16 +15,10 @@ import java.util.List;
 public class UserService {
 
     /**
-     * Phrase secrete pour codage jwt.
-     */
-    @Value("${SECRET_SENTENCE}")
-    private String secretSentence;
-
-    /**
-     * Duree de validite du token.
-     */
-    @Value("${TOKEN_EXPIRATION_DURATION}")
-    private long tokenExpirationDuration;
+     * Service associé a la recuperation des variables d'environement.
+      */
+    @Autowired
+    private EnvGetter envGetter;
 
     /**
      * Repository associé à la table utilisateur de la base MySQL.
@@ -62,14 +55,15 @@ public class UserService {
      */
     public String generateToken(final UserEntity user,
                                 final Instant currentDate) {
-        Algorithm algorithm = Algorithm.HMAC256(secretSentence);
+        Algorithm algorithm = Algorithm.HMAC256(envGetter.getSentence());
         String jwt = JWT.create()
                 .withClaim("id", user.getId())
                 .withClaim("email", user.getEmail())
                 .withClaim("datetime-claim", currentDate)
-                .withExpiresAt(currentDate.plus(tokenExpirationDuration,
+                .withExpiresAt(currentDate.plus(envGetter.getExpiration(),
                                                 ChronoUnit.SECONDS))
                 .sign(algorithm);
         return jwt;
     }
+
 }
