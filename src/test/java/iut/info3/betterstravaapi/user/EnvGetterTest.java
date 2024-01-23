@@ -26,4 +26,5 @@ public class EnvGetterTest {
 
         assertEquals("la durree d expiration devrait etre 123456",123456L, envGetter.getExpiration());
     }
+
 }
