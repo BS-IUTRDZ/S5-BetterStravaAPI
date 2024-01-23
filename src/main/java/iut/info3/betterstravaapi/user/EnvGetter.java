@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * Service de recuperation des variables d'environement
+ * Service de recuperation des variables d'environement.
  */
 
 @Service
@@ -26,12 +26,16 @@ public class EnvGetter {
      * getter de la Secret Sentence.
      * @return la phrase secrete.
      */
-    public String getSentence(){ return secretSentence; }
+    public String getSentence() {
+        return secretSentence;
+    }
 
     /**
      * getter de la duréée avant expiration du token.
      * @return la duréé avant expiration.
      */
-    public long getExpiration(){ return tokenExpirationDuration; }
+    public long getExpiration() {
+        return tokenExpirationDuration;
+    }
 
 }
