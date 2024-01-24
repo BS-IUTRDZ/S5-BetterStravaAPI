@@ -33,9 +33,7 @@ build/
 .vscode/
 
 ### ENV ###
-.env
 *.properties
-pom.xml
 *.db
 
 ## autres ##
