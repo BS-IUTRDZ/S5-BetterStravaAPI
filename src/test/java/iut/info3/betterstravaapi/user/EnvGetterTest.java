@@ -1,5 +1,6 @@
 package iut.info3.betterstravaapi.user;
 
+import iut.info3.betterstravaapi.EnvGetter;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
