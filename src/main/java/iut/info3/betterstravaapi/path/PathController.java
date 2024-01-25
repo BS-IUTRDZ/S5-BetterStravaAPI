@@ -26,7 +26,7 @@ public class PathController {
         return null; // bouchon
     }
 
-    //TODO methode d'ajout d'un point de coordonnees dans la list des points d'un parcours
+    //TODO methode d'ajout d'un point de coordonnees dans la list des points d'un parcours grace a son id
 
 
     @GetMapping("/all")

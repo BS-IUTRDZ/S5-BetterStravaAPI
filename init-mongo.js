@@ -5,6 +5,7 @@ db.createCollection('parcours');
 db.parcours.insertOne(
     {
         nom : "balade a salles-la-source",
+        idUtilisateur : 1,
         description : "superbe village avec une très jolie cascade meme si la balade est un peu courte",
         points : [
             {latitude : 44.435465, longitude : 2.514783},

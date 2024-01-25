@@ -2,6 +2,7 @@ package iut.info3.betterstravaapi.path;
 
 
 import jakarta.persistence.*;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -13,6 +14,7 @@ import java.util.List;
  * Un parcour est caractérisé par :
  * <ul>
  *     <li>un identifiant,</li>
+ *     <li>l'identifiant de l'utilisateur ayant créer le parcour</li>
  *     <li>une description,</li>
  *     <li>une liste de liste de coordonees geographiques,</li>
  *     <li>une liste de point d'interet caracterisé par leur nom et leur description et leur coordonées</li>
@@ -27,30 +29,31 @@ public class PathEntity {
      * Id du parcour.
      */
     @Id
-    private String _id;
+    private ObjectId _id;
+
+    /**
+     * Id de l'utilisateur.
+     */
+    private Integer idUtilisateur;
 
     /**
      * Nom du parcour.
      */
-    @Field("nom")
     private String nom;
 
     /**
      * Description du parcour.
      */
-    @Field("description")
     private String description;
 
     /**
      * liste des point composant le parcours
      */
-    @ElementCollection
     private List<Coordonnees> points;
 
     /**
      * liste des points d'interets sur le parcours
      */
-    @DBRef
     private List<PointInteret> pointsInterets;
 
 
@@ -66,19 +69,28 @@ public class PathEntity {
      * @param description description du parcours donnee par l'utilisateur
      * @param points liste des points de coordonnees composant le parcour
      */
-    public PathEntity(String nom, String description, List<Coordonnees> points, List<PointInteret> pointsInterets) {
+    public PathEntity(Integer idUtilisateur, String nom, String description, List<Coordonnees> points, List<PointInteret> pointsInterets) {
+        this.idUtilisateur = idUtilisateur;
         this.nom = nom;
         this.description = description;
         this.points = points;
         this.pointsInterets = pointsInterets;
     }
 
-    public String getIdParcour() {
+    public ObjectId getIdParcour() {
         return _id;
     }
 
-    public void setIdParcour(String idParcour) {
+    public void setIdParcour(ObjectId idParcour) {
         this._id = idParcour;
+    }
+
+    public Integer getIdUserParcour() {
+        return idUtilisateur;
+    }
+
+    public void setIdUserParcour(Integer idParcour) {
+        this.idUtilisateur = idParcour;
     }
 
     public String getNom() {
