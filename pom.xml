@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>iut.info3.betterstravaapi</groupId>
-    <artifactId>BetterStravaAPI</artifactId>
+    <artifactId>betterstravaapi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>BetterStravaAPI</name>
     <description>betterstravaapi</description>
