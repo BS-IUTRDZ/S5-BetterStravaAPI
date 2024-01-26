@@ -21,6 +21,13 @@
         <sonar.java.spotbugs.reportPaths>target/spotbugsXml.xml</sonar.java.spotbugs.reportPaths>
         <sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub BS-IUTRDZ Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/BS-IUTRDZ/S5-BetterStravaAPI</url>
+        </repository>
+    </distributionManagement>
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
         <dependency>
