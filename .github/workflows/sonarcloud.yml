@@ -31,9 +31,9 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - name: Start Docker
-        run: docker-compose -f "docker-compose.yml" up -d --build
+        run: docker-compose up -d mongodb mysql
       - name: Checkstyle and Spotbugs
-        run: mvn clean test site
+        run: mvn clean test checkstyle:checkstyle com.github.spotbugs:spotbugs-maven-plugin:spotbugs
       - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
