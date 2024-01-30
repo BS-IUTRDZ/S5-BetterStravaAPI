@@ -5,7 +5,8 @@ CREATE TABLE utilisateurs(
     email VARCHAR(100) UNIQUE NOT NULL,
     nom VARCHAR(50) NOT NULL,
     prenom VARCHAR(50) NOT NULL,
-    mot_de_passe VARCHAR(80) NOT NULL
+    mot_de_passe VARCHAR(80) NOT NULL,
+    jwt_token BLOB
 );
 CREATE USER 'bs-user'@'%' IDENTIFIED BY 'bsuser';
 GRANT ALL PRIVILEGES ON betterStrava.* TO 'bs-user'@'%';
