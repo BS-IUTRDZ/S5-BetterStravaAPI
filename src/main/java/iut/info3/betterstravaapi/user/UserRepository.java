@@ -40,4 +40,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserEntity> findByEmailAndPassword(String email,
                                                    String password);
 
+    @Query (value = "SELECT * from utilisateurs WHERE token = ?1")
+    UserEntity findByToken(String token);
+
 }

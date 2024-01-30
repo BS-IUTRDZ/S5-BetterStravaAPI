@@ -1,5 +1,8 @@
 package iut.info3.betterstravaapi.user;
 
+import iut.info3.betterstravaapi.path.PathEntity;
+import iut.info3.betterstravaapi.path.PathRepository;
+import iut.info3.betterstravaapi.path.PathService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +35,9 @@ public class UserController {
     /** Message d'erreur pour utilisateur non trouver lors d'une requête sql. */
     private static final String ERROR_MESSAGE_USER_NOT_FOUND
             = "Utilisateur inconnu(e)";
+
+    @Autowired
+    private PathService pathService;
 
     /**
      * Repository associé à la table utilisateur de la base MySQL.
@@ -135,6 +143,41 @@ public class UserController {
 
         return errors;
     }
+
+    @PostMapping (path = "/getInfo")
+    public List<ResponseEntity<Object>> recupInfo(
+            @RequestBody final String token
+    ){
+
+        UserEntity user = userService.findUserByToken(token);
+        Map<String, String> infoUser = new HashMap<>();
+        infoUser.put("nom",user.getNom());
+        infoUser.put("prenom",user.getPrenom());
+        infoUser.put("email",user.getEmail());
+
+
+        List<ResponseEntity<Object>> listeReponse = new ArrayList<>();
+        PathEntity dernierParcour = pathService.recupDernierParcour(user.getId());
+
+        Map<String, String> dernier = new HashMap<>();
+
+        dernier.put("nom",dernierParcour.getNom());
+        dernier.put("description",dernierParcour.getDescription());
+
+
+        Map<String,String> dernier30Jours = userService.calculerPerformance(pathService.recupPerformances30Jours(user.getId()));
+
+        Map<String,String> global = userService.calculerPerformance(pathService.recupPerformancesGlobal(user.getId()));
+
+        listeReponse.add(new ResponseEntity<>(infoUser,HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(dernier,HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(dernier30Jours,HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(global,HttpStatus.OK));
+
+        return listeReponse;
+
+    }
+
 
 
 }
