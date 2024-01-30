@@ -21,6 +21,15 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     UserEntity findByEmail(String email);
 
     /**
+     * Recherche d'un email spécifique dans la base de données.
+     * @param idUser id à chercher en base
+     * @return le token associé à l'id s'il existe
+     */
+    @Query(value = "SELECT jwt_token FROM utilisateurs where id = ?",
+            nativeQuery = true)
+    String findTokenById(Integer idUser);
+
+    /**
      * questionement de la bd sur l'existence d'un utilisateur.
      * @param email email de l'utilisateur.
      * @param password mdp de l'utilisateur.

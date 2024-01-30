@@ -85,6 +85,11 @@ public class UserEntity {
     private String motDePasse;
 
     /**
+     * Token de validite du compte.
+     */
+    private String jwtToken;
+
+    /**
      * Constructeur par défaut pour permettre la compilation.
      */
     public UserEntity() { }
@@ -102,6 +107,24 @@ public class UserEntity {
         this.nom = nomUtil;
         this.prenom = prenomUtil;
         this.motDePasse = motDePasseUtil;
+
+    }
+
+    /**
+     * Création d'un utilisateur avec un token.
+     * @param adresseEmail adresse email de l'utilisateur à créer
+     * @param nomUtil nom de l'utilisateur à créer
+     * @param prenomUtil prénom de l'utilisateur à créer
+     * @param motDePasseUtil mot de passe de l'utilisateur à créer
+     * @param jwtToken token de connexion.
+     */
+    public UserEntity(final String adresseEmail, final String nomUtil,
+                      final String prenomUtil, final String motDePasseUtil, final String jwtToken) {
+        this.email = adresseEmail;
+        this.nom = nomUtil;
+        this.prenom = prenomUtil;
+        this.motDePasse = motDePasseUtil;
+        this.jwtToken = jwtToken;
     }
 
     /** @return l'id de l'utilisateur */
@@ -166,6 +189,19 @@ public class UserEntity {
      */
     public void setMotDePasse(final String motDePasseUtil) {
         this.motDePasse = motDePasseUtil;
+    }
+
+    /** @return le token de l'utilisateur */
+    public String getJwtToken() {
+        return jwtToken;
+    }
+
+    /**
+     * Associe un token à l'utilisateur.
+     * @param jwtToken le nouveau token
+     */
+    public void setJwtToken(String jwtToken) {
+        this.jwtToken = jwtToken;
     }
 
     @Override

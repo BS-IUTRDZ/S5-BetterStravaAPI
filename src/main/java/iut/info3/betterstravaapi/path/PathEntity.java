@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +57,11 @@ public class PathEntity {
      */
     private List<PointInteret> pointsInterets;
 
+    /**
+     * bollean de parcours archivé ou non
+     */
+    private boolean archive;
+
 
     /**
      * constructeur par default pour permettre la compilation
@@ -75,6 +81,7 @@ public class PathEntity {
         this.description = description;
         this.points = points;
         this.pointsInterets = pointsInterets;
+        this.archive = false;
     }
 
     public ObjectId getIdParcour() {
@@ -124,6 +131,10 @@ public class PathEntity {
     public void setPointsInterets(List<PointInteret> pointsInterets) {
         this.pointsInterets = pointsInterets;
     }
+
+    public boolean isArchive() { return archive; }
+
+    public void setArchive(boolean archive) {this.archive = archive; }
 
     @Override
     public String toString() {

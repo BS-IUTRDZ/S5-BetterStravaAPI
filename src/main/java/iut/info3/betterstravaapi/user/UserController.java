@@ -59,17 +59,20 @@ public class UserController {
             @RequestParam("password") final String password) {
 
         String passwordEncode = DigestUtils.sha256Hex(password);
-        List<UserEntity> listUserCo =
+        UserEntity user =
                 userService.findByEmailAndPassword(email, passwordEncode);
         Map<String, String> responseBody = new HashMap<>();
 
-        if (listUserCo.size() == 0) {
+        if (user == null) {
             responseBody.put("erreur", ERROR_MESSAGE_USER_NOT_FOUND);
             return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
         }
-        String token = userService.generateToken(listUserCo.get((0)),
+        String token = userService.generateToken(user,
                 Instant.now());
         responseBody.put("token", token);
+        user.setJwtToken(token);
+        userRepository.save(user);
+
         return new ResponseEntity<>(responseBody, HttpStatus.ACCEPTED);
     }
 

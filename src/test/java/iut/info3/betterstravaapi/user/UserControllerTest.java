@@ -76,11 +76,9 @@ public class UserControllerTest {
 
     @Test
     public void testAuthenticateWithValidUser() throws Exception {
-        List<UserEntity> list = new ArrayList<>();
-        list.add(new UserEntity());
         when(userService.findByEmailAndPassword("utilisateur@test.com",
         "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"))
-                .thenReturn(list);
+                .thenReturn(new UserEntity());
         mockMvc.perform(MockMvcRequestBuilders
             .get("/api/users/login?email=utilisateur@test.com&password=test")
                 .accept(MediaType.APPLICATION_JSON))
@@ -89,10 +87,9 @@ public class UserControllerTest {
 
     @Test
     public void testAuthenticateWithInvalidUser() throws Exception {
-        List<UserEntity> list = new ArrayList<>();
         when(userService.findByEmailAndPassword("utilisateur@test.com",
     "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"))
-            .thenReturn(list);
+            .thenReturn(null);
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/users/login?email=utilisateur@test.com&password=test")
                         .accept(MediaType.APPLICATION_JSON))
