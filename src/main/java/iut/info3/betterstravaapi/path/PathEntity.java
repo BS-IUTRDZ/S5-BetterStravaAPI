@@ -7,7 +7,9 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,12 +64,30 @@ public class PathEntity {
      */
     private boolean archive;
 
+    /**
+     * temps du parcours
+     */
+    private int temps;
+
+    /**
+     * distance parcourus pendant le parcours
+     */
+    private float distance;
+
+    /**
+     * vistesse moyenne de la course
+     */
+    private float vitesse;
+
+    /**
+     * Date de creation du parcours
+     */
+    private LocalDate date;
 
     /**
      * constructeur par default pour permettre la compilation
      */
     public PathEntity() { }
-
 
     /**
      * Création d'un parcours
@@ -82,6 +102,22 @@ public class PathEntity {
         this.points = points;
         this.pointsInterets = pointsInterets;
         this.archive = false;
+    }
+
+    public ObjectId get_id() {
+        return _id;
+    }
+
+    public void set_id(ObjectId _id) {
+        this._id = _id;
+    }
+
+    public Integer getIdUtilisateur() {
+        return idUtilisateur;
+    }
+
+    public void setIdUtilisateur(Integer idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
     }
 
     public ObjectId getIdParcour() {
@@ -135,6 +171,38 @@ public class PathEntity {
     public boolean isArchive() { return archive; }
 
     public void setArchive(boolean archive) {this.archive = archive; }
+
+    public int getTemps() {
+        return temps;
+    }
+
+    public void setTemps(int temps) {
+        this.temps = temps;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
+    public float getVitesse() {
+        return vitesse;
+    }
+
+    public void setVitesse(float vitesse) {
+        this.vitesse = vitesse;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
 
     @Override
     public String toString() {

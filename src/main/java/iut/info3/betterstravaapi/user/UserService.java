@@ -6,12 +6,15 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import iut.info3.betterstravaapi.EnvGetter;
+import iut.info3.betterstravaapi.path.PathEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service associé à la gestion des utilisateurs.
@@ -82,6 +85,10 @@ public class UserService {
         return userRepository.findTokenById(idUser);
     }
 
+    public UserEntity findUserByToken(String token) {
+        return userRepository.findByToken(token);
+    }
+
     public boolean verifierDateExpiration(String jwtToken) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(envGetter.getSentence());
@@ -99,5 +106,24 @@ public class UserService {
             return false;
         }
     }
+
+    public Map<String, String> calculerPerformance(List<PathEntity> parcours) {
+
+        Map<String, String> map = new HashMap<>();
+
+        float temps = 0;
+        float distance = 0;
+        for (PathEntity parcour : parcours){
+            temps += parcour.getTemps();
+            distance += parcour.getDistance();
+        }
+        map.put("nombre_parcours",String.valueOf(parcours.size()));
+        map.put("temps",String.valueOf(temps));
+        map.put("distance",String.valueOf(distance));
+
+        return map;
+
+    }
+
 
 }
