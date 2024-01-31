@@ -1,9 +1,11 @@
 package iut.info3.betterstravaapi.user;
 
 import iut.info3.betterstravaapi.path.PathEntity;
-import iut.info3.betterstravaapi.path.PathRepository;
 import iut.info3.betterstravaapi.path.PathService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.bson.json.JsonObject;
+import org.json.HTTP;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,8 +147,23 @@ public class UserController {
 
     @PostMapping (path = "/getInfo")
     public List<ResponseEntity<Object>> recupInfo(
-            @RequestBody final String token
+            @RequestBody final JsonObject jsonToken
     ){
+
+        String token = "";
+        List<ResponseEntity<Object>> listeReponse = new ArrayList<>();
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonToken.toString());
+
+            // Récupérer la valeur associée à la clé "token"
+            token = jsonObject.getString("token");
+        }catch (Exception e){
+            Map<String,String> response = new HashMap<String,String>();
+            response.put("erreur",e.getMessage());
+            listeReponse.add(new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED));
+            return listeReponse;
+        }
 
         UserEntity user = userService.findUserByToken(token);
         Map<String, String> infoUser = new HashMap<>();
@@ -155,8 +171,6 @@ public class UserController {
         infoUser.put("prenom",user.getPrenom());
         infoUser.put("email",user.getEmail());
 
-
-        List<ResponseEntity<Object>> listeReponse = new ArrayList<>();
         PathEntity dernierParcour = pathService.recupDernierParcour(user.getId());
 
         Map<String, String> dernier = new HashMap<>();
@@ -177,7 +191,5 @@ public class UserController {
         return listeReponse;
 
     }
-
-
 
 }

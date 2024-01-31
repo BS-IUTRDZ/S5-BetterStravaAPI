@@ -41,11 +41,6 @@ public class PathControllerTest {
     @MockBean
     UserService userService;
 
-    @Mock
-    EnvGetter envGetter;
-
-    private final String PHRASE_SECRETE = "LeSanglier";
-
     private ArrayList<Coordonnees> points = new ArrayList<>();
 
     private ArrayList<PointInteret> pointsInteret = new ArrayList<>();
