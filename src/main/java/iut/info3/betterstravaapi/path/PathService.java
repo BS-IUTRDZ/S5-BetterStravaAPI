@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,10 +25,12 @@ import java.util.List;
 public class PathService {
 
     @Autowired
-    PathRepository pathRepository;
+    private PathRepository pathRepository;
 
     public List<PathEntity> recupPerformances30Jours (int idUser) {
-        return  pathRepository.findPathByIdUtilisateurAndArchiveAndDateAfter(idUser,false, LocalDate.now().minusDays(30));
+        Calendar calendrier = Calendar.getInstance();
+        calendrier.add(Calendar.HOUR,-24*30);
+        return  pathRepository.findPathByIdUtilisateurAndArchiveAndDateAfter(idUser,false,calendrier.getTime().getTime() );
     }
 
     public List<PathEntity> recupPerformancesGlobal (int idUser) {

@@ -67,22 +67,22 @@ public class PathEntity {
     /**
      * temps du parcours
      */
-    private int temps;
+    private long temps;
 
     /**
      * distance parcourus pendant le parcours
      */
-    private float distance;
+    private double distance;
 
     /**
      * vistesse moyenne de la course
      */
-    private float vitesse;
+    private double vitesse;
 
     /**
      * Date de creation du parcours
      */
-    private LocalDate date;
+    private long date;
 
     /**
      * constructeur par default pour permettre la compilation
@@ -172,35 +172,35 @@ public class PathEntity {
 
     public void setArchive(boolean archive) {this.archive = archive; }
 
-    public int getTemps() {
+    public long getTemps() {
         return temps;
     }
 
-    public void setTemps(int temps) {
+    public void setTemps(long temps) {
         this.temps = temps;
     }
 
-    public float getDistance() {
+    public double getDistance() {
         return distance;
     }
 
-    public void setDistance(float distance) {
+    public void setDistance(double distance) {
         this.distance = distance;
     }
 
-    public float getVitesse() {
+    public double getVitesse() {
         return vitesse;
     }
 
-    public void setVitesse(float vitesse) {
+    public void setVitesse(double vitesse) {
         this.vitesse = vitesse;
     }
 
-    public LocalDate getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(long date) {
         this.date = date;
     }
 

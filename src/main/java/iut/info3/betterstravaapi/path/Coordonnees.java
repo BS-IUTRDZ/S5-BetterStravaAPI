@@ -8,12 +8,12 @@ public class Coordonnees {
     /**
      * latitude du point referencer
      */
-    private Double latitude;
+    private double latitude;
 
     /**
      * longitude du point referencer
      */
-    private Double longitude;
+    private double longitude;
 
 
     /**
@@ -21,24 +21,24 @@ public class Coordonnees {
      * @param latitude latitude des coordonees
      * @param longitude longitude des coordonees
      */
-    public Coordonnees(Double latitude, Double longitude) {
+    public Coordonnees(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public Double getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public Double getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 }

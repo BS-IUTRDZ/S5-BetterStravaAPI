@@ -1,6 +1,7 @@
 package iut.info3.betterstravaapi.user;
 
 import iut.info3.betterstravaapi.EnvGetter;
+import iut.info3.betterstravaapi.path.PathEntity;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -72,7 +74,7 @@ class UserServiceTest {
     }
 
     @Test
-    public void testValiditerTokenInvalid(){
+    public void testValiditerTokenInvalid() {
         when(envGetter.getSentence()).thenReturn("LeSanglier");
         when(envGetter.getExpiration()).thenReturn(0L);
 
@@ -83,6 +85,29 @@ class UserServiceTest {
         String jwt = userService.generateToken(entity,Instant.now().minus(10, ChronoUnit.SECONDS));
 
         assertFalse(userService.verifierDateExpiration(jwt));
+
+    }
+
+    @Test
+    public void testCalculerPerformance() {
+        PathEntity path = new PathEntity();
+        path.setDate(Calendar.getInstance().getTime().getTime());
+        path.setDistance(15);
+        path.setTemps(1500);
+        PathEntity pathVide = new PathEntity();
+
+        List<PathEntity> liste = new ArrayList<>();
+        liste.add(path);
+        liste.add(path);
+        liste.add(path);
+        liste.add(pathVide);
+
+        Map<String,String> expected = new HashMap();
+        expected.put("nombre_parcours","4");
+        expected.put("temps","4500.0");
+        expected.put("distance","45.0");
+
+        assertEquals(expected,userService.calculerPerformance(liste));
 
     }
 
