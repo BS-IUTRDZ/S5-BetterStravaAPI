@@ -1,44 +1,60 @@
 package iut.info3.betterstravaapi.path;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import iut.info3.betterstravaapi.EnvGetter;
-import iut.info3.betterstravaapi.user.UserRepository;
-import org.bson.json.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Path;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
 public class PathService {
 
+    /**
+     * repository connecter a la base nosql.
+     */
     @Autowired
     private PathRepository pathRepository;
 
-    public List<PathEntity> recupPerformances30Jours (int idUser) {
+    /**
+     * nombre d'heure en une journée.
+     */
+    private final int nbHeureJournee = 24;
+
+    /**
+     * nombre de jours en arriere pour recuperer les parcours.
+     */
+    private final int nbJourMois = -30;
+
+    /**
+     * recuperation des parcours de l'utilisateur.
+     * des 30 derniers jours.
+     * @param idUser id de l'utilisateur
+     * @return la liste des parcours des 30 derniers jours.
+     */
+    public List<PathEntity> recupPerformances30Jours(final int idUser) {
         Calendar calendrier = Calendar.getInstance();
-        calendrier.add(Calendar.HOUR,-24*30);
-        return  pathRepository.findPathByIdUtilisateurAndArchiveAndDateAfter(idUser,false,calendrier.getTime().getTime() );
+        calendrier.add(Calendar.HOUR, nbJourMois * nbHeureJournee);
+        return  pathRepository.findPathByIdUtilisateurAndArchiveAndDateAfter(
+                idUser, false, calendrier.getTime().getTime());
     }
 
-    public List<PathEntity> recupPerformancesGlobal (int idUser) {
-        return  pathRepository.findPathByIdUtilisateurAndArchive(idUser,false);
+    /**
+     *recuperation des parcours d'un utilisateur.
+     * @param idUser id de l'utilisateur
+     * @return la liste des parcours de l'utilisateur
+     */
+    public List<PathEntity> recupPerformancesGlobal(final int idUser) {
+        return  pathRepository.findPathByIdUtilisateurAndArchive(idUser, false);
     }
 
-    public PathEntity recupDernierParcour (int idUser) {
-        return pathRepository.findTopByIdUtilisateurAndArchiveOrderByDateDesc(idUser, false);
+    /**
+     * recuperation du dernier parcours de l'utilisateur.
+     * @param idUser id de l'utilisateur
+     * @return le PathEntity du parcours du dernier utilisateurs.
+     */
+    public PathEntity recupDernierParcour(final int idUser) {
+        return pathRepository.findTopByIdUtilisateurAndArchiveOrderByDateDesc(
+                idUser, false);
     }
 
 }

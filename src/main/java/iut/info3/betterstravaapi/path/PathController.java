@@ -4,7 +4,11 @@ import iut.info3.betterstravaapi.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +18,15 @@ import java.util.Map;
 @RequestMapping(value = "/api/path")
 public class PathController {
 
+    /**
+     * repository associer a la base noSQL.
+     */
     @Autowired
     private final PathRepository pathRepository;
 
+    /**
+     * service d'acces a la base mysql.
+     */
     @Autowired
     private final UserService userService;
 
@@ -24,12 +34,13 @@ public class PathController {
     /**
      * Controlleur permettant d'autowired le pathRepository.
      *
-     * @param pathRepository pathRepository a Autowired.
-     * @param userService userService a Autowired.
+     * @param pathRepo pathRepository a Autowired.
+     * @param userServ userService a Autowired.
      */
-    public PathController(PathRepository pathRepository, UserService userService) {
-        this.pathRepository = pathRepository;
-        this.userService = userService;
+    public PathController(final PathRepository pathRepo,
+                          final UserService userServ) {
+        this.pathRepository = pathRepo;
+        this.userService = userServ;
     }
 
 
@@ -44,9 +55,10 @@ public class PathController {
      * </ul>
      */
     @PostMapping("/createPath")
-    public ResponseEntity<Object> createPath(@RequestBody final PathEntity pathBody){
+    public ResponseEntity<Object> createPath(
+            @RequestBody final PathEntity pathBody) {
 
-        Integer idUser =pathBody.getIdUserParcour();
+        Integer idUser = pathBody.getIdUserParcour();
         String description = pathBody.getDescription();
         String nom = pathBody.getNom();
         List<Coordonnees> points = pathBody.getPoints();
@@ -54,7 +66,8 @@ public class PathController {
 
         Map<String, String> responseBody = new HashMap<>();
 
-        if (!userService.verifierDateExpiration(userService.getTokenBd(idUser))){
+        if (!userService.verifierDateExpiration(
+                userService.getTokenBd(idUser))) {
             responseBody.put(
                     "Message",
                     "l'utilisateur ne possede pas de token valide");
@@ -62,23 +75,30 @@ public class PathController {
         }
 
         try {
-            PathEntity path = new PathEntity(idUser, nom, description, points, pointInteret);
+            PathEntity path = new PathEntity(idUser, nom,
+                    description, points, pointInteret);
             pathRepository.save(path);
             responseBody.put("message", "parcours correctement cree");
             return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             responseBody.put("message", "erreur de creation du parcours");
-            responseBody.put("erreur",e.getMessage());
-            return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+            responseBody.put("erreur", e.getMessage());
+            return new ResponseEntity<>(responseBody,
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
 
     }
 
-    //TODO methode d'ajout d'un point de coordonnees dans la list des points d'un parcours grace a son id
+    //TODO methode d'ajout d'un point de coordonnees dans la
+    // list des points d'un parcours grace a son id
 
 
+    /**
+     * recuperation de tout les parcours.
+     * @return tout les parcours de la base
+     */
     @GetMapping("/all")
     public List<PathEntity> getAll() {
         return pathRepository.findAll();

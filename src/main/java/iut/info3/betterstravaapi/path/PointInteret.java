@@ -1,21 +1,19 @@
 package iut.info3.betterstravaapi.path;
 
-import java.util.List;
-
 public class PointInteret {
 
     /**
-     * nom du point d'interet
+     * nom du point d'interet.
      */
     private String nom;
 
     /**
-     * description du point d'interet
+     * description du point d'interet.
      */
     private String description;
 
     /**
-     * coordonees du point d'interet
+     * coordonees du point d'interet.
      */
     private Coordonnees coordonnees;
 
@@ -26,38 +24,65 @@ public class PointInteret {
 
     /**
      * Création d'un point d'interet.
-     * @param nom nom du point donné par l'utilisateur.
-     * @param description description du point d'interet entree par l'utilisateur.
-     * @param coordonnees coordonnees du point d'interet recuperer automatiquement.
+     * @param name nom du point donné par l'utilisateur.
+     * @param descri description du point d'interet
+     *                    entree par l'utilisateur.
+     * @param coord coordonnees du point d'interet
+     *                    recuperer automatiquement.
      */
-    public PointInteret(final String nom, final String description, final Coordonnees coordonnees){
-        this.nom = nom;
-        this.description = description;
-        this.coordonnees = coordonnees;
+    public PointInteret(final String name, final String descri,
+                        final Coordonnees coord) {
+        this.nom = name;
+        this.description = descri;
+        this.coordonnees = coord;
     }
 
+    /**
+     * getter du nom.
+     * @return le nom du point d'interet
+     */
     public String getNom() {
         return nom;
     }
 
-    public void setNom(String nom) {
-        this.nom = nom;
+    /**
+     * setter du nom.
+     * @param name nom a set
+     */
+    public void setNom(final String name) {
+        this.nom = name;
     }
 
+    /**
+     * getter de la description.
+     * @return la description du point d'interet
+     */
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    /**
+     * setter de la description.
+     * @param descri le string correspondant a la description
+     */
+    public void setDescription(final String descri) {
+        this.description = descri;
     }
 
+    /**
+     * getter des coordonnees.
+     * @return les coordonnees du point d'interet
+     */
     public Coordonnees getCoordonnees() {
         return coordonnees;
     }
 
-    public void setCoordonnees(Coordonnees coordonnees) {
-        this.coordonnees = coordonnees;
+    /**
+     * setter des coordonnees.
+     * @param coord coordonnees a set
+     */
+    public void setCoordonnees(final Coordonnees coord) {
+        this.coordonnees = coord;
     }
 
 }

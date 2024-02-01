@@ -1,7 +1,7 @@
 @ECHO OFF
 D:
 cd S5-BetterStrava
-docker-compose down
+docker-compose down --volumes
 cd ..
 rmdir /s /q S5-BetterStrava
 Z:

@@ -4,7 +4,6 @@ import iut.info3.betterstravaapi.path.PathEntity;
 import iut.info3.betterstravaapi.path.PathService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.json.JsonObject;
-import org.json.HTTP;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +36,9 @@ public class UserController {
     private static final String ERROR_MESSAGE_USER_NOT_FOUND
             = "Utilisateur inconnu(e)";
 
+    /**
+     * service de gestion des parcours.
+     */
     @Autowired
     private PathService pathService;
 
@@ -145,10 +147,17 @@ public class UserController {
         return errors;
     }
 
+
+    /**
+     * fonction retournant les informations necessaires.
+     * a la creation de la page d'acceuil.
+     * @param jsonToken le token de l'utilisateur
+     * @return un tableau de json
+     */
     @PostMapping (path = "/getInfo")
     public List<ResponseEntity<Object>> recupInfo(
             @RequestBody final JsonObject jsonToken
-    ){
+    ) {
 
         String token = "";
         List<ResponseEntity<Object>> listeReponse = new ArrayList<>();
@@ -158,35 +167,39 @@ public class UserController {
 
             // Récupérer la valeur associée à la clé "token"
             token = jsonObject.getString("token");
-        }catch (Exception e){
-            Map<String,String> response = new HashMap<String,String>();
-            response.put("erreur",e.getMessage());
-            listeReponse.add(new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED));
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<String, String>();
+            response.put("erreur", e.getMessage());
+            listeReponse.add(new ResponseEntity<>(response,
+                    HttpStatus.UNAUTHORIZED));
             return listeReponse;
         }
 
         UserEntity user = userService.findUserByToken(token);
         Map<String, String> infoUser = new HashMap<>();
-        infoUser.put("nom",user.getNom());
-        infoUser.put("prenom",user.getPrenom());
-        infoUser.put("email",user.getEmail());
+        infoUser.put("nom", user.getNom());
+        infoUser.put("prenom", user.getPrenom());
+        infoUser.put("email", user.getEmail());
 
-        PathEntity dernierParcour = pathService.recupDernierParcour(user.getId());
+        PathEntity dernierParcour =
+                pathService.recupDernierParcour(user.getId());
 
         Map<String, String> dernier = new HashMap<>();
 
-        dernier.put("nom",dernierParcour.getNom());
-        dernier.put("description",dernierParcour.getDescription());
+        dernier.put("nom", dernierParcour.getNom());
+        dernier.put("description", dernierParcour.getDescription());
 
 
-        Map<String,String> dernier30Jours = userService.calculerPerformance(pathService.recupPerformances30Jours(user.getId()));
+        Map<String, String> dernier30Jours = userService.calculerPerformance(
+                pathService.recupPerformances30Jours(user.getId()));
 
-        Map<String,String> global = userService.calculerPerformance(pathService.recupPerformancesGlobal(user.getId()));
+        Map<String, String> global = userService.calculerPerformance(
+                pathService.recupPerformancesGlobal(user.getId()));
 
-        listeReponse.add(new ResponseEntity<>(infoUser,HttpStatus.OK));
-        listeReponse.add(new ResponseEntity<>(dernier,HttpStatus.OK));
-        listeReponse.add(new ResponseEntity<>(dernier30Jours,HttpStatus.OK));
-        listeReponse.add(new ResponseEntity<>(global,HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(infoUser, HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(dernier, HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(dernier30Jours, HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(global, HttpStatus.OK));
 
         return listeReponse;
 

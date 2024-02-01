@@ -52,7 +52,8 @@ public class UserService {
      */
     public UserEntity findByEmailAndPassword(final String email,
                                                    final String password) {
-        List<UserEntity> result = userRepository.findByEmailAndPassword(email, password);
+        List<UserEntity> result = userRepository.findByEmailAndPassword(
+                email, password);
         return result.size() == 1 ? result.get(0) : null;
     }
 
@@ -77,19 +78,29 @@ public class UserService {
     }
 
     /**
-     * recuperation du token d'un utilisateur
+     * recuperation du token d'un utilisateur.
      * @param idUser id de l'utilisateur dont on veut le token
      * @return le token de l'utilisateur s'il existe
      */
-    public String getTokenBd(Integer idUser) {
+    public String getTokenBd(final Integer idUser) {
         return userRepository.findTokenById(idUser);
     }
 
-    public UserEntity findUserByToken(String token) {
+    /**
+     * appel de la methode de recherche par token.
+     * @param token le tokenb rechercher
+     * @return l'UserEntity correspondant au token
+     */
+    public UserEntity findUserByToken(final String token) {
         return userRepository.findByToken(token);
     }
 
-    public boolean verifierDateExpiration(String jwtToken) {
+    /**
+     * fonction de verification que le token donnée n'est pas expirée.
+     * @param jwtToken le token a tester
+     * @return true si le token est encore valide, false sinon
+     */
+    public boolean verifierDateExpiration(final String jwtToken) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(envGetter.getSentence());
             JWTVerifier verifier = JWT.require(algorithm).build();
@@ -107,19 +118,25 @@ public class UserService {
         }
     }
 
-    public Map<String, String> calculerPerformance(List<PathEntity> parcours) {
+    /**
+     * fonction d'arrangement des statistique des parcours donner dans un json.
+     * @param parcours la liste des parcours a analyser
+     * @return une HashMap correpondant au json des statistique
+     */
+    public Map<String, String> calculerPerformance(
+            final List<PathEntity> parcours) {
 
         Map<String, String> map = new HashMap<>();
 
         float temps = 0;
         float distance = 0;
-        for (PathEntity parcour : parcours){
+        for (PathEntity parcour : parcours) {
             temps += parcour.getTemps();
             distance += parcour.getDistance();
         }
-        map.put("nombre_parcours",String.valueOf(parcours.size()));
-        map.put("temps",String.valueOf(temps));
-        map.put("distance",String.valueOf(distance));
+        map.put("nombre_parcours", String.valueOf(parcours.size()));
+        map.put("temps", String.valueOf(temps));
+        map.put("distance", String.valueOf(distance));
 
         return map;
 

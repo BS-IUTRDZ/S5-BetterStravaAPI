@@ -127,6 +127,9 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
+
+
+
     public static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);
@@ -134,6 +137,10 @@ public class UserControllerTest {
             throw new RuntimeException(e);
         }
     }
+
+
+
+
 
 
 }

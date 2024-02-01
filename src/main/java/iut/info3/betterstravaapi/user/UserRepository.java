@@ -40,7 +40,14 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     List<UserEntity> findByEmailAndPassword(String email,
                                                    String password);
 
-    @Query (value = "SELECT * from utilisateurs WHERE token = ?1", nativeQuery = true)
+    /**
+     * questionement de la bd sur un utiliateur possedant
+     * le token passe en argument.
+     * @param token le token donnee
+     * @return l'utilisateur trouvé avec ce token
+     */
+    @Query (value = "SELECT * from utilisateurs WHERE token = ?1",
+            nativeQuery = true)
     UserEntity findByToken(String token);
 
 }

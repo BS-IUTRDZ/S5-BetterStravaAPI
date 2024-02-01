@@ -1,44 +1,61 @@
 package iut.info3.betterstravaapi.path;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Coordonnees {
 
     /**
-     * latitude du point referencer
+     * latitude du point referencer.
      */
     private double latitude;
 
     /**
-     * longitude du point referencer
+     * longitude du point referencer.
      */
     private double longitude;
 
+    /**
+     * constructeur par default pour la compilation.
+     */
+    public Coordonnees() { }
 
     /**
-     * constructeur d'une coordonnees
-     * @param latitude latitude des coordonees
-     * @param longitude longitude des coordonees
+     * constructeur d'une coordonnees.
+     * @param lati latitude des coordonees.
+     * @param longi longitude des coordonees.
      */
-    public Coordonnees(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public Coordonnees(final double lati, final double longi) {
+        this.latitude = lati;
+        this.longitude = longi;
     }
 
+    /**
+     * getter de la lattitude.
+     * @return la lattitude
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     * getter de la longitude.
+     * @return la longitude
+     */
     public double getLongitude() {
         return longitude;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    /**
+     * setter de la latitude.
+     * @param lati la latitude a modifier
+     */
+    public void setLatitude(final double lati) {
+        this.latitude = lati;
     }
 
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
+    /**
+     * setter de la longitude.
+     * @param longi la longitude a modifier
+     */
+    public void setLongitude(final double longi) {
+        this.longitude = longi;
     }
 }
