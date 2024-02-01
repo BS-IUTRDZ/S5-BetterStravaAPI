@@ -94,14 +94,4 @@ public class PathController {
     //TODO methode d'ajout d'un point de coordonnees dans la
     // list des points d'un parcours grace a son id
 
-
-    /**
-     * recuperation de tout les parcours.
-     * @return tout les parcours de la base
-     */
-    @GetMapping("/all")
-    public List<PathEntity> getAll() {
-        return pathRepository.findAll();
-    }
-
 }
