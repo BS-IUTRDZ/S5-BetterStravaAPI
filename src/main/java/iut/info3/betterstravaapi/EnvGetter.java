@@ -1,4 +1,4 @@
-package iut.info3.betterstravaapi.user;
+package iut.info3.betterstravaapi;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,10 @@
 package iut.info3.betterstravaapi.user;
 
+import iut.info3.betterstravaapi.path.PathEntity;
+import iut.info3.betterstravaapi.path.PathService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.bson.json.JsonObject;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +35,12 @@ public class UserController {
     /** Message d'erreur pour utilisateur non trouver lors d'une requête sql. */
     private static final String ERROR_MESSAGE_USER_NOT_FOUND
             = "Utilisateur inconnu(e)";
+
+    /**
+     * service de gestion des parcours.
+     */
+    @Autowired
+    private PathService pathService;
 
     /**
      * Repository associé à la table utilisateur de la base MySQL.
@@ -59,17 +70,20 @@ public class UserController {
             @RequestParam("password") final String password) {
 
         String passwordEncode = DigestUtils.sha256Hex(password);
-        List<UserEntity> listUserCo =
+        UserEntity user =
                 userService.findByEmailAndPassword(email, passwordEncode);
         Map<String, String> responseBody = new HashMap<>();
 
-        if (listUserCo.size() == 0) {
+        if (user == null) {
             responseBody.put("erreur", ERROR_MESSAGE_USER_NOT_FOUND);
             return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
         }
-        String token = userService.generateToken(listUserCo.get((0)),
+        String token = userService.generateToken(user,
                 Instant.now());
         responseBody.put("token", token);
+        user.setJwtToken(token);
+        userRepository.save(user);
+
         return new ResponseEntity<>(responseBody, HttpStatus.ACCEPTED);
     }
 
@@ -133,5 +147,62 @@ public class UserController {
         return errors;
     }
 
+
+    /**
+     * fonction retournant les informations necessaires.
+     * a la creation de la page d'acceuil.
+     * @param jsonToken le token de l'utilisateur
+     * @return un tableau de json
+     */
+    @PostMapping (path = "/getInfo")
+    public List<ResponseEntity<Object>> recupInfo(
+            @RequestBody final JsonObject jsonToken
+    ) {
+
+        String token = "";
+        List<ResponseEntity<Object>> listeReponse = new ArrayList<>();
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonToken.toString());
+
+            // Récupérer la valeur associée à la clé "token"
+            token = jsonObject.getString("token");
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<String, String>();
+            response.put("erreur", e.getMessage());
+            listeReponse.add(new ResponseEntity<>(response,
+                    HttpStatus.UNAUTHORIZED));
+            return listeReponse;
+        }
+
+        UserEntity user = userService.findUserByToken(token);
+        Map<String, String> infoUser = new HashMap<>();
+        infoUser.put("nom", user.getNom());
+        infoUser.put("prenom", user.getPrenom());
+        infoUser.put("email", user.getEmail());
+
+        PathEntity dernierParcour =
+                pathService.recupDernierParcour(user.getId());
+
+        Map<String, String> dernier = new HashMap<>();
+
+        dernier.put("nom", dernierParcour.getNom());
+        dernier.put("description", dernierParcour.getDescription());
+
+
+        Map<String, String> dernier30Jours = userService.calculerPerformance(
+                pathService.recupPerformances30Jours(user.getId()));
+
+        Map<String, String> global = userService.calculerPerformance(
+                pathService.recupPerformancesGlobal(user.getId()));
+
+        listeReponse.add(new ResponseEntity<>(infoUser, HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(dernier, HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(dernier30Jours, HttpStatus.OK));
+        listeReponse.add(new ResponseEntity<>(global, HttpStatus.OK));
+
+        return listeReponse;
+
+    }
 
 }
