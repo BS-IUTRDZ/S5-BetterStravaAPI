@@ -4,11 +4,7 @@ import iut.info3.betterstravaapi.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,17 +26,24 @@ public class PathController {
     @Autowired
     private final UserService userService;
 
+    private final PathService pathService;
+
+
+
 
     /**
      * Controlleur permettant d'autowired le pathRepository.
      *
-     * @param pathRepo pathRepository a Autowired.
-     * @param userServ userService a Autowired.
+     * @param pathRepo    pathRepository a Autowired.
+     * @param userServ    userService a Autowired.
+     * @param pathService
      */
     public PathController(final PathRepository pathRepo,
-                          final UserService userServ) {
+                          final UserService userServ,
+                          final PathService pathService) {
         this.pathRepository = pathRepo;
         this.userService = userServ;
+        this.pathService = pathService;
     }
 
 
@@ -93,5 +96,20 @@ public class PathController {
 
     //TODO methode d'ajout d'un point de coordonnees dans la
     // list des points d'un parcours grace a son id
+
+    @GetMapping("/findPath")
+    public ResponseEntity<List<PathEntity>> findPath(
+            @RequestParam String nom,
+            @RequestParam String dateInf,
+            @RequestParam String dateSup) {
+
+        if (dateSup.isEmpty() || dateInf.isEmpty() || nom.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        List<PathEntity> entities = pathRepository
+                .findPathByDateAndName(nom, dateInf, dateSup);
+
+        return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
 
 }
