@@ -106,8 +106,10 @@ public class PathController {
         if (dateSup.isEmpty() || dateInf.isEmpty() || nom.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        long dateMin = Long.parseLong(dateInf);
+        long dateMax = Long.parseLong(dateSup);
         List<PathEntity> entities = pathRepository
-                .findPathByDateAndName(nom, dateInf, dateSup);
+                .findPathByDateAndName(nom, dateMin, dateMax);
 
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
