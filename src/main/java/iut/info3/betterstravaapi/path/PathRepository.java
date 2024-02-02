@@ -2,6 +2,7 @@ package iut.info3.betterstravaapi.path;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -42,4 +43,10 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
     PathEntity findTopByIdUtilisateurAndArchiveOrderByDateDesc(
             int id, boolean archive);
 
+    @Query("{'nom': ?0, 'date': {$gte: ?1, $lte: ?2}}")
+    List<PathEntity> findPathByDateAndName(String name,
+                                           String dateInf,
+                                           String dateSup);
+    @Query("{'nom': ?0}")
+    List<PathEntity> findPathByName(String name);
 }
