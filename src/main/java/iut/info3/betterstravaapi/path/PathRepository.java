@@ -69,4 +69,5 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
     PathEntity findByIdAndArchiveFalse(ObjectId id);
 
 
+
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,18 +46,24 @@ public class PathController {
     @Autowired
     private final UserService userService;
 
+
+
+
+
+
     /**
      * Controlleur permettant d'autowired le pathRepository.
      * @param pathRepo pathRepository a Autowired.
      * @param userServ userService a Autowired.
      * @param pathServ pathService a Autowired.
      */
-    public PathController(final PathService pathServ,
-                          final PathRepository pathRepo,
-                          final UserService userServ) {
-        this.pathService = pathServ;
+
+    public PathController(final PathRepository pathRepo,
+                          final UserService userServ,
+                          final PathService pathService) {
         this.pathRepository = pathRepo;
         this.userService = userServ;
+        this.pathService = pathService;
     }
 
 
@@ -286,5 +293,7 @@ public class PathController {
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
+
+
 
 }
