@@ -45,8 +45,8 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
 
     @Query("{'nom': ?0, 'date': {$gte: ?1, $lte: ?2}}")
     List<PathEntity> findPathByDateAndName(String name,
-                                           String dateInf,
-                                           String dateSup);
+                                           long dateInf,
+                                           long dateSup);
     @Query("{'nom': ?0}")
     List<PathEntity> findPathByName(String name);
 }
