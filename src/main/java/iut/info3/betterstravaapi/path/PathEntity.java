@@ -91,7 +91,7 @@ public class PathEntity {
      * @param idUser id de l'utilisateur a qui apartiens le parcours
      * @param name name du parcours choisit par l'utilisateur
      * @param descri descri du parcours donnee par l'utilisateur
-     * @param point liste des point de coordonnees composant le parcour
+     * @param point liste des point de coordonnees composant le parcours
      * @param interets listes des point d'interet du parcours
      */
     public PathEntity(final Integer idUser, final String name,
@@ -111,15 +111,15 @@ public class PathEntity {
      * @return l'id
      */
     public ObjectId getId() {
-        return new ObjectId(this.id.toByteArray());
+        return this.id == null ? null : new ObjectId(this.id.toByteArray());
     }
 
     /**
      * setter de l'id du parcours.
-     * @param idParcour id du parcours
+     * @param idParcours id du parcours
      */
-    public void setId(final ObjectId idParcour) {
-        this.id = new ObjectId(idParcour.toByteArray());
+    public void setId(final ObjectId idParcours) {
+        this.id = new ObjectId(idParcours.toByteArray());
     }
 
     /**

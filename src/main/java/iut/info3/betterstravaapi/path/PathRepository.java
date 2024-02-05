@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * Repository des parcours.
+ */
 @Repository
 public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
 

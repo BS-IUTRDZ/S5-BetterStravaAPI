@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * Service des parcours.
+ */
 @Service
 public class PathService {
 
@@ -18,12 +21,12 @@ public class PathService {
     /**
      * nombre d'heure en une journée.
      */
-    private final static int NB_HEURE_JOURNEE = 24;
+    private static final int NB_HEURE_JOURNEE = 24;
 
     /**
      * nombre de jours en arriere pour recuperer les parcours.
      */
-    private final static int NB_JOURS_MOIS = -30;
+    private static final int NB_JOURS_MOIS = -30;
 
     /**
      * recuperation des parcours de l'utilisateur.

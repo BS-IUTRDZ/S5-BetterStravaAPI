@@ -1,5 +1,8 @@
 package iut.info3.betterstravaapi.path;
 
+/**
+ * Class des coordonnées des points.
+ */
 public class Coordonnees {
 
     /**

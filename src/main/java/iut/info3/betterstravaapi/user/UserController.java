@@ -3,7 +3,6 @@ package iut.info3.betterstravaapi.user;
 import iut.info3.betterstravaapi.path.PathEntity;
 import iut.info3.betterstravaapi.path.PathService;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bson.json.JsonObject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -158,7 +157,7 @@ public class UserController {
     ) {
 
         String token = "";
-        HashMap<String,HashMap> reponse = new HashMap<>();
+        HashMap<String, HashMap> reponse = new HashMap<>();
 
         try {
             JSONObject jsonObject = new JSONObject(jsonToken.toString());
@@ -168,7 +167,7 @@ public class UserController {
         } catch (Exception e) {
             Map<String, String> response = new HashMap<String, String>();
             response.put("erreur", e.getMessage());
-            return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         UserEntity user = userService.findUserByToken(token);
@@ -192,12 +191,12 @@ public class UserController {
         HashMap<String, String> statsGlobal = userService.calculerPerformance(
                 pathService.recupPerformancesGlobal(user.getId()));
 
-        reponse.put("user",infoUser);
-        reponse.put("parcours",infoParcours);
-        reponse.put("30jours",stats30Jours);
-        reponse.put("global",statsGlobal);
+        reponse.put("user", infoUser);
+        reponse.put("parcours", infoParcours);
+        reponse.put("30jours", stats30Jours);
+        reponse.put("global", statsGlobal);
 
-        return new ResponseEntity<>(reponse,HttpStatus.OK);
+        return new ResponseEntity<>(reponse, HttpStatus.OK);
 
     }
 
