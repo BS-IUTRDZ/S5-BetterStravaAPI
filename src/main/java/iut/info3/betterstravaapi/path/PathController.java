@@ -1,7 +1,9 @@
 package iut.info3.betterstravaapi.path;
 
+import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.apache.catalina.User;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -132,6 +134,45 @@ public class PathController {
         List<PathEntity> entities = pathService
                 .findParcourByDateAndName(nom, dateInf, dateSup, userId);
         return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
+
+
+    /**
+     * Route de récupération du dernier parcours au format Json.
+     * @param jsonToken token d'identification de l'utilisateur
+     * @return un code de retour :
+     * <ul>
+     *     <li> 200 si les champs sont correctement renseigné</li>
+     *     <li> 401 si token de l'utilisateur inconnu </li>
+     *     <li> 401 si token en parametre incorrect </li>
+     * </ul>
+     */
+    @PostMapping("/lastPath")
+    public ResponseEntity<Object> getLastPath(
+            @RequestBody final String jsonToken) {
+
+        String token = "";
+        JSONObject response = new JSONObject();
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonToken);
+            // Récupérer la valeur associée à la clé "token"
+            token = jsonObject.getString("token");
+        } catch (Exception e) {
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(), HttpStatus.UNAUTHORIZED);
+        }
+
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur", "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(), HttpStatus.UNAUTHORIZED);
+        }
+
+        PathEntity dernierParcours =
+                pathService.recupDernierParcour(user.getId());
+        JSONObject pathJson = pathService.getPathInfos(dernierParcours);
+        return new ResponseEntity<>(pathJson.toMap(), HttpStatus.OK);
     }
 
 }
