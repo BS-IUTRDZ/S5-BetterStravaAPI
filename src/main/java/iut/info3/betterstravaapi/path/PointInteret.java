@@ -1,5 +1,8 @@
 package iut.info3.betterstravaapi.path;
 
+/**
+ * Classe des points d'intérêts.
+ */
 public class PointInteret {
 
     /**
@@ -34,7 +37,8 @@ public class PointInteret {
                         final Coordonnees coord) {
         this.nom = name;
         this.description = descri;
-        this.coordonnees = coord;
+        this.coordonnees = new Coordonnees(coord.getLatitude(),
+                coord.getLongitude());
     }
 
     /**
@@ -74,7 +78,8 @@ public class PointInteret {
      * @return les coordonnees du point d'interet
      */
     public Coordonnees getCoordonnees() {
-        return coordonnees;
+        return new Coordonnees(coordonnees.getLatitude(),
+                coordonnees.getLongitude());
     }
 
     /**
@@ -82,7 +87,8 @@ public class PointInteret {
      * @param coord coordonnees a set
      */
     public void setCoordonnees(final Coordonnees coord) {
-        this.coordonnees = coord;
+        this.coordonnees = new Coordonnees(coord.getLatitude(),
+                coord.getLongitude());
     }
 
 }

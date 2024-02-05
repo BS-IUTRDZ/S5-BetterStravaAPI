@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import iut.info3.betterstravaapi.EnvGetter;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -56,16 +57,19 @@ public class PathControllerTest {
 
         pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
 
+        PathEntity pathEntity = new PathEntity(
+                2,
+                "reussi",
+                "path success",
+                points,
+                pointsInteret
+        );
+
+        pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
-                        .content(asJsonString(new PathEntity(
-                                2,
-                                "reussi",
-                                "path success",
-                                points,
-                                pointsInteret
-                        )))
+                        .content(asJsonString(pathEntity))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
@@ -83,16 +87,19 @@ public class PathControllerTest {
 
         pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
 
+        PathEntity pathEntity = new PathEntity(
+                2,
+                "reussi",
+                "path success",
+                points,
+                pointsInteret
+        );
+
+        pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
-                        .content(asJsonString(new PathEntity(
-                                2,
-                                "reussi",
-                                "path success",
-                                points,
-                                pointsInteret
-                        )))
+                        .content(asJsonString(pathEntity))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());

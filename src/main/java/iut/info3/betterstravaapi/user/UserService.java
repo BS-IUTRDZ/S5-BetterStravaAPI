@@ -14,7 +14,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service associé à la gestion des utilisateurs.
@@ -123,10 +122,10 @@ public class UserService {
      * @param parcours la liste des parcours a analyser
      * @return une HashMap correpondant au json des statistique
      */
-    public Map<String, String> calculerPerformance(
+    public HashMap<String, String> calculerPerformance(
             final List<PathEntity> parcours) {
 
-        Map<String, String> map = new HashMap<>();
+        HashMap<String, String> map = new HashMap<>();
 
         float temps = 0;
         float distance = 0;

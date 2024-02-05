@@ -3,7 +3,6 @@ package iut.info3.betterstravaapi.user;
 import iut.info3.betterstravaapi.path.PathEntity;
 import iut.info3.betterstravaapi.path.PathService;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.bson.json.JsonObject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,9 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -155,12 +152,12 @@ public class UserController {
      * @return un tableau de json
      */
     @PostMapping (path = "/getInfo")
-    public List<ResponseEntity<Object>> recupInfo(
-            @RequestBody final JsonObject jsonToken
+    public ResponseEntity<Object> recupInfo(
+            @RequestBody final String jsonToken
     ) {
 
         String token = "";
-        List<ResponseEntity<Object>> listeReponse = new ArrayList<>();
+        HashMap<String, HashMap> reponse = new HashMap<>();
 
         try {
             JSONObject jsonObject = new JSONObject(jsonToken.toString());
@@ -170,38 +167,36 @@ public class UserController {
         } catch (Exception e) {
             Map<String, String> response = new HashMap<String, String>();
             response.put("erreur", e.getMessage());
-            listeReponse.add(new ResponseEntity<>(response,
-                    HttpStatus.UNAUTHORIZED));
-            return listeReponse;
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         UserEntity user = userService.findUserByToken(token);
-        Map<String, String> infoUser = new HashMap<>();
+        HashMap<String, String> infoUser = new HashMap<>();
         infoUser.put("nom", user.getNom());
         infoUser.put("prenom", user.getPrenom());
         infoUser.put("email", user.getEmail());
 
-        PathEntity dernierParcour =
+        PathEntity dernierParcours =
                 pathService.recupDernierParcour(user.getId());
 
-        Map<String, String> dernier = new HashMap<>();
+        HashMap<String, String> infoParcours = new HashMap<>();
 
-        dernier.put("nom", dernierParcour.getNom());
-        dernier.put("description", dernierParcour.getDescription());
+        infoParcours.put("nom", dernierParcours.getNom());
+        infoParcours.put("description", dernierParcours.getDescription());
 
 
-        Map<String, String> dernier30Jours = userService.calculerPerformance(
+        HashMap<String, String> stats30Jours = userService.calculerPerformance(
                 pathService.recupPerformances30Jours(user.getId()));
 
-        Map<String, String> global = userService.calculerPerformance(
+        HashMap<String, String> statsGlobal = userService.calculerPerformance(
                 pathService.recupPerformancesGlobal(user.getId()));
 
-        listeReponse.add(new ResponseEntity<>(infoUser, HttpStatus.OK));
-        listeReponse.add(new ResponseEntity<>(dernier, HttpStatus.OK));
-        listeReponse.add(new ResponseEntity<>(dernier30Jours, HttpStatus.OK));
-        listeReponse.add(new ResponseEntity<>(global, HttpStatus.OK));
+        reponse.put("user", infoUser);
+        reponse.put("parcours", infoParcours);
+        reponse.put("30jours", stats30Jours);
+        reponse.put("global", statsGlobal);
 
-        return listeReponse;
+        return new ResponseEntity<>(reponse, HttpStatus.OK);
 
     }
 
