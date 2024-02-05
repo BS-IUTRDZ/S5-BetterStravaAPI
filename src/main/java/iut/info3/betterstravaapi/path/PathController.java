@@ -39,7 +39,6 @@ public class PathController {
     @Autowired
     private final PathRepository pathRepository;
 
-
     /**
      * service d'acces a la base mysql.
      */
@@ -57,7 +56,6 @@ public class PathController {
      * @param userServ userService a Autowired.
      * @param pathServ pathService a Autowired.
      */
-
     public PathController(final PathRepository pathRepo,
                           final UserService userServ,
                           final PathService pathService) {
@@ -293,6 +291,8 @@ public class PathController {
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
+
+
 
 
 
