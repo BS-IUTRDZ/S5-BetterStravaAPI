@@ -87,16 +87,16 @@ public class PathService {
      * @param path parcours à analyser
      * @return les informations du parcours au format Json
      */
-    public JSONObject getPathInfos(PathEntity path) {
+    public JSONObject getPathInfos(final PathEntity path) {
         JSONObject pathJson = new JSONObject();
 
         // Récupération des points
         JSONObject points = new JSONObject();
-        for(int i = 0; i < path.getPoints().size(); i++) {
+        for (int i = 0; i < path.getPoints().size(); i++) {
             Coordonnees c = path.getPoints().get(i);
             JSONObject coords = new JSONObject();
-            coords.put("latitude",c.getLatitude());
-            coords.put("longitude",c.getLongitude());
+            coords.put("latitude", c.getLatitude());
+            coords.put("longitude", c.getLongitude());
 
             points.put("point" + i, coords);
         }
@@ -108,7 +108,5 @@ public class PathService {
         //TODO points intérets
         return pathJson;
     }
-
-
 
 }

@@ -160,13 +160,15 @@ public class PathController {
             token = jsonObject.getString("token");
         } catch (Exception e) {
             response.put("erreur", e.getMessage());
-            return new ResponseEntity<>(response.toMap(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
         }
 
         UserEntity user = userService.findUserByToken(token);
         if (user == null) {
             response.put("erreur", "Aucun utilisateur correspond à ce token");
-            return new ResponseEntity<>(response.toMap(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
         }
 
         PathEntity dernierParcours =
