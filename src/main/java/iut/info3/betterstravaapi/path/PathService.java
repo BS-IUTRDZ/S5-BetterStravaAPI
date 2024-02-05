@@ -18,12 +18,12 @@ public class PathService {
     /**
      * nombre d'heure en une journée.
      */
-    private final int nbHeureJournee = 24;
+    private final static int NB_HEURE_JOURNEE = 24;
 
     /**
      * nombre de jours en arriere pour recuperer les parcours.
      */
-    private final int nbJourMois = -30;
+    private final static int NB_JOURS_MOIS = -30;
 
     /**
      * recuperation des parcours de l'utilisateur.
@@ -33,7 +33,7 @@ public class PathService {
      */
     public List<PathEntity> recupPerformances30Jours(final int idUser) {
         Calendar calendrier = Calendar.getInstance();
-        calendrier.add(Calendar.HOUR, nbJourMois * nbHeureJournee);
+        calendrier.add(Calendar.HOUR, NB_JOURS_MOIS * NB_HEURE_JOURNEE);
         return  pathRepository.findPathByIdUtilisateurAndArchiveAndDateAfter(
                 idUser, false, calendrier.getTime().getTime());
     }

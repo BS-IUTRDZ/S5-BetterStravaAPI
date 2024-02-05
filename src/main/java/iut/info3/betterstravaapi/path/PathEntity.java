@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class PathEntity {
     /**
      * Id de l'utilisateur.
      */
-    private Integer idUtilisateur;
+    private int idUtilisateur;
 
     /**
      * Nom du parcour.
@@ -100,8 +101,8 @@ public class PathEntity {
         this.idUtilisateur = idUser;
         this.nom = name;
         this.description = descri;
-        this.points = point;
-        this.pointsInterets = interets;
+        this.points = new ArrayList<>(point);
+        this.pointsInterets = new ArrayList<>(interets);
         this.archive = false;
     }
 
@@ -110,7 +111,7 @@ public class PathEntity {
      * @return l'id
      */
     public ObjectId getId() {
-        return id;
+        return new ObjectId(this.id.toByteArray());
     }
 
     /**
@@ -118,14 +119,14 @@ public class PathEntity {
      * @param idParcour id du parcours
      */
     public void setId(final ObjectId idParcour) {
-        this.id = idParcour;
+        this.id = new ObjectId(idParcour.toByteArray());
     }
 
     /**
      * getter de l'id de l'utilisateur du Parcour.
      * @return l'id de l'utilisateur du parcours
      */
-    public Integer getIdUserParcour() {
+    public int getIdUserParcour() {
         return idUtilisateur;
     }
 
@@ -174,7 +175,7 @@ public class PathEntity {
      * @return la liste des point
      */
     public List<Coordonnees> getPoints() {
-        return points;
+        return new ArrayList<>(points);
     }
 
     /**
@@ -182,7 +183,7 @@ public class PathEntity {
      * @param point point composant le parcours
      */
     public void setPoints(final List<Coordonnees> point) {
-        this.points = point;
+        this.points = new ArrayList<>(point);
     }
 
     /**
@@ -190,7 +191,7 @@ public class PathEntity {
      * @return la listes des points d'interets
      */
     public List<PointInteret> getPointsInterets() {
-        return pointsInterets;
+        return new ArrayList<>(pointsInterets);
     }
 
     /**
@@ -198,7 +199,7 @@ public class PathEntity {
      * @param interets liste des points d'interets
      */
     public void setPointsInterets(final List<PointInteret> interets) {
-        this.pointsInterets = interets;
+        this.pointsInterets = new ArrayList<>(interets);
     }
 
     /**

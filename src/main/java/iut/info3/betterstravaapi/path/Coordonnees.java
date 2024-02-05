@@ -43,19 +43,4 @@ public class Coordonnees {
         return longitude;
     }
 
-    /**
-     * setter de la latitude.
-     * @param lati la latitude a modifier
-     */
-    public void setLatitude(final double lati) {
-        this.latitude = lati;
-    }
-
-    /**
-     * setter de la longitude.
-     * @param longi la longitude a modifier
-     */
-    public void setLongitude(final double longi) {
-        this.longitude = longi;
-    }
 }

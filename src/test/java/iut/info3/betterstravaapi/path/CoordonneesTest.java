@@ -20,18 +20,4 @@ public class CoordonneesTest {
         assertEquals("",15.2,coord.getLongitude());
     }
 
-    @Test
-    public void testSetLat() {
-        Coordonnees coord = new Coordonnees(15.5,15.2);
-        coord.setLatitude(10.2);
-        assertEquals("",10.2,coord.getLatitude());
-    }
-
-    @Test
-    public void testSetLong() {
-        Coordonnees coord = new Coordonnees(15.5,15.2);
-        coord.setLongitude(48.5);
-        assertEquals("",48.5,coord.getLongitude());
-    }
-
 }
