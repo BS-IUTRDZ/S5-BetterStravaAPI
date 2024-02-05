@@ -1,6 +1,7 @@
 package iut.info3.betterstravaapi.path;
 
 import iut.info3.betterstravaapi.user.UserService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ public class PathController {
      */
     @Autowired
     private final PathRepository pathRepository;
+
 
     /**
      * service d'acces a la base mysql.
@@ -97,20 +99,31 @@ public class PathController {
     //TODO methode d'ajout d'un point de coordonnees dans la
     // list des points d'un parcours grace a son id
 
+    /**
+     * Route de recherche d'un parcour.
+     * @param nom nom du parcour rechercher
+     * @param dateInf TODO Définir le format
+     * @param dateSup TODO Définir le format
+     * @param token token d'identification de l'utilisateur
+     * @return un code de retour :
+     * <ul>
+     *     <li> 200 si les champs sont correctement renseigné</li>
+     *     <li> 400 sinon </li>
+     * </ul>
+     */
     @GetMapping("/findPath")
     public ResponseEntity<List<PathEntity>> findPath(
-            @RequestParam String nom,
-            @RequestParam String dateInf,
-            @RequestParam String dateSup) {
+            @RequestParam("nom") String nom,
+            @RequestParam("dateInf") String dateInf,
+            @RequestParam("dateSup") String dateSup,
+            @RequestHeader("token") String token) {
 
         if (dateSup.isEmpty() || dateInf.isEmpty() || nom.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        long dateMin = Long.parseLong(dateInf);
-        long dateMax = Long.parseLong(dateSup);
-        List<PathEntity> entities = pathRepository
-                .findPathByDateAndName(nom, dateMin, dateMax);
-
+        int userId = userService.findUserByToken(token).getId();
+        List<PathEntity> entities = pathService
+                .findParcourByDateAndName(nom, dateInf, dateSup, userId);
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 

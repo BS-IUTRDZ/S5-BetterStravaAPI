@@ -26,7 +26,7 @@ class PathRepositoryTest {
         long dateMax = 1676023910010L;
 
         // When la fonction du repository est appeler avec ce paramètre
-        List<PathEntity> entities = pathRepository.findPathByDateAndName(nom, dateMin, dateMax);
+        List<PathEntity> entities = pathRepository.findEntitiesByDateAndName(dateMin, dateMax, nom, 1,false);
         // Then on obtient aucun parcour
         assertEquals(0,entities.size());
 
@@ -42,7 +42,7 @@ class PathRepositoryTest {
         long dateMax = 1676023910010L;
 
         // When la fonction du repository est appeler avec ce paramètre
-        List<PathEntity> entities = pathRepository.findPathByDateAndName(nom, dateMin, dateMax);
+        List<PathEntity> entities = pathRepository.findEntitiesByDateAndName(dateMin, dateMax, nom, 1, false);
         // Then on obtient le parcours rechercher
         assertEquals(1,entities.size());
         PathEntity entity = entities.get(0);
@@ -51,18 +51,5 @@ class PathRepositoryTest {
 
     }
 
-    @Test
-    void findPathByName() {
-        // Given Une requête d'une application android avec un nom
-        // correspondant a un parcour
-        String nom = "vieux";
 
-        // When la fonction du repository est appeler avec ce paramètre
-        List<PathEntity> entities = pathRepository.findPathByName(nom);
-        // Then on obtient le parcours rechercher
-        assertEquals(1,entities.size());
-        PathEntity entity = entities.get(0);
-        assertEquals(1676023810010L, entity.getDate());
-        assertEquals("vieux", entity.getNom());
-    }
 }

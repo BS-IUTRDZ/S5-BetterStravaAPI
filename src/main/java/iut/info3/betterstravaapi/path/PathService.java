@@ -57,4 +57,27 @@ public class PathService {
                 idUser, false);
     }
 
+    /**
+     * @param nom chaine permettant de faire le filtre sur le champ nom
+     * @param dateInf date permettant de ne récupérer que les
+     *                parcours avec une date inférieure
+     * @param dateSup date permettant de ne récupérer que les
+     *                parcours avec une date supérieure
+     * @param id id unique de l'utilisateur en base de données
+     * @return la liste des parcours de l'utilisateur avec l'id 'id'
+     *         respectant tout les filtres et n'étant pas archiver
+     */
+    public List<PathEntity> findParcourByDateAndName(final String nom,
+                                                     final String dateInf,
+                                                     final String dateSup,
+                                                     final int id) {
+        long dateMin = Long.parseLong(dateInf);
+        long dateMax = Long.parseLong(dateSup);
+        return pathRepository
+                .findEntitiesByDateAndName(
+                        dateMin, dateMax, nom, id,false);
+    }
+
+
+
 }

@@ -30,6 +30,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      */
     List<PathEntity> findPathByIdUtilisateurAndArchive(int id, boolean archive);
 
+
     /**
      * appel a la base de donnees pour trouver le dernier
      * parcours d'un utilisateur.
@@ -40,10 +41,20 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
     PathEntity findTopByIdUtilisateurAndArchiveOrderByDateDesc(
             int id, boolean archive);
 
-    @Query("{'nom': ?0, 'date': {$gte: ?1, $lte: ?2}}")
-    List<PathEntity> findPathByDateAndName(String name,
-                                           long dateInf,
-                                           long dateSup);
-    @Query("{'nom': ?0}")
-    List<PathEntity> findPathByName(String name);
+    /**
+     *
+     * @param dateInf date permettant de ne récupérer que les
+     *                parcours avec une date inférieure
+     * @param dateSup date permettant de ne récupérer que les
+     *                parcours avec une date supérieure
+     * @param nom chaine permettant de faire le filtre sur le champ nom
+     * @param id id unique de l'utilisateur en base de données
+     * @param archive filtre sur le champ archive permettant
+     * @return les parcours respectant tout les filtres
+     */
+    @Query("{'date':  {$gte: ?0, $lte: ?1}, 'nom': ?2, 'idUtilisateur': ?3, 'archive': ?4}")
+    List<PathEntity> findEntitiesByDateAndName
+            (long dateInf, long dateSup, String nom, int id, boolean archive);
+
+
 }
