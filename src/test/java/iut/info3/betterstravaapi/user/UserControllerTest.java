@@ -105,7 +105,7 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testgetInfo() throws Exception {
+    public void testgetInfoValid() throws Exception {
 
         UserEntity user = new UserEntity(
                 "test@mail.com",
@@ -121,10 +121,21 @@ public class UserControllerTest {
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/users/getInfo")
-                        .content(asJsonString("{token:biche}"))
+                        .content("{token:biche}")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testgetInfoInvalid() throws Exception {
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/users/getInfo")
+                        .content(asJsonString("{token:biche}"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
     }
 
 
