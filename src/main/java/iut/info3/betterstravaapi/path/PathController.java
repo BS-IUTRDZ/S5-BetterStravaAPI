@@ -21,7 +21,6 @@ public class PathController {
     @Autowired
     private final PathRepository pathRepository;
 
-
     /**
      * service d'acces a la base mysql.
      */
@@ -124,6 +123,16 @@ public class PathController {
         int userId = userService.findUserByToken(token).getId();
         List<PathEntity> entities = pathService
                 .findParcourByDateAndName(nom, dateInf, dateSup, userId);
+        return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/findDefaultPaths")
+    public ResponseEntity<List<PathEntity>> findDefaultPaths(@RequestHeader("token") final String token) {
+        int userId = userService.findUserByToken(token).getId();
+
+        List<PathEntity> entities = pathRepository
+                .findPathByIdUtilisateurAndArchive(userId,false);
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 

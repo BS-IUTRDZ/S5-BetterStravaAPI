@@ -46,7 +46,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
      * @param token le token donnee
      * @return l'utilisateur trouvé avec ce token
      */
-    @Query (value = "SELECT * from utilisateurs WHERE token = ?1",
+    @Query (value = "SELECT * from utilisateurs WHERE jwt_token = ?1",
             nativeQuery = true)
     UserEntity findByToken(String token);
 
