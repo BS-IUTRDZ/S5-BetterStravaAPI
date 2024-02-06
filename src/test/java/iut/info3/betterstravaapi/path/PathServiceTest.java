@@ -19,12 +19,12 @@ public class PathServiceTest {
 
     @Test
     public void testRecup30Jour(){
-        assertEquals(1,pathService.recupPerformances30Jours(1).size());
+        assertEquals(1,pathService.recupParcours30Jours(1).size());
     }
 
     @Test
     public void testRecupGlobal(){
-        assertEquals(2,pathService.recupPerformancesGlobal(1).size());
+        assertEquals(2,pathService.recupParcoursAll(1).size());
     }
 
 }

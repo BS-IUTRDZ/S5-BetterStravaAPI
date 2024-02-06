@@ -1,5 +1,6 @@
 package iut.info3.betterstravaapi.path;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class PathService {
      * @param idUser id de l'utilisateur
      * @return la liste des parcours des 30 derniers jours.
      */
-    public List<PathEntity> recupPerformances30Jours(final int idUser) {
+    public List<PathEntity> recupParcours30Jours(final int idUser) {
         Calendar calendrier = Calendar.getInstance();
         calendrier.add(Calendar.HOUR, NB_JOURS_MOIS * NB_HEURE_JOURNEE);
         return  pathRepository.findPathByIdUtilisateurAndArchiveAndDateAfter(
@@ -46,7 +47,7 @@ public class PathService {
      * @param idUser id de l'utilisateur
      * @return la liste des parcours de l'utilisateur
      */
-    public List<PathEntity> recupPerformancesGlobal(final int idUser) {
+    public List<PathEntity> recupParcoursAll(final int idUser) {
         return  pathRepository.findPathByIdUtilisateurAndArchive(idUser, false);
     }
 
@@ -56,8 +57,12 @@ public class PathService {
      * @return le PathEntity du parcours du dernier utilisateurs.
      */
     public PathEntity recupDernierParcour(final int idUser) {
-        return pathRepository.findTopByIdUtilisateurAndArchiveOrderByDateDesc(
+        return pathRepository.findTopByIdUtilisateurAndArchiveOrderByDateAsc(
                 idUser, false);
+    }
+
+    public PathEntity recupParcoursParId(final ObjectId id) {
+        return pathRepository.findByIdAndArchiveFalse(id);
     }
 
 }

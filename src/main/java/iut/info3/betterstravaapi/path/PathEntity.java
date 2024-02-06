@@ -1,6 +1,7 @@
 package iut.info3.betterstravaapi.path;
 
 
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,7 +27,7 @@ import java.util.List;
 public class PathEntity {
 
     /**
-     * Id du parcour.
+     * Id du parcours.
      */
     @Id
     private ObjectId id;
@@ -280,6 +281,11 @@ public class PathEntity {
      */
     public void setDate(final long dateLong) {
         this.date = dateLong;
+    }
+
+    public PathEntity addPoint(final Coordonnees coord) {
+        this.points.add(coord);
+        return this;
     }
 
     /**
