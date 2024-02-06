@@ -41,7 +41,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @param archive false pour recuperer les parcours non suprimé
      * @return la liste des parcours trouver
      */
-    PathEntity findTopByIdUtilisateurAndArchiveOrderByDateDesc(
+    PathEntity findTopByIdUtilisateurAndArchiveOrderByDateAsc(
             int id, boolean archive);
 
     /**
@@ -60,6 +60,8 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
     List<PathEntity> findEntitiesByDateAndName(long dateInf, long dateSup,
                                                String nom, int id,
                                                boolean archive);
+
+    PathEntity findByIdAndArchiveFalse(ObjectId id);
 
 
 }

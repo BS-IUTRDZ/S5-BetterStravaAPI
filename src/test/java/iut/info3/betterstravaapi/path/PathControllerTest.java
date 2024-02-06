@@ -53,7 +53,6 @@ public class PathControllerTest {
     @BeforeEach
     void setUp() {
         ArrayList<Coordonnees> points = new ArrayList<>();
-
         points.add(new Coordonnees(48.25,12.25));
         points.add(new Coordonnees(43.85,17.855));
 
@@ -83,6 +82,7 @@ public class PathControllerTest {
 
         when(userService.getTokenBd(2)).thenReturn("token");
         when(userService.verifierDateExpiration("token")).thenReturn(true);
+        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")

@@ -3,6 +3,7 @@ package iut.info3.betterstravaapi.path;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,12 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/path")
 public class PathController {
+
+    /**
+     * service d'acces a la base nosql.
+     */
+    @Autowired
+    private final PathService pathService;
 
     /**
      * repository associer a la base noSQL.
@@ -40,27 +48,16 @@ public class PathController {
     private final UserService userService;
 
     /**
-     * service d'acces a la base noSQL.
-     */
-    @Autowired
-    private final PathService pathService;
-
-
-
-
-    /**
      * Controlleur permettant d'autowired le pathRepository.
-     *
-     * @param pathRepo    pathRepository a Autowired.
-     * @param userServ    userService a Autowired.
-     * @param pathServ pathService a Autowired.
+     * @param pathRepo pathRepository a Autowired.
+     * @param userServ userService a Autowired.
+     * @param pathService pathService a Autowired.
      */
-    public PathController(final PathRepository pathRepo,
-                          final UserService userServ,
-                          final PathService pathServ) {
+    public PathController(PathService pathService, final PathRepository pathRepo,
+                          final UserService userServ) {
+        this.pathService = pathService;
         this.pathRepository = pathRepo;
         this.userService = userServ;
-        this.pathService = pathServ;
     }
 
 
@@ -76,13 +73,20 @@ public class PathController {
      */
     @PostMapping("/createPath")
     public ResponseEntity<Object> createPath(
-            @RequestBody final PathEntity pathBody) {
+            @RequestBody final String pathBody) {//TODO String to PathEntity a faire
 
-        Integer idUser = pathBody.getIdUserParcour();
-        String description = pathBody.getDescription();
-        String nom = pathBody.getNom();
-        List<Coordonnees> points = pathBody.getPoints();
-        List<PointInteret> pointInteret = pathBody.getPointsInterets();
+        System.out.println(pathBody);
+        JSONObject object = new JSONObject(pathBody);
+        Integer idUser = object.getInt("idUtilisateur");
+        String description = object.getString("description");
+        String nom = object.getString("nom");
+        List<Coordonnees> points = new ArrayList<>();
+        JSONArray array = object.optJSONArray("points");
+        points.add(new Coordonnees(array.getDouble(0), array.getDouble(1)));
+
+        List<PointInteret> pointInteret = new ArrayList<>();
+        array = object.optJSONArray("pointsInterets");
+        pointInteret.add(new PointInteret("TODO", "TODO", new Coordonnees(array.getDouble(0), array.getDouble(1))));
 
         Map<String, String> responseBody = new HashMap<>();
 
@@ -98,7 +102,9 @@ public class PathController {
             PathEntity path = new PathEntity(idUser, nom,
                     description, points, pointInteret);
             pathRepository.save(path);
+            path = pathService.recupDernierParcour(idUser);
             responseBody.put("message", "parcours correctement cree");
+            responseBody.put("id", path.getId().toString());
             return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
 
         } catch (Exception e) {
@@ -111,8 +117,51 @@ public class PathController {
 
     }
 
-    //TODO methode d'ajout d'un point de coordonnees dans la
-    // list des points d'un parcours grace a son id
+    /**
+     * TODO faire la javadoc
+     */
+    @PostMapping("/addPoint")
+    public ResponseEntity<Object> addPoint(
+            @RequestBody final String pointEtId) {
+
+        System.out.println("addpoint "+ pointEtId);
+
+        String id = "";
+        double longitude;
+        double latitude;
+
+        Map<String, String> responseBody = new HashMap<>();
+
+        try {
+            JSONObject jsonObject = new JSONObject(pointEtId);
+
+            id = jsonObject.getString("id");
+            longitude = jsonObject.getDouble("longitude");
+            latitude = jsonObject.getDouble("latitude");
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<String, String>();
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        }
+
+        PathEntity parcoursVise = pathService.recupParcoursParId(new ObjectId(id));
+
+        Coordonnees aAjouter = new Coordonnees(latitude,longitude);
+
+        PathEntity parcoursComplet = parcoursVise.addPoint(aAjouter);
+        pathRepository.save(parcoursComplet);
+
+        try {
+            responseBody.put("message", "point ajouté");
+            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            responseBody.put("message", "erreur d'ajout du point'");
+            responseBody.put("erreur", e.getMessage());
+            return new ResponseEntity<>(responseBody,
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
     /**
      * Route de recherche d'un parcour.

@@ -176,10 +176,10 @@ public class UserController {
         infoUser.put("email", user.getEmail());
 
         HashMap<String, String> stats30Jours = userService.calculerPerformance(
-                pathService.recupPerformances30Jours(user.getId()));
+                pathService.recupParcours30Jours(user.getId()));
 
         HashMap<String, String> statsGlobal = userService.calculerPerformance(
-                pathService.recupPerformancesGlobal(user.getId()));
+                pathService.recupParcoursAll(user.getId()));
 
         reponse.put("user", infoUser);
         reponse.put("30jours", stats30Jours);
