@@ -176,15 +176,6 @@ public class UserController {
         infoUser.put("prenom", user.getPrenom());
         infoUser.put("email", user.getEmail());
 
-        PathEntity dernierParcours =
-                pathService.recupDernierParcour(user.getId());
-
-        HashMap<String, String> infoParcours = new HashMap<>();
-
-        infoParcours.put("nom", dernierParcours.getNom());
-        infoParcours.put("description", dernierParcours.getDescription());
-
-
         HashMap<String, String> stats30Jours = userService.calculerPerformance(
                 pathService.recupPerformances30Jours(user.getId()));
 
@@ -192,12 +183,10 @@ public class UserController {
                 pathService.recupPerformancesGlobal(user.getId()));
 
         reponse.put("user", infoUser);
-        reponse.put("parcours", infoParcours);
         reponse.put("30jours", stats30Jours);
         reponse.put("global", statsGlobal);
 
         return new ResponseEntity<>(reponse, HttpStatus.OK);
-
     }
 
 }
