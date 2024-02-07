@@ -1,5 +1,6 @@
 package iut.info3.betterstravaapi.path;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +82,31 @@ public class PathService {
                         dateMin, dateMax, nom, id,false);
     }
 
+    /**
+     * Ecrit au format Json les informations d'un parcours.
+     * @param path parcours à analyser
+     * @return les informations du parcours au format Json
+     */
+    public JSONObject getPathInfos(final PathEntity path) {
+        JSONObject pathJson = new JSONObject();
 
+        // Récupération des points
+        JSONObject points = new JSONObject();
+        for (int i = 0; i < path.getPoints().size(); i++) {
+            Coordonnees c = path.getPoints().get(i);
+            JSONObject coords = new JSONObject();
+            coords.put("latitude", c.getLatitude());
+            coords.put("longitude", c.getLongitude());
+
+            points.put("point" + i, coords);
+        }
+
+        pathJson.put("nom", path.getNom());
+        pathJson.put("description", path.getDescription());
+        pathJson.put("points", points);
+
+        //TODO points intérets
+        return pathJson;
+    }
 
 }
