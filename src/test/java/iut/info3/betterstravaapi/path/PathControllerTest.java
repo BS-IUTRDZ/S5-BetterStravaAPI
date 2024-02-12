@@ -63,8 +63,8 @@ public class PathControllerTest {
                 2,
                 "reussi",
                 "path success",
-                points,
-                pointsInteret
+                1707732412782L,
+                points
         );
 
         pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));

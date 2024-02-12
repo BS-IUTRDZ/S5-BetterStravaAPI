@@ -58,7 +58,7 @@ public class PathService {
      * @return le PathEntity du parcours du dernier utilisateurs.
      */
     public PathEntity recupDernierParcour(final int idUser) {
-        return pathRepository.findTopByIdUtilisateurAndArchiveOrderByDateAsc(
+        return pathRepository.findTopByIdUtilisateurAndArchiveOrderByDateDesc(
                 idUser, false);
     }
 
