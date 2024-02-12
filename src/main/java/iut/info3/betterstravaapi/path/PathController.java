@@ -188,12 +188,11 @@ public class PathController {
      */
     @PostMapping("/modifyDescription")
     public ResponseEntity<Object> modifyDescription(
-            @RequestBody final String pathBody,
+            @RequestBody final PathEntity pathBody,
             @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
-        JSONObject pathBodyJson;
-        String id;
+        ObjectId id;
         String description;
 
         // Authentification de l'utilisateur
@@ -205,9 +204,8 @@ public class PathController {
         }
 
         try {
-            pathBodyJson = new JSONObject(pathBody);
-            id = pathBodyJson.getString("id");
-            description = pathBodyJson.getString("description");
+            id = pathBody.getId();
+            description = pathBody.getDescription();
         } catch (Exception e) {
             response.put("erreur", e.getMessage());
             return new ResponseEntity<>(response.toMap(),
@@ -217,7 +215,7 @@ public class PathController {
         // Récupération du parcours designé par l'id
         PathEntity path;
         try {
-            path = pathRepository.findById(new ObjectId(id)).orElse(null);
+            path = pathRepository.findById(id).orElse(null);
         } catch (Exception e) {
             path = null;
         }
