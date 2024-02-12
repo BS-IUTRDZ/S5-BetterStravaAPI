@@ -39,7 +39,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @param archive false pour recuperer les parcours non suprimé
      * @return la liste des parcours trouver
      */
-    PathEntity findTopByIdUtilisateurAndArchiveOrderByDateAsc(
+    PathEntity findTopByIdUtilisateurAndArchiveOrderByDateDesc(
             int id, boolean archive);
 
     PathEntity findByIdAndArchiveFalse(ObjectId id);

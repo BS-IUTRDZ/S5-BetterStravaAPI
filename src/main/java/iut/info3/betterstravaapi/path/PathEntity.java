@@ -93,17 +93,16 @@ public class PathEntity {
      * @param name name du parcours choisit par l'utilisateur
      * @param descri descri du parcours donnee par l'utilisateur
      * @param point liste des point de coordonnees composant le parcours
-     * @param interets listes des point d'interet du parcours
      */
     public PathEntity(final Integer idUser, final String name,
                       final String descri,
-                      final List<Coordonnees> point,
-                      final List<PointInteret> interets) {
+                      final Long date,
+                      final List<Coordonnees> point) {
         this.idUtilisateur = idUser;
         this.nom = name;
         this.description = descri;
+        this.date = date;
         this.points = new ArrayList<>(point);
-        this.pointsInterets = new ArrayList<>(interets);
         this.archive = false;
     }
 
@@ -127,16 +126,16 @@ public class PathEntity {
      * getter de l'id de l'utilisateur du Parcour.
      * @return l'id de l'utilisateur du parcours
      */
-    public int getIdUserParcour() {
+    public int getidUtilisateur() {
         return idUtilisateur;
     }
 
     /**
      * setter de l'id de l'utilisateur.
-     * @param idUserParcour id de l'utilisateur
+     * @param idUtilisateur id de l'utilisateur
      */
-    public void setIdUserParcour(final Integer idUserParcour) {
-        this.idUtilisateur = idUserParcour;
+    public void setidUtilisateur(final Integer idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
     }
 
     /**

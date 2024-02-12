@@ -75,15 +75,12 @@ public class PathController {
         System.out.println(pathBody);
         JSONObject object = new JSONObject(pathBody);
         Integer idUser = object.getInt("idUtilisateur");
+        Long date = object.getLong("date");
         String description = object.getString("description");
         String nom = object.getString("nom");
         List<Coordonnees> points = new ArrayList<>();
         JSONArray array = object.optJSONArray("points");
         points.add(new Coordonnees(array.getDouble(0), array.getDouble(1)));
-
-        List<PointInteret> pointInteret = new ArrayList<>();
-        array = object.optJSONArray("pointsInterets");
-        pointInteret.add(new PointInteret("TODO", "TODO", new Coordonnees(array.getDouble(0), array.getDouble(1))));
 
         Map<String, String> responseBody = new HashMap<>();
 
@@ -97,7 +94,7 @@ public class PathController {
 
         try {
             PathEntity path = new PathEntity(idUser, nom,
-                    description, points, pointInteret);
+                    description, date, points);
             pathRepository.save(path);
             path = pathService.recupDernierParcour(idUser);
             responseBody.put("message", "parcours correctement cree");

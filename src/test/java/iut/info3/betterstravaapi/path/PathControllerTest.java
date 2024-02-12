@@ -57,8 +57,8 @@ public class PathControllerTest {
                 2,
                 "reussi",
                 "path success",
-                points,
-                pointsInteret
+                1707732412782L,
+                points
         );
 
         pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
@@ -84,7 +84,6 @@ public class PathControllerTest {
         when(userService.verifierDateExpiration("token")).thenReturn(false);
 
         points.add(new Coordonnees(48.25,12.25));
-        points.add(new Coordonnees(43.85,17.855));
 
         pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
 
@@ -92,8 +91,8 @@ public class PathControllerTest {
                 2,
                 "reussi",
                 "path success",
-                points,
-                pointsInteret
+                1707732412782L,
+                points
         );
 
         pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
