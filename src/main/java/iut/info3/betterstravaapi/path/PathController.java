@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
 import java.util.ArrayList;
 
+import java.text.ParseException;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,6 +171,11 @@ public class PathController {
         }
     }
 
+    //TODO methode d'ajout d'un point de coordonnees dans la
+    // list des points d'un parcours grace a son id
+
+
+
     /**
      * Route de recherche d'un parcour.
      * @param nom nom du parcour rechercher
@@ -184,11 +193,9 @@ public class PathController {
             @RequestParam("nom") final String nom,
             @RequestParam("dateInf") final String dateInf,
             @RequestParam("dateSup") final String dateSup,
-            @RequestHeader("token") final String token) {
+            @RequestHeader("token") final String token) throws ParseException {
 
-        if (dateSup.isEmpty() || dateInf.isEmpty() || nom.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+
         int userId = userService.findUserByToken(token).getId();
         List<PathEntity> entities = pathService
                 .findParcourByDateAndName(nom, dateInf, dateSup, userId);
