@@ -3,6 +3,8 @@ package iut.info3.betterstravaapi.path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -70,9 +72,11 @@ public class PathService {
     public List<PathEntity> findParcourByDateAndName(final String nom,
                                                      final String dateInf,
                                                      final String dateSup,
-                                                     final int id) {
-        long dateMin = Long.parseLong(dateInf);
-        long dateMax = Long.parseLong(dateSup);
+                                                     final int id) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        long dateMin = sdf.parse(dateInf).getTime();
+        long dateMax = sdf.parse(dateSup).getTime();
         return pathRepository
                 .findEntitiesByDateAndName(
                         dateMin, dateMax, nom, id,false);

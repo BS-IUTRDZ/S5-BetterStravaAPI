@@ -3,6 +3,7 @@ package iut.info3.betterstravaapi.path;
 
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -38,6 +39,7 @@ public class PathEntity {
     /**
      * Nom du parcour.
      */
+    @Indexed
     private String nom;
 
     /**
