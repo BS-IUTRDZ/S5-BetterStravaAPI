@@ -2,7 +2,6 @@ package iut.info3.betterstravaapi.path;
 
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
-import org.apache.catalina.User;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +39,10 @@ public class PathController {
     @Autowired
     private final UserService userService;
 
+    /**
+     * service d'acces a la base noSQL.
+     */
+    @Autowired
     private final PathService pathService;
 
 
@@ -48,14 +53,14 @@ public class PathController {
      *
      * @param pathRepo    pathRepository a Autowired.
      * @param userServ    userService a Autowired.
-     * @param pathService
+     * @param pathServ pathService a Autowired.
      */
     public PathController(final PathRepository pathRepo,
                           final UserService userServ,
-                          final PathService pathService) {
+                          final PathService pathServ) {
         this.pathRepository = pathRepo;
         this.userService = userServ;
-        this.pathService = pathService;
+        this.pathService = pathServ;
     }
 
 
@@ -123,10 +128,10 @@ public class PathController {
      */
     @GetMapping("/findPath")
     public ResponseEntity<List<PathEntity>> findPath(
-            @RequestParam("nom") String nom,
-            @RequestParam("dateInf") String dateInf,
-            @RequestParam("dateSup") String dateSup,
-            @RequestHeader("token") String token) {
+            @RequestParam("nom") final String nom,
+            @RequestParam("dateInf") final String dateInf,
+            @RequestParam("dateSup") final String dateSup,
+            @RequestHeader("token") final String token) {
 
         if (dateSup.isEmpty() || dateInf.isEmpty() || nom.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -150,7 +155,7 @@ public class PathController {
      */
     @PostMapping("/lastPath")
     public ResponseEntity<Object> getLastPath(
-            @RequestHeader final String token) {
+            @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
 
@@ -169,14 +174,16 @@ public class PathController {
 
     /**
      * Route de modification de la description d'un parcours.
-     * @param pathBody body de la requête au format JSON contenant les informations permettant de modifier un parcour.
+     * @param pathBody body de la requête au format JSON contenant les
+     *                 informations permettant de modifier un parcour.
      * @param token token d'identification de l'utilisateur
      * @return un code de retour :
      * <ul>
      *     <li> 200 si le parcour a été modifié </li>
      *     <li> 401 si le token de l'utilisateur est inconnu / invalide </li>
      *     <li> 400 si l'id du parcours est invalide </li>
-     *     <li> 500 si une erreur interne est survenue lors de la modification </li>
+     *     <li> 500 si une erreur interne est survenue
+     *     lors de la modification </li>
      * </ul>
      */
     @PostMapping("/modifyDescription")
