@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -168,7 +169,7 @@ public class PathControllerTest {
     public void testModifyDescriptionSuccess() throws Exception {
         JSONObject jsonObject = new JSONObject(
                 """
-                        {"description": "path success",
+                        {"description": "path modify success",
                         "id": "a1a1a1a1a1a1a1a1a1a1a1a1"}
                        """);
 
@@ -182,6 +183,8 @@ public class PathControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+
+        assertEquals("path modify success", pathEntity.getDescription());
     }
 
     @Test
@@ -218,6 +221,22 @@ public class PathControllerTest {
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/modifyDescription")
                         .content(jsonObject.toString())
+                        .header("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testModifyDescriptionJsonInvalid() throws Exception {
+        String invalidJson = "invalid json body";
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathRepository.findById(pathEntity.getId())).thenReturn(java.util.Optional.of(pathEntity));
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/modifyDescription")
+                        .content(invalidJson)
                         .header("token", "token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
