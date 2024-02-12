@@ -3,6 +3,7 @@ package iut.info3.betterstravaapi.path;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.apache.catalina.User;
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -139,7 +140,7 @@ public class PathController {
 
     /**
      * Route de récupération du dernier parcours au format Json.
-     * @param jsonToken token d'identification de l'utilisateur
+     * @param token token d'identification de l'utilisateur
      * @return un code de retour :
      * <ul>
      *     <li> 200 si les champs sont correctement renseigné</li>
@@ -149,20 +150,9 @@ public class PathController {
      */
     @PostMapping("/lastPath")
     public ResponseEntity<Object> getLastPath(
-            @RequestHeader final String jsonToken) {
+            @RequestHeader final String token) {
 
-        String token = "";
         JSONObject response = new JSONObject();
-
-        try {
-            JSONObject jsonObject = new JSONObject(jsonToken);
-            // Récupérer la valeur associée à la clé "token"
-            token = jsonObject.getString("token");
-        } catch (Exception e) {
-            response.put("erreur", e.getMessage());
-            return new ResponseEntity<>(response.toMap(),
-                    HttpStatus.UNAUTHORIZED);
-        }
 
         UserEntity user = userService.findUserByToken(token);
         if (user == null) {
@@ -185,14 +175,19 @@ public class PathController {
      * <ul>
      *     <li> 200 si le parcour a été modifié </li>
      *     <li> 401 si le token de l'utilisateur est inconnu / invalide </li>
+     *     <li> 400 si l'id du parcours est invalide </li>
      *     <li> 500 si une erreur interne est survenue lors de la modification </li>
      * </ul>
      */
+    @PostMapping("/modifyDescription")
     public ResponseEntity<Object> modifyDescription(
-            @RequestBody final PathEntity pathBody,
+            @RequestBody final String pathBody,
             @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
+        JSONObject pathBodyJson;
+        String id;
+        String description;
 
         // Authentification de l'utilisateur
         UserEntity user = userService.findUserByToken(token);
@@ -202,10 +197,33 @@ public class PathController {
                     HttpStatus.UNAUTHORIZED);
         }
 
+        try {
+            pathBodyJson = new JSONObject(pathBody);
+            id = pathBodyJson.getString("id");
+            description = pathBodyJson.getString("description");
+        } catch (Exception e) {
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // Récupération du parcours designé par l'id
+        PathEntity path;
+        try {
+            path = pathRepository.findById(new ObjectId(id)).orElse(null);
+        } catch (Exception e) {
+            path = null;
+        }
+
+        if (path == null) {
+            response.put("erreur", "Aucun parcours ne correspond à cet id");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
         // Modification de la description
         try {
-            PathEntity path = pathRepository.findById(pathBody.getId()).get();
-            path.setDescription(pathBody.getDescription());
+            path.setDescription(description);
             pathRepository.save(path);
         } catch (Exception e) {
             response.put("erreur", e.getMessage());
