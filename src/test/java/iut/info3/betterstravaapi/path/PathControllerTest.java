@@ -1,13 +1,7 @@
 package iut.info3.betterstravaapi.path;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import iut.info3.betterstravaapi.EnvGetter;
-import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,11 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
 import static org.mockito.Mockito.when;
@@ -49,7 +39,7 @@ public class PathControllerTest {
     public void testCreatePathSuccess() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.verifierDateExpiration("token")).thenReturn(true);
+        when(userService.isTokenExpired("token")).thenReturn(true);
 
         points.add(new Coordonnees(48.25,12.25));
         points.add(new Coordonnees(43.85,17.855));
@@ -76,7 +66,7 @@ public class PathControllerTest {
     public void testCreatePathTokenInvalid() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.verifierDateExpiration("token")).thenReturn(false);
+        when(userService.isTokenExpired("token")).thenReturn(false);
 
         points.add(new Coordonnees(48.25,12.25));
         points.add(new Coordonnees(43.85,17.855));

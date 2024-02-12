@@ -69,7 +69,7 @@ class UserServiceTest {
 
         String jwt = userService.generateToken(entity,Instant.now());
 
-        assertTrue(userService.verifierDateExpiration(jwt));
+        assertTrue(userService.isTokenExpired(jwt));
 
     }
 
@@ -84,7 +84,7 @@ class UserServiceTest {
 
         String jwt = userService.generateToken(entity,Instant.now().minus(10, ChronoUnit.SECONDS));
 
-        assertFalse(userService.verifierDateExpiration(jwt));
+        assertFalse(userService.isTokenExpired(jwt));
 
     }
 

@@ -1,16 +1,12 @@
 package iut.info3.betterstravaapi.path;
 
 import iut.info3.betterstravaapi.user.UserService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +70,7 @@ public class PathController {
 
         Map<String, String> responseBody = new HashMap<>();
 
-        if (!userService.verifierDateExpiration(
+        if (userService.isTokenExpired(
                 userService.getTokenBd(idUser))) {
             responseBody.put(
                     "Message",
@@ -123,6 +119,13 @@ public class PathController {
             @RequestParam("dateSup") String dateSup,
             @RequestHeader("token") String token) throws ParseException {
 
+        Map<String, String> responseBody = new HashMap<>();
+        if(userService.isTokenExpired(token)) {
+            responseBody.put(
+                    "Message",
+                    "l'utilisateur ne possede pas de token valide");
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
         int userId = userService.findUserByToken(token).getId();
         List<PathEntity> entities = pathService
