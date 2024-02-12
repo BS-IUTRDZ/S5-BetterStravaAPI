@@ -79,7 +79,7 @@ public class PathService {
         long dateMax = Long.parseLong(dateSup);
         return pathRepository
                 .findEntitiesByDateAndName(
-                        dateMin, dateMax, nom, id,false);
+                        dateMin, dateMax, nom, id, false);
     }
 
     /**

@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -118,12 +119,9 @@ public class PathControllerTest {
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
         when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
-        JSONObject token = new JSONObject("{\"token\": \"token\"}");
-
-
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/lastPath")
-                        .content(asJsonString(token.toMap()))
+                        .header("token", "token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -140,12 +138,9 @@ public class PathControllerTest {
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
         when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
-        JSONObject mauvaisToken = new JSONObject("{\"token\": \"mauvaisToken\"}");
-
-
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/lastPath")
-                        .content(asJsonString(mauvaisToken.toMap()))
+                        .header("token", "mauvaisToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
@@ -162,15 +157,90 @@ public class PathControllerTest {
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
         when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
-        JSONObject mauvaisToken = new JSONObject("{\"nontoken\": \"mauvaisToken\"}");
-
-
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/lastPath")
-                        .content(asJsonString(mauvaisToken.toMap()))
+                        .header("mauvaisToken", "mauvaisToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testModifyDescriptionSuccess() throws Exception {
+        JSONObject jsonObject = new JSONObject(
+                """
+                        {"description": "path modify success",
+                        "id": "a1a1a1a1a1a1a1a1a1a1a1a1"}
+                       """);
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathRepository.findById(pathEntity.getId())).thenReturn(java.util.Optional.of(pathEntity));
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/modifyDescription")
+                        .content(jsonObject.toString())
+                        .header("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        assertEquals("path modify success", pathEntity.getDescription());
+    }
+
+    @Test
+    public void testModifyDescriptionTokenInvalid() throws Exception {
+        JSONObject jsonObject = new JSONObject(
+                """
+                        {"description": "path success",
+                        "id": "a1a1a1a1a1a1a1a1a1a1a1a1"}
+                       """);
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathRepository.findById(pathEntity.getId())).thenReturn(java.util.Optional.of(pathEntity));
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/modifyDescription")
+                        .content(jsonObject.toString())
+                        .header("token", "mauvaisToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testModifyDescriptionIdInvalid() throws Exception {
+        JSONObject jsonObject = new JSONObject(
+                """
+                        {"description": "path success",
+                        "id": "a2a2a2a2a2a2a2a2a2a2a2a2"}
+                       """);
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathRepository.findById(pathEntity.getId())).thenReturn(java.util.Optional.of(pathEntity));
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/modifyDescription")
+                        .content(jsonObject.toString())
+                        .header("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testModifyDescriptionJsonInvalid() throws Exception {
+        String invalidJson = "invalid json body";
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathRepository.findById(pathEntity.getId())).thenReturn(java.util.Optional.of(pathEntity));
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/modifyDescription")
+                        .content(invalidJson)
+                        .header("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
     }
 
 }

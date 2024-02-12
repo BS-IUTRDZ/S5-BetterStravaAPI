@@ -55,9 +55,11 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @param archive filtre sur le champ archive permettant
      * @return les parcours respectant tout les filtres
      */
-    @Query("{'date':  {$gte: ?0, $lte: ?1}, 'nom': ?2, 'idUtilisateur': ?3, 'archive': ?4}")
-    List<PathEntity> findEntitiesByDateAndName
-            (long dateInf, long dateSup, String nom, int id, boolean archive);
+    @Query("{'date':  {$gte: ?0, $lte: ?1}, 'nom': ?2,"
+           + "'idUtilisateur': ?3, 'archive': ?4}")
+    List<PathEntity> findEntitiesByDateAndName(long dateInf, long dateSup,
+                                               String nom, int id,
+                                               boolean archive);
 
 
 }

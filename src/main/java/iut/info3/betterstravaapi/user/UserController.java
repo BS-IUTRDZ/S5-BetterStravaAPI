@@ -1,6 +1,5 @@
 package iut.info3.betterstravaapi.user;
 
-import iut.info3.betterstravaapi.path.PathEntity;
 import iut.info3.betterstravaapi.path.PathService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.JSONObject;
