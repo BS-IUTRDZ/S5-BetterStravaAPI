@@ -149,7 +149,7 @@ public class PathController {
      */
     @PostMapping("/lastPath")
     public ResponseEntity<Object> getLastPath(
-            @RequestBody final String jsonToken) {
+            @RequestHeader final String jsonToken) {
 
         String token = "";
         JSONObject response = new JSONObject();
@@ -175,6 +175,45 @@ public class PathController {
                 pathService.recupDernierParcour(user.getId());
         JSONObject pathJson = pathService.getPathInfos(dernierParcours);
         return new ResponseEntity<>(pathJson.toMap(), HttpStatus.OK);
+    }
+
+    /**
+     * Route de modification de la description d'un parcours.
+     * @param pathBody body de la requête au format JSON contenant les informations permettant de modifier un parcour.
+     * @param token token d'identification de l'utilisateur
+     * @return un code de retour :
+     * <ul>
+     *     <li> 200 si le parcour a été modifié </li>
+     *     <li> 401 si le token de l'utilisateur est inconnu / invalide </li>
+     *     <li> 500 si une erreur interne est survenue lors de la modification </li>
+     * </ul>
+     */
+    public ResponseEntity<Object> modifyDescription(
+            @RequestBody final PathEntity pathBody,
+            @RequestHeader("token") final String token) {
+
+        JSONObject response = new JSONObject();
+
+        // Authentification de l'utilisateur
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur", "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
+        }
+
+        // Modification de la description
+        try {
+            PathEntity path = pathRepository.findById(pathBody.getId()).get();
+            path.setDescription(pathBody.getDescription());
+            pathRepository.save(path);
+        } catch (Exception e) {
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
 
 }
