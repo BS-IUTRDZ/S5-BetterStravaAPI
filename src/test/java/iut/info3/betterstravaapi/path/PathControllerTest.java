@@ -1,5 +1,6 @@
 package iut.info3.betterstravaapi.path;
 
+<<<<<<< HEAD
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
@@ -11,8 +12,10 @@ import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+=======
+import iut.info3.betterstravaapi.user.UserService;
+>>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,11 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,9 +82,19 @@ public class PathControllerTest {
     public void testCreatePathSuccess() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
+<<<<<<< HEAD
         when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+=======
+        when(userService.isTokenExpired("token")).thenReturn(true);
+
+        points.add(new Coordonnees(48.25,12.25));
+        points.add(new Coordonnees(43.85,17.855));
+
+        pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
+
+>>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
@@ -101,8 +110,18 @@ public class PathControllerTest {
     public void testCreatePathTokenInvalid() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
+<<<<<<< HEAD
         when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+=======
+        when(userService.isTokenExpired("token")).thenReturn(false);
+
+        points.add(new Coordonnees(48.25,12.25));
+        points.add(new Coordonnees(43.85,17.855));
+
+        pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
+
+>>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")

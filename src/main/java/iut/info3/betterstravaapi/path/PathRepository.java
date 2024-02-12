@@ -56,6 +56,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @return les parcours respectant tout les filtres
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     @Query("{'date':  {$gte: ?0, $lte: ?1}, 'nom': ?2,"
            + "'idUtilisateur': ?3, 'archive': ?4}")
     List<PathEntity> findEntitiesByDateAndName(long dateInf, long dateSup,
@@ -71,6 +72,9 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
 
 =======
     @Query("{'date':  {$gte: ?0, $lte: ?1}, $text: {$search: ?2}, 'idUtilisateur': ?3, 'archive': ?4}")
+=======
+    @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, 'idUtilisateur': ?3, 'archive': ?4}")
+>>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
     List<PathEntity> findEntitiesByDateAndName
             (long dateInf, long dateSup, String nom, int id, boolean archive);
 >>>>>>> 75a2fc4 (Tentative d'indexation du nom des parcours)

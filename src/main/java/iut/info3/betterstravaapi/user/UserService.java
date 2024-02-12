@@ -99,7 +99,7 @@ public class UserService {
      * @param jwtToken le token a tester
      * @return true si le token est encore valide, false sinon
      */
-    public boolean verifierDateExpiration(final String jwtToken) {
+    public boolean isTokenExpired(final String jwtToken) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(envGetter.getSentence());
             JWTVerifier verifier = JWT.require(algorithm).build();
@@ -109,11 +109,11 @@ public class UserService {
             Date dateExpiration = jwt.getExpiresAt();
             Date dateActuelle = new Date();
 
-            return !dateExpiration.before(dateActuelle);
+            return dateExpiration.before(dateActuelle);
 
         } catch (JWTVerificationException e) {
             // Le JWT a expiré ou est invalide
-            return false;
+            return true;
         }
     }
 
