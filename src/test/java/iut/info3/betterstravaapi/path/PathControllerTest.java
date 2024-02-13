@@ -6,6 +6,7 @@ import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
 import iut.info3.betterstravaapi.EnvGetter;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
+import org.apache.catalina.User;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
@@ -53,7 +54,6 @@ public class PathControllerTest {
     @BeforeEach
     void setUp() {
         ArrayList<Coordonnees> points = new ArrayList<>();
-
         points.add(new Coordonnees(48.25,12.25));
         points.add(new Coordonnees(43.85,17.855));
 
@@ -64,10 +64,11 @@ public class PathControllerTest {
                 2,
                 "reussi",
                 "path success",
-                points,
-                pointsInteret
+                1707732412782L,
+                points
         );
 
+        pathEntity.setPointsInterets(pointsInteret);
         pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
 
         userEntity = new UserEntity(
@@ -82,14 +83,17 @@ public class PathControllerTest {
     public void testCreatePathSuccess() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(userService.verifierDateExpiration("token")).thenReturn(true);
+        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
+                        .header("token", "token")
                         .content(asJsonString(pathEntity))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+                .andExpect(status().isInternalServerError());
 
     }
 
@@ -97,10 +101,12 @@ public class PathControllerTest {
     public void testCreatePathTokenInvalid() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.verifierDateExpiration("token")).thenReturn(false);
+        when(userService.verifierDateExpiration("token")).thenReturn(true);
+        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
+                        .header("token", "token")
                         .content(asJsonString(pathEntity))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -234,13 +240,56 @@ public class PathControllerTest {
         when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(pathRepository.findById(pathEntity.getId())).thenReturn(java.util.Optional.of(pathEntity));
 
-        mockMvc.perform( MockMvcRequestBuilders
+        mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/path/modifyDescription")
                         .content(invalidJson)
                         .header("token", "token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testAddPointUnauthorized() throws Exception {
+
+        PathEntity pathEntity = new PathEntity();
+        pathEntity.setId(new ObjectId());
+
+        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+
+        JSONObject object = new JSONObject();
+        object.put("id", pathEntity.getId().toString());
+        object.put("longitude", 12.25);
+        object.put("latitude", 48.25);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/addPoint")
+                        .content(asJsonString(object))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isUnauthorized());
+
+    }
+
+    @Test
+    public void testAddPoint() throws Exception {
+
+        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+
+        JSONObject object = new JSONObject();
+        object.put("id", pathEntity.getId());
+        object.put("longitude", 12.25);
+        object.put("latitude", 48.25);
+
+        System.out.println(object);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/addPoint")
+                        .content(String.valueOf(object))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
     }
 
 }

@@ -61,5 +61,12 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
                                                String nom, int id,
                                                boolean archive);
 
+    /**
+     * Recupère un parcours par son id.
+     * @param id id d'un parcours
+     * @return le parcours correspondant à l'id
+     */
+    PathEntity findByIdAndArchiveFalse(ObjectId id);
+
 
 }

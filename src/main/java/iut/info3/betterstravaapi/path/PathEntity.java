@@ -26,7 +26,7 @@ import java.util.List;
 public class PathEntity {
 
     /**
-     * Id du parcour.
+     * Id du parcours.
      */
     @Id
     private ObjectId id;
@@ -91,18 +91,18 @@ public class PathEntity {
      * @param idUser id de l'utilisateur a qui apartiens le parcours
      * @param name name du parcours choisit par l'utilisateur
      * @param descri descri du parcours donnee par l'utilisateur
+     * @param dateCreation date de création du parcours
      * @param point liste des point de coordonnees composant le parcours
-     * @param interets listes des point d'interet du parcours
      */
     public PathEntity(final Integer idUser, final String name,
                       final String descri,
-                      final List<Coordonnees> point,
-                      final List<PointInteret> interets) {
+                      final Long dateCreation,
+                      final List<Coordonnees> point) {
         this.idUtilisateur = idUser;
         this.nom = name;
         this.description = descri;
+        this.date = dateCreation;
         this.points = new ArrayList<>(point);
-        this.pointsInterets = new ArrayList<>(interets);
         this.archive = false;
     }
 
@@ -126,16 +126,16 @@ public class PathEntity {
      * getter de l'id de l'utilisateur du Parcour.
      * @return l'id de l'utilisateur du parcours
      */
-    public int getIdUserParcour() {
+    public int getidUtilisateur() {
         return idUtilisateur;
     }
 
     /**
      * setter de l'id de l'utilisateur.
-     * @param idUserParcour id de l'utilisateur
+     * @param idUser id de l'utilisateur
      */
-    public void setIdUserParcour(final Integer idUserParcour) {
-        this.idUtilisateur = idUserParcour;
+    public void setidUtilisateur(final Integer idUser) {
+        this.idUtilisateur = idUser;
     }
 
     /**
@@ -280,6 +280,16 @@ public class PathEntity {
      */
     public void setDate(final long dateLong) {
         this.date = dateLong;
+    }
+
+    /**
+     * Ajoute un point au parcours courant.
+     * @param coord les coordonnées du point
+     * @return le parcours
+     */
+    public PathEntity addPoint(final Coordonnees coord) {
+        this.points.add(coord);
+        return this;
     }
 
     /**

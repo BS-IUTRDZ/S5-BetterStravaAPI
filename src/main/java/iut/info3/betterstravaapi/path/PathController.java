@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +25,12 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/path")
 public class PathController {
+
+    /**
+     * service d'acces a la base nosql.
+     */
+    @Autowired
+    private final PathService pathService;
 
     /**
      * repository associer a la base noSQL.
@@ -40,27 +46,17 @@ public class PathController {
     private final UserService userService;
 
     /**
-     * service d'acces a la base noSQL.
-     */
-    @Autowired
-    private final PathService pathService;
-
-
-
-
-    /**
      * Controlleur permettant d'autowired le pathRepository.
-     *
-     * @param pathRepo    pathRepository a Autowired.
-     * @param userServ    userService a Autowired.
+     * @param pathRepo pathRepository a Autowired.
+     * @param userServ userService a Autowired.
      * @param pathServ pathService a Autowired.
      */
-    public PathController(final PathRepository pathRepo,
-                          final UserService userServ,
-                          final PathService pathServ) {
+    public PathController(final PathService pathServ,
+                          final PathRepository pathRepo,
+                          final UserService userServ) {
+        this.pathService = pathServ;
         this.pathRepository = pathRepo;
         this.userService = userServ;
-        this.pathService = pathServ;
     }
 
 
@@ -68,51 +64,103 @@ public class PathController {
      * Route de création d'un utilisateur.
      * @param pathBody body de la requête au format JSON contenant les
      *                 informations permettant de créer un parcour.
+     * @param token token d'accès de l'utilisateur.
      * @return un code de retour :
      * <ul>
-     *     <li> 201 si le parcour est créé</li>
-     *     <li> 401 si le parcours n'a pas pus etre cree</li>
+     *     <li> 201 si le parcour est créé </li>
+     *     <li> 401 si le parcours n'a pas pus etre cree </li>
+     *     <li> 401 si le token est inconnue / invalide </li>
      * </ul>
      */
     @PostMapping("/createPath")
     public ResponseEntity<Object> createPath(
-            @RequestBody final PathEntity pathBody) {
+            @RequestBody final String pathBody,
+            @RequestHeader("token") final String token) {
 
-        Integer idUser = pathBody.getIdUserParcour();
-        String description = pathBody.getDescription();
-        String nom = pathBody.getNom();
-        List<Coordonnees> points = pathBody.getPoints();
-        List<PointInteret> pointInteret = pathBody.getPointsInterets();
+        JSONObject response = new JSONObject();
+
+        // Authentification de l'utilisateur
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur", "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
+        }
+
+        // Récupération de l'id de l'utilisateur via le token
+        int idUser = user.getId();
+
+        JSONObject requestBody = new JSONObject(pathBody);
+        String nom = requestBody.getString("nom");
+        String description = requestBody.getString("description");
+        long date = requestBody.getLong("date");
+
+        // Création du parcours
+        try {
+            PathEntity path = new PathEntity(idUser, nom,
+                    description, date, new ArrayList<>());
+            pathRepository.save(path);
+            response.put("message", "parcours correctement cree");
+            response.put("id", path.getId().toString());
+            return new ResponseEntity<>(response.toMap(), HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            response.put("message", "erreur de creation du parcours");
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Route d'ajout d'un point.
+     * @param pointEtId string avec id du parcours,
+     *                  longitude et latitude.
+     * @return message point ajouté.
+     */
+    @PostMapping("/addPoint")
+    public ResponseEntity<Object> addPoint(
+            @RequestBody final String pointEtId) {
+
+        System.out.println("addpoint " + pointEtId);
+
+        String id = "";
+        double longitude;
+        double latitude;
 
         Map<String, String> responseBody = new HashMap<>();
 
-        if (!userService.verifierDateExpiration(
-                userService.getTokenBd(idUser))) {
-            responseBody.put(
-                    "Message",
-                    "l'utilisateur ne possede pas de token valide");
-            return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+        try {
+            JSONObject jsonObject = new JSONObject(pointEtId);
+
+            id = jsonObject.getString("id");
+            longitude = jsonObject.getDouble("longitude");
+            latitude = jsonObject.getDouble("latitude");
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<String, String>();
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
+        PathEntity parcoursVise =
+                pathService.recupParcoursParId(new ObjectId(id));
+
+        Coordonnees aAjouter = new Coordonnees(latitude, longitude);
+
+        PathEntity parcoursComplet = parcoursVise.addPoint(aAjouter);
+        pathRepository.save(parcoursComplet);
+
         try {
-            PathEntity path = new PathEntity(idUser, nom,
-                    description, points, pointInteret);
-            pathRepository.save(path);
-            responseBody.put("message", "parcours correctement cree");
+            responseBody.put("message", "point ajouté");
             return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
 
         } catch (Exception e) {
-            responseBody.put("message", "erreur de creation du parcours");
+            responseBody.put("message", "erreur d'ajout du point'");
             responseBody.put("erreur", e.getMessage());
             return new ResponseEntity<>(responseBody,
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
     }
-
-    //TODO methode d'ajout d'un point de coordonnees dans la
-    // list des points d'un parcours grace a son id
 
     /**
      * Route de recherche d'un parcour.

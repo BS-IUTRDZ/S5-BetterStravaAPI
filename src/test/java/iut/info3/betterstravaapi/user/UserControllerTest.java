@@ -3,8 +3,6 @@ package iut.info3.betterstravaapi.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import iut.info3.betterstravaapi.path.PathEntity;
 import iut.info3.betterstravaapi.path.PathService;
-import org.apache.catalina.User;
-import org.bson.json.JsonObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -14,9 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -116,8 +111,8 @@ public class UserControllerTest {
 
         when(userService.findUserByToken("biche")).thenReturn(user);
         when(pathService.recupDernierParcour(1)).thenReturn(new PathEntity());
-        when(pathService.recupPerformancesGlobal(1)).thenReturn(new ArrayList<>());
-        when(pathService.recupPerformances30Jours(1)).thenReturn(new ArrayList<>());
+        when(pathService.recupParcoursAll(1)).thenReturn(new ArrayList<>());
+        when(pathService.recupParcours30Jours(1)).thenReturn(new ArrayList<>());
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/users/getInfo")
