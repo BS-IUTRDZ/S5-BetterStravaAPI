@@ -146,8 +146,8 @@ public class PathController {
             Map<String, String> response = new HashMap<String, String>();
             response.put("erreur", e.getMessage());
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-
         }
+
         PathEntity parcoursVise =
                 pathService.recupParcoursParId(new ObjectId(id));
 
@@ -166,7 +166,16 @@ public class PathController {
             return new ResponseEntity<>(responseBody,
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        }
+
+
+    }
+
+    //TODO methode d'ajout d'un point de coordonnees dans la
+    // list des points d'un parcours grace a son id
+
+
+
+
 
         //TODO methode d'ajout d'un point de coordonnees dans la
         // list des points d'un parcours grace a son id
@@ -192,7 +201,7 @@ public class PathController {
         @RequestHeader("token") final String token) throws ParseException {
 
             Map<String, String> responseBody = new HashMap<>();
-            if (userService.isTokenExpired(token)) {
+            if (userService.isTokenNotExpired(token)) {
                 responseBody.put(
                         "Message",
                         "l'utilisateur ne possede pas de token valide");

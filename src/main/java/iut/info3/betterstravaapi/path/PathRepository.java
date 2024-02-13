@@ -55,13 +55,10 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @param archive filtre sur le champ archive permettant
      * @return les parcours respectant tout les filtres
      */
-<<<<<<< HEAD
-<<<<<<< HEAD
-    @Query("{'date':  {$gte: ?0, $lte: ?1}, 'nom': ?2,"
-           + "'idUtilisateur': ?3, 'archive': ?4}")
-    List<PathEntity> findEntitiesByDateAndName(long dateInf, long dateSup,
-                                               String nom, int id,
-                                               boolean archive);
+    @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, 'idUtilisateur': ?3, 'archive': ?4}")
+    List<PathEntity> findEntitiesByDateAndName
+    (long dateInf, long dateSup, String nom, int id, boolean archive);
+
 
     /**
      * Recupère un parcours par son id.
@@ -70,14 +67,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      */
     PathEntity findByIdAndArchiveFalse(ObjectId id);
 
-=======
-    @Query("{'date':  {$gte: ?0, $lte: ?1}, $text: {$search: ?2}, 'idUtilisateur': ?3, 'archive': ?4}")
-=======
-    @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, 'idUtilisateur': ?3, 'archive': ?4}")
->>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
-    List<PathEntity> findEntitiesByDateAndName
-            (long dateInf, long dateSup, String nom, int id, boolean archive);
->>>>>>> 75a2fc4 (Tentative d'indexation du nom des parcours)
+
 
 
 }

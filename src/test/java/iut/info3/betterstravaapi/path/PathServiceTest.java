@@ -5,14 +5,23 @@ import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+
+import java.text.ParseException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 public class PathServiceTest {
 
     @Autowired
     private PathService pathService;
+
+    @SpyBean
+    private PathRepository repository;
 
     @Test
     public void testRecupDernierParcour() throws Exception{
@@ -53,6 +62,14 @@ public class PathServiceTest {
                             }
                         }""");
         JSONAssert.assertEquals(pathJson,pathService.getPathInfos(path), false);
+    }
+
+    @Test
+    public void testFindPaths() throws ParseException {
+        pathService.findParcourByDateAndName("nom","01/01/2023","01/01/2025",1);
+
+
+        verify(repository).findEntitiesByDateAndName(1672527600000L, 1735686000000L,"nom",1,false);
     }
 
 }

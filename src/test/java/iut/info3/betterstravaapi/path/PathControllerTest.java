@@ -1,10 +1,13 @@
 package iut.info3.betterstravaapi.path;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
 import iut.info3.betterstravaapi.EnvGetter;
+=======
+>>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.apache.catalina.User;
@@ -27,7 +30,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
+<<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.assertEquals;
+=======
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
+>>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -83,11 +91,15 @@ public class PathControllerTest {
 
         when(userService.getTokenBd(2)).thenReturn("token");
 <<<<<<< HEAD
+<<<<<<< HEAD
         when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
 =======
         when(userService.isTokenExpired("token")).thenReturn(true);
+=======
+        when(userService.isTokenNotExpired("token")).thenReturn(true);
+>>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 
         points.add(new Coordonnees(48.25,12.25));
         points.add(new Coordonnees(43.85,17.855));
@@ -111,10 +123,14 @@ public class PathControllerTest {
 
         when(userService.getTokenBd(2)).thenReturn("token");
 <<<<<<< HEAD
+<<<<<<< HEAD
         when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
 =======
         when(userService.isTokenExpired("token")).thenReturn(false);
+=======
+        when(userService.isTokenNotExpired("token")).thenReturn(false);
+>>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 
         points.add(new Coordonnees(48.25,12.25));
         points.add(new Coordonnees(43.85,17.855));
@@ -134,6 +150,7 @@ public class PathControllerTest {
     }
 
     @Test
+<<<<<<< HEAD
     public void testLastPathSuccess() throws Exception {
         JSONObject jsonObject = new JSONObject(
                 """
@@ -311,4 +328,75 @@ public class PathControllerTest {
                 .andExpect(status().isCreated());
     }
 
+=======
+    public void testResearchPathsOk() throws Exception {
+        String email = "utilisateur@test.com";
+        String mdp = "test";
+        String prenom = "utilisateur";
+        String nom = "test";
+
+        UserEntity entity = new UserEntity();
+        entity.setId(1);
+        entity.setEmail(email);
+        entity.setMotDePasse(mdp);
+        entity.setPrenom(prenom);
+        entity.setNom(nom);
+        when(userService.getTokenBd(2)).thenReturn("token");
+        when(userService.isTokenNotExpired(anyString())).thenReturn(true);
+        when(userService.findUserByToken(anyString())).thenReturn(entity);
+
+        String dateMin = "01/01/2023";
+        String dateMax = "01/01/2025";
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/path/findPath?"
+                        + "dateInf=" + dateMin
+                        + "&dateSup=" + dateMax
+                        + "&nom=")
+                        .header("token","")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1);
+
+
+    }
+
+
+    @Test
+    public void testResearchPathsNotOk() throws Exception {
+        String email = "utilisateur@test.com";
+        String mdp = "test";
+        String prenom = "utilisateur";
+        String nom = "test";
+
+        UserEntity entity = new UserEntity();
+        entity.setId(1);
+        entity.setEmail(email);
+        entity.setMotDePasse(mdp);
+        entity.setPrenom(prenom);
+        entity.setNom(nom);
+        when(userService.getTokenBd(2)).thenReturn("token");
+        when(userService.isTokenNotExpired(anyString())).thenReturn(false);
+        when(userService.findUserByToken(anyString())).thenReturn(entity);
+
+        String dateMin = "01/01/2023";
+        String dateMax = "01/01/2025";
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/path/findPath?"
+                                + "dateInf=" + dateMin
+                                + "&dateSup=" + dateMax
+                                + "&nom=")
+                        .header("token","")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+
+
+    }
+
+>>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 }
