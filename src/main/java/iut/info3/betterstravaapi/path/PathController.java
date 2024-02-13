@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,51 +67,49 @@ public class PathController {
      *                 informations permettant de créer un parcour.
      * @return un code de retour :
      * <ul>
-     *     <li> 201 si le parcour est créé</li>
-     *     <li> 401 si le parcours n'a pas pus etre cree</li>
+     *     <li> 201 si le parcour est créé </li>
+     *     <li> 401 si le parcours n'a pas pus etre cree </li>
+     *     <li> 401 si le token est inconnue / invalide </li>
      * </ul>
      */
     @PostMapping("/createPath")
     public ResponseEntity<Object> createPath(
-            @RequestBody final String pathBody) {//TODO String to PathEntity a faire
+            @RequestBody final String pathBody,
+            @RequestHeader("token") final String token) {//TODO String to PathEntity a faire
 
-        System.out.println(pathBody);
-        JSONObject object = new JSONObject(pathBody);
-        Integer idUser = object.getInt("idUtilisateur");
-        Long date = object.getLong("date");
-        String description = object.getString("description");
-        String nom = object.getString("nom");
-        List<Coordonnees> points = new ArrayList<>();
-        JSONArray array = object.optJSONArray("points");
-        points.add(new Coordonnees(array.getDouble(0), array.getDouble(1)));
+        JSONObject response = new JSONObject();
 
-        Map<String, String> responseBody = new HashMap<>();
-
-        if (!userService.verifierDateExpiration(
-                userService.getTokenBd(idUser))) {
-            responseBody.put(
-                    "Message",
-                    "l'utilisateur ne possede pas de token valide");
-            return new ResponseEntity<>(responseBody, HttpStatus.UNAUTHORIZED);
+        // Authentification de l'utilisateur
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur", "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
         }
 
+        // Récupération de l'id de l'utilisateur via le token
+        int idUser = user.getId();
+
+        JSONObject requestBody = new JSONObject(pathBody);
+        String nom = requestBody.getString("nom");
+        String description = requestBody.getString("description");
+        long date = requestBody.getLong("date");
+
+        // Création du parcours
         try {
             PathEntity path = new PathEntity(idUser, nom,
-                    description, date, points);
+                    description, date, new ArrayList<>());
             pathRepository.save(path);
-            path = pathService.recupDernierParcour(idUser);
-            responseBody.put("message", "parcours correctement cree");
-            responseBody.put("id", path.getId().toString());
-            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+            response.put("message", "parcours correctement cree");
+            response.put("id", path.getId().toString());
+            return new ResponseEntity<>(response.toMap(), HttpStatus.CREATED);
 
         } catch (Exception e) {
-            responseBody.put("message", "erreur de creation du parcours");
-            responseBody.put("erreur", e.getMessage());
-            return new ResponseEntity<>(responseBody,
+            response.put("message", "erreur de creation du parcours");
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-
     }
 
     /**
