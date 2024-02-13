@@ -59,10 +59,10 @@ public class PathController {
      */
     public PathController(final PathRepository pathRepo,
                           final UserService userServ,
-                          final PathService pathService) {
+                          final PathService pathServ) {
         this.pathRepository = pathRepo;
         this.userService = userServ;
-        this.pathService = pathService;
+        this.pathService = pathServ;
     }
 
 
@@ -170,15 +170,7 @@ public class PathController {
 
     }
 
-    //TODO methode d'ajout d'un point de coordonnees dans la
-    // list des points d'un parcours grace a son id
 
-
-
-
-
-        //TODO methode d'ajout d'un point de coordonnees dans la
-        // list des points d'un parcours grace a son id
 
 
         /**
@@ -194,7 +186,7 @@ public class PathController {
          * </ul>
          */
         @GetMapping("/findPath")
-        public ResponseEntity<List<PathEntity>> findPath (
+        public ResponseEntity<List<PathEntity>> findPath(
         @RequestParam("nom") final String nom,
         @RequestParam("dateInf") final String dateInf,
         @RequestParam("dateSup") final String dateSup,
@@ -226,14 +218,15 @@ public class PathController {
          * </ul>
          */
         @PostMapping("/lastPath")
-        public ResponseEntity<Object> getLastPath (
-        @RequestHeader("token") final String token){
+        public ResponseEntity<Object> getLastPath(
+        @RequestHeader("token") final String token) {
 
             JSONObject response = new JSONObject();
 
             UserEntity user = userService.findUserByToken(token);
             if (user == null) {
-                response.put("erreur", "Aucun utilisateur correspond à ce token");
+                response.put("erreur",
+                        "Aucun utilisateur correspond à ce token");
                 return new ResponseEntity<>(response.toMap(),
                         HttpStatus.UNAUTHORIZED);
             }
@@ -252,16 +245,16 @@ public class PathController {
          * @return un code de retour :
          * <ul>
          *     <li> 200 si le parcour a été modifié </li>
-         *     <li> 401 si le token de l'utilisateur est inconnu / invalide </li>
+         *     <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
          *     <li> 400 si l'id du parcours est invalide </li>
          *     <li> 500 si une erreur interne est survenue
          *     lors de la modification </li>
          * </ul>
          */
         @PostMapping("/modifyDescription")
-        public ResponseEntity<Object> modifyDescription (
+        public ResponseEntity<Object> modifyDescription(
         @RequestBody final PathEntity pathBody,
-        @RequestHeader("token") final String token){
+        @RequestHeader("token") final String token) {
 
             JSONObject response = new JSONObject();
             ObjectId id;
@@ -270,7 +263,8 @@ public class PathController {
             // Authentification de l'utilisateur
             UserEntity user = userService.findUserByToken(token);
             if (user == null) {
-                response.put("erreur", "Aucun utilisateur correspond à ce token");
+                response.put("erreur",
+                        "Aucun utilisateur correspond à ce token");
                 return new ResponseEntity<>(response.toMap(),
                         HttpStatus.UNAUTHORIZED);
             }

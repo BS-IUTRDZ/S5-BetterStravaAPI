@@ -51,7 +51,8 @@ public class PathService {
      * @return la liste des parcours de l'utilisateur
      */
     public List<PathEntity> recupParcoursAll(final int idUser) {
-        return  pathRepository.findPathByIdUtilisateurAndArchive(idUser, false);
+        return  pathRepository.findPathByIdUtilisateurAndArchive(
+                idUser, false);
     }
 
     /**
@@ -74,10 +75,11 @@ public class PathService {
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
      *         respectant tout les filtres et n'étant pas archiver
      */
-    public List<PathEntity> findParcourByDateAndName(final String nom,
-                                                     final String dateInf,
-                                                     final String dateSup,
-                                                     final int id) throws ParseException {
+    public List<PathEntity> findParcourByDateAndName(
+            final String nom,
+            final String dateInf,
+            final String dateSup,
+            final int id) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
         long dateMin = sdf.parse(dateInf).getTime();

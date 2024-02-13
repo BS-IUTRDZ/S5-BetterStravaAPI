@@ -1,13 +1,9 @@
 package iut.info3.betterstravaapi.path;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
 import iut.info3.betterstravaapi.EnvGetter;
-=======
->>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.apache.catalina.User;
@@ -15,9 +11,7 @@ import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-=======
 import iut.info3.betterstravaapi.user.UserService;
->>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -30,12 +24,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
-<<<<<<< HEAD
 import static org.junit.jupiter.api.Assertions.assertEquals;
-=======
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
->>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -90,23 +81,11 @@ public class PathControllerTest {
     public void testCreatePathSuccess() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
-<<<<<<< HEAD
-<<<<<<< HEAD
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-=======
-        when(userService.isTokenExpired("token")).thenReturn(true);
-=======
         when(userService.isTokenNotExpired("token")).thenReturn(true);
->>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 
-        points.add(new Coordonnees(48.25,12.25));
-        points.add(new Coordonnees(43.85,17.855));
 
-        pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
-
->>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
@@ -122,22 +101,10 @@ public class PathControllerTest {
     public void testCreatePathTokenInvalid() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
-<<<<<<< HEAD
-<<<<<<< HEAD
-        when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-=======
-        when(userService.isTokenExpired("token")).thenReturn(false);
-=======
         when(userService.isTokenNotExpired("token")).thenReturn(false);
->>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
+        when(userService.isTokenNotExpired("token")).thenReturn(false);
 
-        points.add(new Coordonnees(48.25,12.25));
-        points.add(new Coordonnees(43.85,17.855));
-
-        pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
-
->>>>>>> 399af55 (Rennomage méthode de vérification token, Correction de recherche parcours)
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
@@ -150,7 +117,6 @@ public class PathControllerTest {
     }
 
     @Test
-<<<<<<< HEAD
     public void testLastPathSuccess() throws Exception {
         JSONObject jsonObject = new JSONObject(
                 """
@@ -327,8 +293,7 @@ public class PathControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
     }
-
-=======
+    @Test
     public void testResearchPathsOk() throws Exception {
         String email = "utilisateur@test.com";
         String mdp = "test";
@@ -342,7 +307,7 @@ public class PathControllerTest {
         entity.setPrenom(prenom);
         entity.setNom(nom);
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.isTokenNotExpired(anyString())).thenReturn(true);
+        when(userService.isTokenNotExpired(anyString())).thenReturn(false);
         when(userService.findUserByToken(anyString())).thenReturn(entity);
 
         String dateMin = "01/01/2023";
@@ -378,7 +343,7 @@ public class PathControllerTest {
         entity.setPrenom(prenom);
         entity.setNom(nom);
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.isTokenNotExpired(anyString())).thenReturn(false);
+        when(userService.isTokenNotExpired(anyString())).thenReturn(true);
         when(userService.findUserByToken(anyString())).thenReturn(entity);
 
         String dateMin = "01/01/2023";
@@ -398,5 +363,4 @@ public class PathControllerTest {
 
     }
 
->>>>>>> 9b8ad6b (Coverage 100% recherche de parcours)
 }
