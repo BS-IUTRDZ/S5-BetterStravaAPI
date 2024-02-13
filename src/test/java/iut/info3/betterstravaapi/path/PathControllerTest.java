@@ -11,8 +11,8 @@ import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import iut.info3.betterstravaapi.user.UserService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,14 +21,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -84,8 +82,10 @@ public class PathControllerTest {
 
         when(userService.getTokenBd(2)).thenReturn("token");
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+        when(userService.isTokenNotExpired("token")).thenReturn(true);
+
+
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
@@ -101,8 +101,10 @@ public class PathControllerTest {
     public void testCreatePathTokenInvalid() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.verifierDateExpiration("token")).thenReturn(true);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+        when(userService.isTokenNotExpired("token")).thenReturn(false);
+        when(userService.isTokenNotExpired("token")).thenReturn(false);
+
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
@@ -290,6 +292,75 @@ public class PathControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
+    @Test
+    public void testResearchPathsOk() throws Exception {
+        String email = "utilisateur@test.com";
+        String mdp = "test";
+        String prenom = "utilisateur";
+        String nom = "test";
+
+        UserEntity entity = new UserEntity();
+        entity.setId(1);
+        entity.setEmail(email);
+        entity.setMotDePasse(mdp);
+        entity.setPrenom(prenom);
+        entity.setNom(nom);
+        when(userService.getTokenBd(2)).thenReturn("token");
+        when(userService.isTokenNotExpired(anyString())).thenReturn(false);
+        when(userService.findUserByToken(anyString())).thenReturn(entity);
+
+        String dateMin = "01/01/2023";
+        String dateMax = "01/01/2025";
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/path/findPath?"
+                        + "dateInf=" + dateMin
+                        + "&dateSup=" + dateMax
+                        + "&nom=")
+                        .header("token","")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1);
+
+
+    }
+
+
+    @Test
+    public void testResearchPathsNotOk() throws Exception {
+        String email = "utilisateur@test.com";
+        String mdp = "test";
+        String prenom = "utilisateur";
+        String nom = "test";
+
+        UserEntity entity = new UserEntity();
+        entity.setId(1);
+        entity.setEmail(email);
+        entity.setMotDePasse(mdp);
+        entity.setPrenom(prenom);
+        entity.setNom(nom);
+        when(userService.getTokenBd(2)).thenReturn("token");
+        when(userService.isTokenNotExpired(anyString())).thenReturn(true);
+        when(userService.findUserByToken(anyString())).thenReturn(entity);
+
+        String dateMin = "01/01/2023";
+        String dateMax = "01/01/2025";
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/path/findPath?"
+                                + "dateInf=" + dateMin
+                                + "&dateSup=" + dateMax
+                                + "&nom=")
+                        .header("token","")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+
+
+
     }
 
 }

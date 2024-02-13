@@ -99,7 +99,7 @@ public class UserService {
      * @param jwtToken le token a tester
      * @return true si le token est encore valide, false sinon
      */
-    public boolean verifierDateExpiration(final String jwtToken) {
+    public boolean isTokenNotExpired(final String jwtToken) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(envGetter.getSentence());
             JWTVerifier verifier = JWT.require(algorithm).build();

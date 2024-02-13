@@ -5,6 +5,8 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -49,7 +51,8 @@ public class PathService {
      * @return la liste des parcours de l'utilisateur
      */
     public List<PathEntity> recupParcoursAll(final int idUser) {
-        return  pathRepository.findPathByIdUtilisateurAndArchive(idUser, false);
+        return  pathRepository.findPathByIdUtilisateurAndArchive(
+                idUser, false);
     }
 
     /**
@@ -72,12 +75,15 @@ public class PathService {
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
      *         respectant tout les filtres et n'étant pas archiver
      */
-    public List<PathEntity> findParcourByDateAndName(final String nom,
-                                                     final String dateInf,
-                                                     final String dateSup,
-                                                     final int id) {
-        long dateMin = Long.parseLong(dateInf);
-        long dateMax = Long.parseLong(dateSup);
+    public List<PathEntity> findParcourByDateAndName(
+            final String nom,
+            final String dateInf,
+            final String dateSup,
+            final int id) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+        long dateMin = sdf.parse(dateInf).getTime();
+        long dateMax = sdf.parse(dateSup).getTime();
         return pathRepository
                 .findEntitiesByDateAndName(
                         dateMin, dateMax, nom, id, false);
