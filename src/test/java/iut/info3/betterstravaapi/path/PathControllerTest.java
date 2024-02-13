@@ -248,6 +248,8 @@ public class PathControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
     public void testAddPointUnauthorized() throws Exception {
 
         PathEntity pathEntity = new PathEntity();
@@ -259,8 +261,6 @@ public class PathControllerTest {
         object.put("id", pathEntity.getId().toString());
         object.put("longitude", 12.25);
         object.put("latitude", 48.25);
-
-
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/addPoint")

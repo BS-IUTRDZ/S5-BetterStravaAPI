@@ -3,7 +3,6 @@ package iut.info3.betterstravaapi.path;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.bson.types.ObjectId;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,11 +49,12 @@ public class PathController {
      * Controlleur permettant d'autowired le pathRepository.
      * @param pathRepo pathRepository a Autowired.
      * @param userServ userService a Autowired.
-     * @param pathService pathService a Autowired.
+     * @param pathServ pathService a Autowired.
      */
-    public PathController(PathService pathService, final PathRepository pathRepo,
+    public PathController(final PathService pathServ,
+                          final PathRepository pathRepo,
                           final UserService userServ) {
-        this.pathService = pathService;
+        this.pathService = pathServ;
         this.pathRepository = pathRepo;
         this.userService = userServ;
     }
@@ -65,6 +64,7 @@ public class PathController {
      * Route de création d'un utilisateur.
      * @param pathBody body de la requête au format JSON contenant les
      *                 informations permettant de créer un parcour.
+     * @param token token d'accès de l'utilisateur.
      * @return un code de retour :
      * <ul>
      *     <li> 201 si le parcour est créé </li>
@@ -75,7 +75,7 @@ public class PathController {
     @PostMapping("/createPath")
     public ResponseEntity<Object> createPath(
             @RequestBody final String pathBody,
-            @RequestHeader("token") final String token) {//TODO String to PathEntity a faire
+            @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
 
@@ -113,13 +113,16 @@ public class PathController {
     }
 
     /**
-     * TODO faire la javadoc
+     * Route d'ajout d'un point.
+     * @param pointEtId string avec id du parcours,
+     *                  longitude et latitude.
+     * @return message point ajouté.
      */
     @PostMapping("/addPoint")
     public ResponseEntity<Object> addPoint(
             @RequestBody final String pointEtId) {
 
-        System.out.println("addpoint "+ pointEtId);
+        System.out.println("addpoint " + pointEtId);
 
         String id = "";
         double longitude;
@@ -139,9 +142,10 @@ public class PathController {
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
-        PathEntity parcoursVise = pathService.recupParcoursParId(new ObjectId(id));
+        PathEntity parcoursVise =
+                pathService.recupParcoursParId(new ObjectId(id));
 
-        Coordonnees aAjouter = new Coordonnees(latitude,longitude);
+        Coordonnees aAjouter = new Coordonnees(latitude, longitude);
 
         PathEntity parcoursComplet = parcoursVise.addPoint(aAjouter);
         pathRepository.save(parcoursComplet);

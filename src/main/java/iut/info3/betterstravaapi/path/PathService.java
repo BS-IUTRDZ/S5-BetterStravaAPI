@@ -110,6 +110,11 @@ public class PathService {
         return pathJson;
     }
 
+    /**
+     * Recupère un parcours par son id.
+     * @param id id d'un parcours
+     * @return le parcours correspondant à l'id
+     */
     public PathEntity recupParcoursParId(final ObjectId id) {
         return pathRepository.findByIdAndArchiveFalse(id);
     }

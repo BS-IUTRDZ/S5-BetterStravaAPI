@@ -1,7 +1,6 @@
 package iut.info3.betterstravaapi.path;
 
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -92,16 +91,17 @@ public class PathEntity {
      * @param idUser id de l'utilisateur a qui apartiens le parcours
      * @param name name du parcours choisit par l'utilisateur
      * @param descri descri du parcours donnee par l'utilisateur
+     * @param dateCreation date de création du parcours
      * @param point liste des point de coordonnees composant le parcours
      */
     public PathEntity(final Integer idUser, final String name,
                       final String descri,
-                      final Long date,
+                      final Long dateCreation,
                       final List<Coordonnees> point) {
         this.idUtilisateur = idUser;
         this.nom = name;
         this.description = descri;
-        this.date = date;
+        this.date = dateCreation;
         this.points = new ArrayList<>(point);
         this.archive = false;
     }
@@ -132,10 +132,10 @@ public class PathEntity {
 
     /**
      * setter de l'id de l'utilisateur.
-     * @param idUtilisateur id de l'utilisateur
+     * @param idUser id de l'utilisateur
      */
-    public void setidUtilisateur(final Integer idUtilisateur) {
-        this.idUtilisateur = idUtilisateur;
+    public void setidUtilisateur(final Integer idUser) {
+        this.idUtilisateur = idUser;
     }
 
     /**
@@ -282,6 +282,11 @@ public class PathEntity {
         this.date = dateLong;
     }
 
+    /**
+     * Ajoute un point au parcours courant.
+     * @param coord les coordonnées du point
+     * @return le parcours
+     */
     public PathEntity addPoint(final Coordonnees coord) {
         this.points.add(coord);
         return this;
