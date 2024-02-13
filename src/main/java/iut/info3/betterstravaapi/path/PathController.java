@@ -193,7 +193,7 @@ public class PathController {
         @RequestHeader("token") final String token) throws ParseException {
 
             Map<String, String> responseBody = new HashMap<>();
-            if (userService.isTokenNotExpired(token)) {
+            if (!userService.isTokenNotExpired(token)) {
                 responseBody.put(
                         "Message",
                         "l'utilisateur ne possede pas de token valide");
@@ -217,7 +217,7 @@ public class PathController {
          *     <li> 401 si token en parametre incorrect </li>
          * </ul>
          */
-        @PostMapping("/lastPath")
+        @GetMapping("/lastPath")
         public ResponseEntity<Object> getLastPath(
         @RequestHeader("token") final String token) {
 
