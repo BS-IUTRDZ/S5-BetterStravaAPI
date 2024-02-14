@@ -1,5 +1,6 @@
 package iut.info3.betterstravaapi.path;
 
+import iut.info3.betterstravaapi.path.models.FullPath;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.bson.types.ObjectId;
@@ -8,6 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.*;
 
@@ -67,10 +75,10 @@ public class PathController {
      */
     @PostMapping("/createPath")
     public ResponseEntity<Object> createPath(
-            @RequestBody final String pathBody,
+            @RequestBody final FullPath pathBody,
             @RequestHeader("token") final String token) {
 
-        JSONObject response = new JSONObject();
+        /*JSONObject response = new JSONObject();
 
         // Authentification de l'utilisateur
         UserEntity user = userService.findUserByToken(token);
@@ -102,75 +110,19 @@ public class PathController {
             response.put("erreur", e.getMessage());
             return new ResponseEntity<>(response.toMap(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        }*/
+
+        System.out.println(" --------------- Création du parcours --------------- ");
+        System.out.println("Nom : " + pathBody.getNom());
+        System.out.println("Description : " + pathBody.getDescription());
+        System.out.println("Date : " + pathBody.getDate());
+        System.out.println("Durée : " + pathBody.getDuree());
+        System.out.println("Points : " + pathBody.getPoints());
+        System.out.println("Points d'intérêt : " + pathBody.getPointsInteret());
+        System.out.println(" --------------- Fin de la création du parcours --------------- ");
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    /**
-     * Route d'ajout d'un point.
-     * @param token token d'accès de l'utilisateur.
-     * @param pointEtId string avec id du parcours,
-     *                  longitude et latitude.
-     * @return message point ajouté.
-     */
-    @PostMapping("/addPoint")
-    public ResponseEntity<Object> addPoint(
-            @RequestBody final String pointEtId,
-            @RequestHeader("token") final String token) {
-
-        System.out.println("addpoint " + pointEtId);
-
-        String id = "";
-        double longitude;
-        double latitude;
-
-        Map<String, String> responseBody = new HashMap<>();
-
-        JSONObject response = new JSONObject();
-
-        UserEntity user = userService.findUserByToken(token);
-        if (user == null) {
-            response.put("erreur",
-                    "Aucun utilisateur correspond à ce token");
-            return new ResponseEntity<>(response.toMap(),
-                    HttpStatus.UNAUTHORIZED);
-        }
-
-        try {
-            JSONObject jsonObject = new JSONObject(pointEtId);
-
-            id = jsonObject.getString("id");
-            longitude = jsonObject.getDouble("longitude");
-            latitude = jsonObject.getDouble("latitude");
-        } catch (Exception e) {
-            response.put("erreur", e.getMessage());
-            return new ResponseEntity<>(response,
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        PathEntity parcoursVise =
-                pathService.recupParcoursParId(new ObjectId(id), user.getId());
-
-        Coordonnees aAjouter = new Coordonnees(latitude, longitude);
-
-        PathEntity parcoursComplet = parcoursVise.addPoint(aAjouter);
-        pathRepository.save(parcoursComplet);
-
-        try {
-            responseBody.put("message", "point ajouté");
-            return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
-
-        } catch (Exception e) {
-            responseBody.put("message", "erreur d'ajout du point'");
-            responseBody.put("erreur", e.getMessage());
-            return new ResponseEntity<>(responseBody,
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-
-    }
-
-
-
 
     /**
      * Route de recherche d'un parcour.
