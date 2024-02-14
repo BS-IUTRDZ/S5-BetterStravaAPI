@@ -1,8 +1,9 @@
 package iut.info3.betterstravaapi.path;
 
-import iut.info3.betterstravaapi.path.models.FullPath;
+import iut.info3.betterstravaapi.path.jsonmodels.FullPath;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
+import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,7 @@ public class PathController {
      */
     @PostMapping("/createPath")
     public ResponseEntity<Object> createPath(
-            @RequestBody final FullPath pathBody,
+            @RequestBody @Valid final FullPath pathBody,
             @RequestHeader("token") final String token) {
 
         /*JSONObject response = new JSONObject();
@@ -110,6 +111,18 @@ public class PathController {
             return new ResponseEntity<>(response.toMap(),
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }*/
+
+        // ---------------------------------------------------------------------
+
+        JSONObject response = new JSONObject();
+
+        // Authentification de l'utilisateur
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur", "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
+        }
 
         System.out.println(" --------------- Création du parcours --------------- ");
         System.out.println("Nom : " + pathBody.getNom());

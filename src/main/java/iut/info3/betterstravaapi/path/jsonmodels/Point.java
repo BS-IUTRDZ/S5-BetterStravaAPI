@@ -1,4 +1,4 @@
-package iut.info3.betterstravaapi.path.models;
+package iut.info3.betterstravaapi.path.jsonmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
