@@ -9,7 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BetterStravaApiApplication {
 
-    private BetterStravaApiApplication() {
+    /**
+     * Constructeur par défaut.
+     */
+    protected BetterStravaApiApplication() {
     }
 
     /**
