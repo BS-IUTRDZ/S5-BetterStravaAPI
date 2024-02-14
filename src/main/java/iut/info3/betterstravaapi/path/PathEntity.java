@@ -1,6 +1,8 @@
 package iut.info3.betterstravaapi.path;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -29,6 +31,7 @@ public class PathEntity {
      * Id du parcours.
      */
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
 
     /**
