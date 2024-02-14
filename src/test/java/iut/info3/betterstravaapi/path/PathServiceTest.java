@@ -26,7 +26,7 @@ public class PathServiceTest {
 
     @Test
     public void testRecupDernierParcour() throws Exception{
-        assertEquals(12.5,pathService.recupDernierParcour(1).getDistance());
+        assertEquals(14.6,pathService.recupDernierParcour(1).getStatistiques().getDistance());
     }
 
     @Test

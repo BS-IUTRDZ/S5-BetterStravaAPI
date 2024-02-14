@@ -99,7 +99,7 @@ public class PathController {
         // Création du parcours
         try {
             PathEntity path = new PathEntity(idUser, nom,
-                    description, date, new ArrayList<>());
+                    description, date, new ArrayList<>(), new Statistiques());
             pathRepository.save(path);
             response.put("message", "parcours correctement cree");
             response.put("id", path.getId().toString());
@@ -236,8 +236,10 @@ public class PathController {
 
         PathEntity dernierParcours =
                 pathService.recupDernierParcour(user.getId());
-        JSONObject pathJson = pathService.getPathInfos(dernierParcours);
-        return new ResponseEntity<>(pathJson.toMap(), HttpStatus.OK);
+        System.out.println(dernierParcours);
+//        JSONObject pathJson = pathService.getPathInfos(dernierParcours);
+//        return new ResponseEntity<>(pathJson.toMap(), HttpStatus.OK);
+        return new ResponseEntity<>(dernierParcours, HttpStatus.OK);
     }
 
     /**

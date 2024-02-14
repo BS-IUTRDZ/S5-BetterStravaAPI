@@ -20,9 +20,13 @@ db.parcours.insertOne(
             }
         ],
         archive : false,
-        temps : 4532,
-        distance : 12.5,
-        vitesse : 10.23,
+        statistiques : {
+            duree : 1524,
+            vitesseMoyenne: 15.5,
+            distance: 14.6,
+            denivPos: 250,
+            denivNeg: 33
+        },
         date : Date.now(),
     }
 
@@ -46,9 +50,13 @@ db.parcours.insertOne(
             }
         ],
         archive : false,
-        temps : 1524,
-        distance : 15.5,
-        vitesse : 36.4,
+        statistiques : {
+            duree : 1524,
+            vitesseMoyenne: 15.5,
+            distance: 14.6,
+            denivPos: 250,
+            denivNeg: 33
+        },
         date : Date.UTC(2023,1,10,10,10,10,10),
     }
 );
