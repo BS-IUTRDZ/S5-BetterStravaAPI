@@ -219,6 +219,14 @@ public class PathEntity {
     }
 
     /**
+     * getter de l'archive.
+     * @return le boolean de l'archive
+     */
+    public boolean getArchive() {
+        return archive;
+    }
+
+    /**
      * getter du temps.
      * @return le temps
      */

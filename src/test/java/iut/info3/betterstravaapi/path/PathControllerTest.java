@@ -25,6 +25,7 @@ import java.util.ArrayList;
 
 import static iut.info3.betterstravaapi.user.UserControllerTest.asJsonString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -361,6 +362,53 @@ public class PathControllerTest {
 
 
 
+    }
+
+    @Test
+    public void testArchivingPathSuccess() throws Exception {
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/archivingPath")
+                        .content(pathEntity.getId().toString())
+                        .header("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        assertTrue(pathEntity.getArchive());
+    }
+
+    @Test
+    public void testArchivingPathUnauthorized() throws Exception {
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/archivingPath")
+                        .content(pathEntity.getId().toString())
+                        .header("token", "mauvaisToken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testArchivingPathInternalServerError() throws Exception {
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/archivingPath")
+                        .content("a2a1a1a1a1a1a1a1a1a1a1a1")
+                        .header("token", "token")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isInternalServerError());
     }
 
 }
