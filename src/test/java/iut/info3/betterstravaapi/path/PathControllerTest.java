@@ -59,12 +59,15 @@ public class PathControllerTest {
         ArrayList<PointInteret> pointsInteret = new ArrayList<>();
         pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
 
+        Statistiques stats = new Statistiques();
+
         pathEntity = new PathEntity(
                 2,
                 "reussi",
                 "path success",
                 1707732412782L,
-                points
+                points,
+                stats
         );
 
         pathEntity.setPointsInterets(pointsInteret);
