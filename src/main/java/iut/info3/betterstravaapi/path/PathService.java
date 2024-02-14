@@ -72,6 +72,7 @@ public class PathService {
      * @param dateSup date permettant de ne récupérer que les
      *                parcours avec une date supérieure
      * @param id id unique de l'utilisateur en base de données
+     * @throws ParseException erreur de parsing de date
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
      *         respectant tout les filtres et n'étant pas archiver
      */
