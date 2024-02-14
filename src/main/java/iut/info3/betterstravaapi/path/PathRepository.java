@@ -60,6 +60,26 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
     List<PathEntity> findEntitiesByDateAndName(
             long dateInf, long dateSup, String nom, int id, boolean archive);
 
+    /**
+     *
+     * @param dateInf date permettant de ne récupérer que les
+     *                parcours avec une date inférieure
+     * @param dateSup date permettant de ne récupérer que les
+     *                parcours avec une date supérieure
+     * @param nom chaine permettant de faire le filtre sur le champ nom
+     * @param distanceMin distance minimale du parcours recherché
+     * @param distanceMax distance maximale du parcours recherché
+     * @param id id unique de l'utilisateur en base de données
+     * @param archive filtre sur le champ archive permettant
+     * @return les parcours respectant tout les filtres
+     */
+    @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, "
+            + "distance: {$gte:  ?3, $lte: ?4},"
+            + "'idUtilisateur': ?5, 'archive': ?6}")
+    List<PathEntity> findEntitiesByDateAndNameAndDistance(
+            long dateInf, long dateSup, String nom,
+            int distanceMin, int distanceMax, int id, boolean archive);
+
 
     /**
      * Recupère un parcours par son id.

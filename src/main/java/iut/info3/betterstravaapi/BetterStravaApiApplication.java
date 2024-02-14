@@ -10,6 +10,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BetterStravaApiApplication {
 
     /**
+     * Constructeur par défaut.
+     */
+    protected BetterStravaApiApplication() {
+    }
+
+    /**
      * Lanceur de l'application.
      * @param args arguments par défaut
      */

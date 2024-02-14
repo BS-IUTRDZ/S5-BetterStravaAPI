@@ -74,10 +74,13 @@ public class PathServiceTest {
     }
 
     @Test
-    public void testRecupParcoursParId() {
-        PathEntity path = pathService.recupParcoursParId(new ObjectId("65cc80a3261be8e0c30adfaf"));
+    public void testFindPathsLength() throws ParseException {
+        pathService.findParcourByDateAndNameAndDistance("nom","01/01/2023","01/01/2025", 15,15,1);
 
-        assertEquals("balade a salles-la-source",path.getNom());
+
+        verify(repository).findEntitiesByDateAndNameAndDistance(1672527600000L, 1735686000000L,"nom", 15 , 15,1,false);
     }
+
+
 
 }

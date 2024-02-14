@@ -318,13 +318,54 @@ public class PathControllerTest {
                 .get("/api/path/findPath?"
                         + "dateInf=" + dateMin
                         + "&dateSup=" + dateMax
-                        + "&nom=")
+                        + "&nom="
+                        + "&distanceMin=" + 0
+                        + "&distanceMax=" + 0)
                         .header("token","")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1);
+
+
+    }
+
+    @Test
+    public void testResearchPathsOkWithParcoursLength() throws Exception {
+        String email = "utilisateur@test.com";
+        String mdp = "test";
+        String prenom = "utilisateur";
+        String nom = "test";
+        int distanceMin = 0;
+        int distanceMax = 1;
+        UserEntity entity = new UserEntity();
+        entity.setId(1);
+        entity.setEmail(email);
+        entity.setMotDePasse(mdp);
+        entity.setPrenom(prenom);
+        entity.setNom(nom);
+        when(userService.getTokenBd(2)).thenReturn("token");
+        when(userService.isTokenNotExpired(anyString())).thenReturn(true);
+        when(userService.findUserByToken(anyString())).thenReturn(entity);
+
+        String dateMin = "01/01/2023";
+        String dateMax = "01/01/2025";
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/path/findPath?"
+                                + "dateInf=" + dateMin
+                                + "&dateSup=" + dateMax
+                                + "&nom=" + nom
+                                + "&distanceMin=" + distanceMin
+                                + "&distanceMax=" + distanceMax)
+                        .header("token","")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(pathService).findParcourByDateAndNameAndDistance(
+                nom, dateMin, dateMax , distanceMin, distanceMax,1);
 
 
     }
@@ -336,7 +377,8 @@ public class PathControllerTest {
         String mdp = "test";
         String prenom = "utilisateur";
         String nom = "test";
-
+        int distanceMin = 0;
+        int distanceMax = 1;
         UserEntity entity = new UserEntity();
         entity.setId(1);
         entity.setEmail(email);
@@ -354,7 +396,9 @@ public class PathControllerTest {
                         .get("/api/path/findPath?"
                                 + "dateInf=" + dateMin
                                 + "&dateSup=" + dateMax
-                                + "&nom=")
+                                + "&nom="
+                                + "&distanceMin=" + distanceMin
+                                + "&distanceMax=" + distanceMax)
                         .header("token","")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

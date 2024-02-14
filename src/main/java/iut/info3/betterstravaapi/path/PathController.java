@@ -171,9 +171,11 @@ public class PathController {
     /**
      * Route de recherche d'un parcour.
      * @param nom nom du parcour rechercher
-     * @param dateInf TODO Définir le format
-     * @param dateSup TODO Définir le format
+     * @param dateInf date minimale du parcour au format jj/mm/aaaa
+     * @param dateSup date maximale du parcour au format jj/mm/aaaa
      * @param token token d'identification de l'utilisateur
+     * @param distanceMin distance minimale du parcours rechercher
+     * @param distanceMax distance maximale du parcours rechercher
      * @throws ParseException si les dates ne sont pas au bon format
      * @return un code de retour :
      * <ul>
@@ -186,15 +188,24 @@ public class PathController {
     @RequestParam("nom") final String nom,
     @RequestParam("dateInf") final String dateInf,
     @RequestParam("dateSup") final String dateSup,
+    @RequestParam("distanceMin") final int distanceMin,
+    @RequestParam("distanceMax") final int distanceMax,
     @RequestHeader("token") final String token) throws ParseException {
 
         if (!userService.isTokenNotExpired(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
         int userId = userService.findUserByToken(token).getId();
-        List<PathEntity> entities = pathService
-                .findParcourByDateAndName(nom, dateInf, dateSup, userId);
+        List<PathEntity> entities;
+        if (distanceMax != 0 || distanceMin != 0) {
+            entities = pathService
+                    .findParcourByDateAndNameAndDistance(nom, dateInf,
+                            dateSup, distanceMin, distanceMax, userId);
+        } else {
+            entities = pathService.findParcourByDateAndName(
+                    nom, dateInf, dateSup, userId);
+        }
+
         return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 
