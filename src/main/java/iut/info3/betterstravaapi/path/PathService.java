@@ -119,7 +119,7 @@ public class PathService {
         long dateMax = sdf.parse(dateSup).getTime();
         return pathRepository
                 .findEntitiesByDateAndNameAndDistance(dateMin, dateMax, nom,
-                        distanceMin, distanceMax,id, false);
+                        distanceMin, distanceMax, id, false);
     }
 
     /**

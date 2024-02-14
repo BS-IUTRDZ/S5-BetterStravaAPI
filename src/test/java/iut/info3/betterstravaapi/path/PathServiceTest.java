@@ -73,6 +73,14 @@ public class PathServiceTest {
         verify(repository).findEntitiesByDateAndName(1672527600000L, 1735686000000L,"nom",1,false);
     }
 
+    @Test
+    public void testFindPathsLength() throws ParseException {
+        pathService.findParcourByDateAndNameAndDistance("nom","01/01/2023","01/01/2025", 15,15,1);
+
+
+        verify(repository).findEntitiesByDateAndNameAndDistance(1672527600000L, 1735686000000L,"nom", 15 , 15,1,false);
+    }
+
 
 
 }

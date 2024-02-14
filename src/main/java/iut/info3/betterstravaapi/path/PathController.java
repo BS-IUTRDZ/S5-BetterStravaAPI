@@ -174,6 +174,8 @@ public class PathController {
      * @param dateInf date minimale du parcour au format jj/mm/aaaa
      * @param dateSup date maximale du parcour au format jj/mm/aaaa
      * @param token token d'identification de l'utilisateur
+     * @param distanceMin distance minimale du parcours rechercher
+     * @param distanceMax distance maximale du parcours rechercher
      * @throws ParseException si les dates ne sont pas au bon format
      * @return un code de retour :
      * <ul>
@@ -201,7 +203,7 @@ public class PathController {
                             dateSup, distanceMin, distanceMax, userId);
         } else {
             entities = pathService.findParcourByDateAndName(
-                    nom, dateInf, dateSup ,userId);
+                    nom, dateInf, dateSup, userId);
         }
 
         return new ResponseEntity<>(entities, HttpStatus.OK);
