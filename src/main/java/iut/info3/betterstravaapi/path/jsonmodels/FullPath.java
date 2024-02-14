@@ -1,17 +1,36 @@
-package iut.info3.betterstravaapi.path.models;
+package iut.info3.betterstravaapi.path.jsonmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.util.List;
 
 public class FullPath {
+
+    @NotNull
+    @JsonProperty("nom")
     private String nom;
+
+    @NotNull
+    @JsonProperty("description")
     private String description;
+
+    @Positive
+    @JsonProperty("date")
     private long date;
+
+    @Positive
+    @JsonProperty("duree")
     private long duree;
+
+    @NotEmpty
+    @JsonProperty("points")
     private List<Point> points;
 
-    @JsonProperty("points_interets")
+    @NotEmpty
+    @JsonProperty("pointsInterets")
     private List<PointInteret> pointsInterets;
 
     public String getNom() {
