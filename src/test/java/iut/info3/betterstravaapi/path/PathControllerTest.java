@@ -128,7 +128,7 @@ public class PathControllerTest {
         when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
         mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/lastPath")
+                        .get("/api/path/lastPath")
                         .header("token", "token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -147,7 +147,7 @@ public class PathControllerTest {
         when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
         mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/lastPath")
+                        .get("/api/path/lastPath")
                         .header("token", "mauvaisToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -166,7 +166,7 @@ public class PathControllerTest {
         when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
         mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/lastPath")
+                        .get("/api/path/lastPath")
                         .header("mauvaisToken", "mauvaisToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -307,7 +307,7 @@ public class PathControllerTest {
         entity.setPrenom(prenom);
         entity.setNom(nom);
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.isTokenNotExpired(anyString())).thenReturn(false);
+        when(userService.isTokenNotExpired(anyString())).thenReturn(true);
         when(userService.findUserByToken(anyString())).thenReturn(entity);
 
         String dateMin = "01/01/2023";
@@ -343,7 +343,7 @@ public class PathControllerTest {
         entity.setPrenom(prenom);
         entity.setNom(nom);
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(userService.isTokenNotExpired(anyString())).thenReturn(true);
+        when(userService.isTokenNotExpired(anyString())).thenReturn(false);
         when(userService.findUserByToken(anyString())).thenReturn(entity);
 
         String dateMin = "01/01/2023";

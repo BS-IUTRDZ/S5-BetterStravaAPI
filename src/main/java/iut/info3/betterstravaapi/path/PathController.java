@@ -46,11 +46,6 @@ public class PathController {
     @Autowired
     private final UserService userService;
 
-
-
-
-
-
     /**
      * Controlleur permettant d'autowired le pathRepository.
      * @param pathRepo pathRepository a Autowired.
@@ -173,138 +168,132 @@ public class PathController {
 
 
 
-        /**
-         * Route de recherche d'un parcour.
-         * @param nom nom du parcour rechercher
-         * @param dateInf TODO Définir le format
-         * @param dateSup TODO Définir le format
-         * @param token token d'identification de l'utilisateur
-         * @return un code de retour :
-         * <ul>
-         *     <li> 200 si les champs sont correctement renseigné</li>
-         *     <li> 400 sinon </li>
-         * </ul>
-         */
-        @GetMapping("/findPath")
-        public ResponseEntity<List<PathEntity>> findPath(
-        @RequestParam("nom") final String nom,
-        @RequestParam("dateInf") final String dateInf,
-        @RequestParam("dateSup") final String dateSup,
-        @RequestHeader("token") final String token) throws ParseException {
+    /**
+     * Route de recherche d'un parcour.
+     * @param nom nom du parcour rechercher
+     * @param dateInf TODO Définir le format
+     * @param dateSup TODO Définir le format
+     * @param token token d'identification de l'utilisateur
+     * @throws ParseException si les dates ne sont pas au bon format
+     * @return un code de retour :
+     * <ul>
+     *     <li> 200 si les champs sont correctement renseigné</li>
+     *     <li> 400 sinon </li>
+     * </ul>
+     */
+    @GetMapping("/findPath")
+    public ResponseEntity<List<PathEntity>> findPath(
+    @RequestParam("nom") final String nom,
+    @RequestParam("dateInf") final String dateInf,
+    @RequestParam("dateSup") final String dateSup,
+    @RequestHeader("token") final String token) throws ParseException {
 
-            Map<String, String> responseBody = new HashMap<>();
-            if (userService.isTokenNotExpired(token)) {
-                responseBody.put(
-                        "Message",
-                        "l'utilisateur ne possede pas de token valide");
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
-
-            int userId = userService.findUserByToken(token).getId();
-            List<PathEntity> entities = pathService
-                    .findParcourByDateAndName(nom, dateInf, dateSup, userId);
-            return new ResponseEntity<>(entities, HttpStatus.OK);
+        if (!userService.isTokenNotExpired(token)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
+        int userId = userService.findUserByToken(token).getId();
+        List<PathEntity> entities = pathService
+                .findParcourByDateAndName(nom, dateInf, dateSup, userId);
+        return new ResponseEntity<>(entities, HttpStatus.OK);
+    }
 
-        /**
-         * Route de récupération du dernier parcours au format Json.
-         * @param token token d'identification de l'utilisateur
-         * @return un code de retour :
-         * <ul>
-         *     <li> 200 si les champs sont correctement renseigné</li>
-         *     <li> 401 si token de l'utilisateur inconnu </li>
-         *     <li> 401 si token en parametre incorrect </li>
-         * </ul>
-         */
-        @PostMapping("/lastPath")
-        public ResponseEntity<Object> getLastPath(
-        @RequestHeader("token") final String token) {
 
-            JSONObject response = new JSONObject();
+    /**
+     * Route de récupération du dernier parcours au format Json.
+     * @param token token d'identification de l'utilisateur
+     * @return un code de retour :
+     * <ul>
+     *     <li> 200 si les champs sont correctement renseigné</li>
+     *     <li> 401 si token de l'utilisateur inconnu </li>
+     *     <li> 401 si token en parametre incorrect </li>
+     * </ul>
+     */
+    @GetMapping("/lastPath")
+    public ResponseEntity<Object> getLastPath(
+    @RequestHeader("token") final String token) {
 
-            UserEntity user = userService.findUserByToken(token);
-            if (user == null) {
-                response.put("erreur",
-                        "Aucun utilisateur correspond à ce token");
-                return new ResponseEntity<>(response.toMap(),
-                        HttpStatus.UNAUTHORIZED);
-            }
+        JSONObject response = new JSONObject();
 
-            PathEntity dernierParcours =
-                    pathService.recupDernierParcour(user.getId());
-            JSONObject pathJson = pathService.getPathInfos(dernierParcours);
-            return new ResponseEntity<>(pathJson.toMap(), HttpStatus.OK);
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur",
+                    "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
         }
 
-        /**
-         * Route de modification de la description d'un parcours.
-         * @param pathBody body de la requête au format JSON contenant les
-         *                 informations permettant de modifier un parcour.
-         * @param token token d'identification de l'utilisateur
-         * @return un code de retour :
-         * <ul>
-         *     <li> 200 si le parcour a été modifié </li>
-         *     <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
-         *     <li> 400 si l'id du parcours est invalide </li>
-         *     <li> 500 si une erreur interne est survenue
-         *     lors de la modification </li>
-         * </ul>
-         */
-        @PostMapping("/modifyDescription")
-        public ResponseEntity<Object> modifyDescription(
-        @RequestBody final PathEntity pathBody,
-        @RequestHeader("token") final String token) {
+        PathEntity dernierParcours =
+                pathService.recupDernierParcour(user.getId());
+        JSONObject pathJson = pathService.getPathInfos(dernierParcours);
+        return new ResponseEntity<>(pathJson.toMap(), HttpStatus.OK);
+    }
 
-            JSONObject response = new JSONObject();
-            ObjectId id;
-            String description;
+    /**
+     * Route de modification de la description d'un parcours.
+     * @param pathBody body de la requête au format JSON contenant les
+     *                 informations permettant de modifier un parcour.
+     * @param token token d'identification de l'utilisateur
+     * @return un code de retour :
+     * <ul>
+     *     <li> 200 si le parcour a été modifié </li>
+     *     <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
+     *     <li> 400 si l'id du parcours est invalide </li>
+     *     <li> 500 si une erreur interne est survenue
+     *     lors de la modification </li>
+     * </ul>
+     */
+    @PostMapping("/modifyDescription")
+    public ResponseEntity<Object> modifyDescription(
+    @RequestBody final PathEntity pathBody,
+    @RequestHeader("token") final String token) {
 
-            // Authentification de l'utilisateur
-            UserEntity user = userService.findUserByToken(token);
-            if (user == null) {
-                response.put("erreur",
-                        "Aucun utilisateur correspond à ce token");
-                return new ResponseEntity<>(response.toMap(),
-                        HttpStatus.UNAUTHORIZED);
-            }
+        JSONObject response = new JSONObject();
+        ObjectId id;
+        String description;
 
-            try {
-                id = pathBody.getId();
-                description = pathBody.getDescription();
-            } catch (Exception e) {
-                response.put("erreur", e.getMessage());
-                return new ResponseEntity<>(response.toMap(),
-                        HttpStatus.BAD_REQUEST);
-            }
-
-            // Récupération du parcours designé par l'id
-            PathEntity path;
-            try {
-                path = pathRepository.findById(id).orElse(null);
-            } catch (Exception e) {
-                path = null;
-            }
-
-            if (path == null) {
-                response.put("erreur", "Aucun parcours ne correspond à cet id");
-                return new ResponseEntity<>(response.toMap(),
-                        HttpStatus.BAD_REQUEST);
-            }
-
-            // Modification de la description
-            try {
-                path.setDescription(description);
-                pathRepository.save(path);
-            } catch (Exception e) {
-                response.put("erreur", e.getMessage());
-                return new ResponseEntity<>(response.toMap(),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
-            return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+        // Authentification de l'utilisateur
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur",
+                    "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
         }
 
+        try {
+            id = pathBody.getId();
+            description = pathBody.getDescription();
+        } catch (Exception e) {
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.BAD_REQUEST);
+        }
 
+        // Récupération du parcours designé par l'id
+        PathEntity path;
+        try {
+            path = pathRepository.findById(id).orElse(null);
+        } catch (Exception e) {
+            path = null;
+        }
 
+        if (path == null) {
+            response.put("erreur", "Aucun parcours ne correspond à cet id");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        // Modification de la description
+        try {
+            path.setDescription(description);
+            pathRepository.save(path);
+        } catch (Exception e) {
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+    }
 }
