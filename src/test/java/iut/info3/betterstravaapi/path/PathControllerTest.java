@@ -318,7 +318,9 @@ public class PathControllerTest {
                 .get("/api/path/findPath?"
                         + "dateInf=" + dateMin
                         + "&dateSup=" + dateMax
-                        + "&nom=")
+                        + "&nom="
+                        + "&distanceMin=" + 0
+                        + "&distanceMax=" + 0)
                         .header("token","")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -354,7 +356,9 @@ public class PathControllerTest {
                         .get("/api/path/findPath?"
                                 + "dateInf=" + dateMin
                                 + "&dateSup=" + dateMax
-                                + "&nom=")
+                                + "&nom="
+                                + "&distanceMin=" + 0
+                                + "&distanceMax=" + 0)
                         .header("token","")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Service des parcours.
@@ -81,13 +82,44 @@ public class PathService {
             final String dateInf,
             final String dateSup,
             final int id) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
+                Locale.FRANCE);
 
         long dateMin = sdf.parse(dateInf).getTime();
         long dateMax = sdf.parse(dateSup).getTime();
         return pathRepository
                 .findEntitiesByDateAndName(
                         dateMin, dateMax, nom, id, false);
+    }
+
+    /**
+     * @param nom chaine permettant de faire le filtre sur le champ nom
+     * @param dateInf date permettant de ne récupérer que les
+     *                parcours avec une date inférieure
+     * @param dateSup date permettant de ne récupérer que les
+     *                parcours avec une date supérieure
+     * @param id id unique de l'utilisateur en base de données
+     * @param distanceMin distance minimale du parcours recherché
+     * @param distanceMax distance maximale du parcours recherché
+     * @throws ParseException erreur de parsing de date
+     * @return la liste des parcours de l'utilisateur avec l'id 'id'
+     *         respectant tout les filtres et n'étant pas archiver
+     */
+    public List<PathEntity> findParcourByDateAndNameAndDistance(
+            final String nom,
+            final String dateInf,
+            final String dateSup,
+            final int distanceMin,
+            final int distanceMax,
+            final int id) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
+                Locale.FRANCE);
+
+        long dateMin = sdf.parse(dateInf).getTime();
+        long dateMax = sdf.parse(dateSup).getTime();
+        return pathRepository
+                .findEntitiesByDateAndNameAndDistance(dateMin, dateMax, nom,
+                        distanceMin, distanceMax,id, false);
     }
 
     /**
