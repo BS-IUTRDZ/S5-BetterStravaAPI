@@ -230,23 +230,22 @@ public class PathController {
     }
 
     /**
-     * Route de modification de la description d'un parcours.
-     * @param pathBody body de la requête au format JSON contenant les
-     *                 informations permettant de modifier un parcour.
+     * Route d'archivage d'un parcours.
+     * @param pathBody body de la requête au format JSON contenant
+     *                l'id d'un parcours.
      * @param token token d'identification de l'utilisateur
      * @return un code de retour :
      * <ul>
-     *     <li> 200 si le parcour a été modifié </li>
+     *     <li> 200 si le parcour a été archivé </li>
      *     <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
      *     <li> 400 si l'id du parcours est invalide </li>
-     *     <li> 500 si une erreur interne est survenue
-     *     lors de la modification </li>
+     *     <li> 500 si une erreur interne est survenue </li>
      * </ul>
      */
     @PostMapping("/modifyDescription")
     public ResponseEntity<Object> modifyDescription(
-    @RequestBody final PathEntity pathBody,
-    @RequestHeader("token") final String token) {
+            @RequestBody final PathEntity pathBody,
+            @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
         ObjectId id;
@@ -288,6 +287,50 @@ public class PathController {
         try {
             path.setDescription(description);
             pathRepository.save(path);
+        } catch (Exception e) {
+            response.put("erreur", e.getMessage());
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+    }
+
+    /**
+     * Route d'archivage d'un parcours.
+     * @param id id d'un parcours.
+     * @param token token d'identification de l'utilisateur
+     * @return un code de retour :
+     * <ul>
+     *     <li> 200 si le parcour a été archivé </li>
+     *     <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
+     *     <li> 400 si l'id du parcours est invalide </li>
+     *     <li> 500 si une erreur interne est survenue </li>
+     * </ul>
+     */
+    @PostMapping("/archivingPath")
+    public ResponseEntity<Object> archivingPath(
+            @RequestBody final String id,
+            @RequestHeader("token") final String token) {
+
+        JSONObject response = new JSONObject();
+
+        // Authentification de l'utilisateur
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur",
+                    "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
+        }
+
+        // Archivage du parcours
+        try {
+            PathEntity parcoursVise =
+                    pathService.recupParcoursParId(new ObjectId(id));
+            parcoursVise.setArchive(true);
+            pathRepository.save(parcoursVise);
+
         } catch (Exception e) {
             response.put("erreur", e.getMessage());
             return new ResponseEntity<>(response.toMap(),

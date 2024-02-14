@@ -1,5 +1,6 @@
 package iut.info3.betterstravaapi.path;
 
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -70,6 +71,13 @@ public class PathServiceTest {
 
 
         verify(repository).findEntitiesByDateAndName(1672527600000L, 1735686000000L,"nom",1,false);
+    }
+
+    @Test
+    public void testRecupParcoursParId() {
+        PathEntity path = pathService.recupParcoursParId(new ObjectId("65cc80a3261be8e0c30adfaf"));
+
+        assertEquals("balade a salles-la-source",path.getNom());
     }
 
 }
