@@ -130,8 +130,10 @@ public class UserService {
         float temps = 0;
         double distance = 0;
         for (PathEntity parcours : parcoursList) {
-            temps += parcours.getStatistiques().getDuree();
-            distance += parcours.getStatistiques().getDistance();
+            if (parcours.getStatistiques() != null) {
+                temps += parcours.getStatistiques().getDuree();
+                distance += parcours.getStatistiques().getDistance();
+            }
         }
         map.put("nombre_parcours", String.valueOf(parcoursList.size()));
         map.put("temps", String.valueOf(temps));

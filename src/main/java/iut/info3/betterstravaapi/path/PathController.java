@@ -129,7 +129,6 @@ public class PathController {
         pathRepository.save(entity);
 
         response.put("message", "parcours correctement cree");
-        response.put("id", entity.getId().toString());
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }

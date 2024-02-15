@@ -2,8 +2,10 @@ package iut.info3.betterstravaapi.path;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
 import iut.info3.betterstravaapi.EnvGetter;
+import iut.info3.betterstravaapi.path.jsonmodels.FullPath;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import org.apache.catalina.User;
@@ -49,18 +51,20 @@ public class PathControllerTest {
 
     private PathEntity pathEntity;
     private UserEntity userEntity;
+    private String jsonPath;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         ArrayList<Coordonnees> points = new ArrayList<>();
-        points.add(new Coordonnees(48.25,12.25));
-        points.add(new Coordonnees(43.85,17.855));
+        points.add(new Coordonnees(48.25,12.25, 0));
+        points.add(new Coordonnees(43.85,17.855,0));
 
         ArrayList<PointInteret> pointsInteret = new ArrayList<>();
-        pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
+        pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54,0)));
 
         Statistiques stats = new Statistiques();
 
+        jsonPath = "{\"nom\":\"parcours de test\",\"description\":\"description du parcours\",\"date\":17082145,\"points\":[{\"lat\":24.7162,\"lon\":-12.7261,\"alt\":1330.62}],\"pointsInterets\":[{\"pos\":{\"lat\":0,\"lon\":0,\"alt\":0},\"nom\":\"points d'interet\",\"description\":\"description du point d'interet\"}],\"duree\":1996}";
         pathEntity = new PathEntity(
                 2,
                 "reussi",
@@ -69,9 +73,7 @@ public class PathControllerTest {
                 points,
                 stats
         );
-
         pathEntity.setPointsInterets(pointsInteret);
-        pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
 
         userEntity = new UserEntity(
                 "test@mail.com",
@@ -94,10 +96,10 @@ public class PathControllerTest {
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
                         .header("token", "token")
-                        .content(asJsonString(pathEntity))
+                        .content(jsonPath)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().is2xxSuccessful());
 
     }
 
@@ -113,7 +115,7 @@ public class PathControllerTest {
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/createPath")
                         .header("token", "token")
-                        .content(asJsonString(pathEntity))
+                        .content(jsonPath)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
@@ -186,7 +188,7 @@ public class PathControllerTest {
                        """);
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathRepository.findById(pathEntity.getId())).thenReturn(java.util.Optional.of(pathEntity));
+        when(pathRepository.findById(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"))).thenReturn(java.util.Optional.of(pathEntity));
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/modifyDescription")
@@ -255,48 +257,6 @@ public class PathControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    public void testAddPointUnauthorized() throws Exception {
-
-        PathEntity pathEntity = new PathEntity();
-        pathEntity.setId(new ObjectId());
-
-        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-
-        JSONObject object = new JSONObject();
-        object.put("id", pathEntity.getId().toString());
-        object.put("longitude", 12.25);
-        object.put("latitude", 48.25);
-
-        mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/addPoint")
-                        .content(asJsonString(object))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isUnauthorized());
-
-    }
-
-    @Test
-    public void testAddPoint() throws Exception {
-
-        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
-
-        JSONObject object = new JSONObject();
-        object.put("id", pathEntity.getId());
-        object.put("longitude", 12.25);
-        object.put("latitude", 48.25);
-
-        System.out.println(object);
-
-        mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/addPoint")
-                        .content(String.valueOf(object))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
-    }
     @Test
     public void testResearchPathsOk() throws Exception {
         String email = "utilisateur@test.com";

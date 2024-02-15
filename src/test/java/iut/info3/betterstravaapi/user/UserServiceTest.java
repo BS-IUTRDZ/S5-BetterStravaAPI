@@ -106,12 +106,12 @@ class UserServiceTest {
         liste.add(path);
         liste.add(pathVide);
 
-        Map<String,String> expected = new HashMap();
+        Map<String,String> expected = new HashMap<>();
         expected.put("nombre_parcours","4");
         expected.put("temps","4500.0");
         expected.put("distance","45.0");
 
-        assertEquals(expected,userService.calculerPerformance(liste));
+        assertEquals(expected, userService.calculerPerformance(liste));
 
     }
 
