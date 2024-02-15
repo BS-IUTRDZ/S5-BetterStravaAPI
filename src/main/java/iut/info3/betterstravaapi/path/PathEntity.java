@@ -3,6 +3,7 @@ package iut.info3.betterstravaapi.path;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import iut.info3.betterstravaapi.path.jsonmodels.FullPath;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -96,6 +97,16 @@ public class PathEntity {
         this.points = new ArrayList<>(point);
         this.archive = false;
         this.statistiques = stats;
+    }
+
+    public PathEntity(final int idUser, final FullPath path) {
+        this.idUtilisateur = idUser;
+        this.nom = path.getNom();
+        this.description = path.getDescription();
+        this.date = path.getDate();
+        this.points = path.pointsToCoordonnees();
+        this.archive = false;
+        this.statistiques = new Statistiques();
     }
 
     /**
