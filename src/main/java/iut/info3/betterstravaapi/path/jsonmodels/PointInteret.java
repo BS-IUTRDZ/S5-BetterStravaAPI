@@ -26,4 +26,8 @@ public class PointInteret {
                 '}';
     }
 
+    public Point getPos() {
+        return pos;
+    }
+
 }
