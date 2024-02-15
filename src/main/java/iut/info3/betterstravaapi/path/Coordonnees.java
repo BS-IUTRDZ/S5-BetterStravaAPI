@@ -16,6 +16,11 @@ public class Coordonnees {
     private double longitude;
 
     /**
+     * altitude du point referencer.
+     */
+    private double altitude;
+
+    /**
      * constructeur par default pour la compilation.
      */
     public Coordonnees() { }
@@ -24,10 +29,14 @@ public class Coordonnees {
      * constructeur d'une coordonnees.
      * @param lati latitude des coordonees.
      * @param longi longitude des coordonees.
+     * @param alti altitude des coordonees.
      */
-    public Coordonnees(final double lati, final double longi) {
+    public Coordonnees(final double lati,
+                       final double longi,
+                       final double alti) {
         this.latitude = lati;
         this.longitude = longi;
+        this.altitude = alti;
     }
 
     /**
@@ -44,6 +53,14 @@ public class Coordonnees {
      */
     public double getLongitude() {
         return longitude;
+    }
+
+    /**
+     * getter de l'altitude.
+     * @return l'altitude
+     */
+    public double getAltitude() {
+        return altitude;
     }
 
 }

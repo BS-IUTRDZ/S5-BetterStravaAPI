@@ -38,7 +38,7 @@ public class PointInteret {
         this.nom = name;
         this.description = descri;
         this.coordonnees = new Coordonnees(coord.getLatitude(),
-                coord.getLongitude());
+                coord.getLongitude(), 0);
     }
 
     /**
@@ -79,7 +79,7 @@ public class PointInteret {
      */
     public Coordonnees getCoordonnees() {
         return new Coordonnees(coordonnees.getLatitude(),
-                coordonnees.getLongitude());
+                coordonnees.getLongitude(), 0);
     }
 
     /**
@@ -88,7 +88,7 @@ public class PointInteret {
      */
     public void setCoordonnees(final Coordonnees coord) {
         this.coordonnees = new Coordonnees(coord.getLatitude(),
-                coord.getLongitude());
+                coord.getLongitude(), 0);
     }
 
 }

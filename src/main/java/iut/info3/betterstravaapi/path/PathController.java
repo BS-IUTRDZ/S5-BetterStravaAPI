@@ -124,16 +124,14 @@ public class PathController {
                     HttpStatus.UNAUTHORIZED);
         }
 
-        System.out.println(" --------------- Création du parcours --------------- ");
-        System.out.println("Nom : " + pathBody.getNom());
-        System.out.println("Description : " + pathBody.getDescription());
-        System.out.println("Date : " + pathBody.getDate());
-        System.out.println("Durée : " + pathBody.getDuree());
-        System.out.println("Points : " + pathBody.getPoints());
-        System.out.println("Points d'intérêt : " + pathBody.getPointsInteret());
-        System.out.println(" --------------- Fin de la création du parcours --------------- ");
+        // Création et sauvegarde du parcours dans la base de données.
+        PathEntity entity = new PathEntity(user.getId(), pathBody);
+        pathRepository.save(entity);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        response.put("message", "parcours correctement cree");
+        response.put("id", entity.getId().toString());
+
+        return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
 
 

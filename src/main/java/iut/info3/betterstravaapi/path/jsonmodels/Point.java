@@ -1,6 +1,7 @@
 package iut.info3.betterstravaapi.path.jsonmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import iut.info3.betterstravaapi.path.Coordonnees;
 
 public class Point {
 
@@ -8,7 +9,7 @@ public class Point {
     private double lat;
 
     @JsonProperty("lon")
-    private double lng;
+    private double lon;
 
     @JsonProperty("alt")
     private double alt;
@@ -17,9 +18,13 @@ public class Point {
     public String toString() {
         return "Point{" +
                 "lat=" + lat +
-                ", lon=" + lng +
+                ", lon=" + lon +
                 ", alt=" + alt +
                 '}';
+    }
+
+    public Coordonnees toCoordonnees() {
+        return new Coordonnees(lat, lon, alt);
     }
 
 }
