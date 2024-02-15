@@ -10,13 +10,13 @@ public class CoordonneesTest {
 
     @Test
     public void testGetLat() {
-        Coordonnees coord = new Coordonnees(15.5,15.2);
+        Coordonnees coord = new Coordonnees(15.5,15.2,0);
         assertEquals("",15.5,coord.getLatitude());
     }
 
     @Test
     public void testGetLong() {
-        Coordonnees coord = new Coordonnees(15.5,15.2);
+        Coordonnees coord = new Coordonnees(15.5,15.2,0);
         assertEquals("",15.2,coord.getLongitude());
     }
 
