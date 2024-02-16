@@ -11,14 +11,14 @@
 | Synthèse_DenivelerPos | Nombre de mètre monté durant un parcour | Integer | null | null |
 |Synthèse_DenivelerNeg | Nombre de mètre descendu durant un parcour | Integer | null | null |
 | Synthèse_Vitesse | Vitesse moyenne durant un parcour | Integer | null | Format : XX m/s ou XX m/m ou XX k/h |
-| Point_Lattitude | Lattitude d'un point durant un parcour | Integer | null | null |
-| Point_Longitude | Longitude d'un point durant un parcour | Integer | null | null |
-| Point_Altitude | Altitude d'un point durant un parcour | Integer |
+| Point_Lattitude | Lattitude d'un jsonPoint durant un parcour | Integer | null | null |
+| Point_Longitude | Longitude d'un jsonPoint durant un parcour | Integer | null | null |
+| Point_Altitude | Altitude d'un jsonPoint durant un parcour | Integer |
 | null | null |
-| PointInteret_Lattitude | Lattitude d'un point d'interet durant un parcour | Integer | null | null |
-| PointInteret_Longitude | Longitude d'un point d'interet durant un parcour | Integer | null | null |
-| PointInteret_Altitude | Altitude d'un point d'interet durant un parcour | Integer |
+| PointInteret_Lattitude | Lattitude d'un jsonPoint d'interet durant un parcour | Integer | null | null |
+| PointInteret_Longitude | Longitude d'un jsonPoint d'interet durant un parcour | Integer | null | null |
+| PointInteret_Altitude | Altitude d'un jsonPoint d'interet durant un parcour | Integer |
 | null | null |
-| PointInteret_Description | Description associer a un point d'interet | String | nb caractère < 1000 | null |
-| PointInteret_Titre | Titre associer a un point d'interet | String | nb caractère < 20 | null |
-| PointInteret_Photos | Photos facultative prise par l'utilisateur l'ors de l'enregistrement d'un point d'intérêt | String |null |
+| PointInteret_Description | Description associer a un jsonPoint d'interet | String | nb caractère < 1000 | null |
+| PointInteret_Titre | Titre associer a un jsonPoint d'interet | String | nb caractère < 20 | null |
+| PointInteret_Photos | Photos facultative prise par l'utilisateur l'ors de l'enregistrement d'un jsonPoint d'intérêt | String |null |

@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FullPath {
+public class JsonFullPath {
 
     @NotNull
     @JsonProperty("nom")
@@ -29,11 +29,11 @@ public class FullPath {
 
     @NotEmpty
     @JsonProperty("points")
-    private List<Point> points;
+    private List<JsonPoint> jsonPoints;
 
     @NotEmpty
     @JsonProperty("pointsInterets")
-    private List<PointInteret> pointsInterets;
+    private List<JsonPointInteret> pointsInterets;
 
     public String getNom() {
         return nom;
@@ -51,19 +51,19 @@ public class FullPath {
         return duree;
     }
 
-    public List<Point> getPoints() {
-        return points;
+    public List<JsonPoint> getPoints() {
+        return jsonPoints;
     }
 
     public List<Coordonnees> pointsToCoordonnees() {
         List<Coordonnees> coordonnees = new ArrayList<>();
-        for (Point point : points) {
-            coordonnees.add(point.toCoordonnees());
+        for (JsonPoint jsonPoint : jsonPoints) {
+            coordonnees.add(jsonPoint.toCoordonnees());
         }
         return coordonnees;
     }
 
-    public List<PointInteret> getPointsInteret() {
+    public List<JsonPointInteret> getPointsInteret() {
         return pointsInterets;
     }
 }

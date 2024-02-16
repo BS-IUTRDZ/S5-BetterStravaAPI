@@ -3,7 +3,7 @@ package iut.info3.betterstravaapi.path.jsonmodels;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import iut.info3.betterstravaapi.path.Coordonnees;
 
-public class Point {
+public class JsonPoint {
 
     @JsonProperty("lat")
     private double lat;
