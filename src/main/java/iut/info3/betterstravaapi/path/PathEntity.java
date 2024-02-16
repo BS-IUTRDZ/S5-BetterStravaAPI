@@ -60,6 +60,9 @@ public class PathEntity {
      */
     private List<PointInteret> pointsInterets;
 
+    /**
+     * statistiques du parcours.
+     */
     private Statistiques statistiques;
 
     /**
@@ -84,6 +87,7 @@ public class PathEntity {
      * @param descri descri du parcours donnee par l'utilisateur
      * @param dateCreation date de création du parcours
      * @param point liste des point de coordonnees composant le parcours
+     * @param stats statistiques du parcours
      */
     public PathEntity(final Integer idUser, final String name,
                       final String descri,
@@ -99,6 +103,11 @@ public class PathEntity {
         this.statistiques = stats;
     }
 
+    /**
+     * Création d'un parcours.
+     * @param idUser id de l'utilisateur a qui apartiens le parcours
+     * @param path parcours complet
+     */
     public PathEntity(final int idUser, final JsonFullPath path) {
         this.idUtilisateur = idUser;
         this.nom = path.getNom();
@@ -256,26 +265,25 @@ public class PathEntity {
     }
 
     /**
-     *
-     * @return
+     * Getter des statistiques.
+     * @return Les statistiques du parcours.
      */
     public Statistiques getStatistiques() {
         return statistiques;
     }
 
     /**
-     *
-     * @param statistiques
+     * Setter des statistiques.
+     * @param stat Variable de type Statistiques à set
      */
-    public void setStatistiques(Statistiques statistiques) {
-        this.statistiques = statistiques;
+    public void setStatistiques(final Statistiques stat) {
+        this.statistiques = stat;
     }
 
     /**
      * toString de l'entity.
      * @return un string de l'entity
      */
-
     @Override
     public String toString() {
         return "PathEntity{"
