@@ -229,7 +229,6 @@ public class PathEntity {
         return archive;
     }
 
-
     /**
      * getter de la date.
      * @return la date en long
