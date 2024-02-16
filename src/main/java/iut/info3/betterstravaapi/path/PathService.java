@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Service des parcours.
@@ -85,6 +86,8 @@ public class PathService {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
                 Locale.FRANCE);
 
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
         long dateMin = sdf.parse(dateInf).getTime();
         long dateMax = sdf.parse(dateSup).getTime();
         return pathRepository
@@ -115,8 +118,10 @@ public class PathService {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
                 Locale.FRANCE);
 
-        long dateMin = sdf.parse(dateInf).getTime();
-        long dateMax = sdf.parse(dateSup).getTime();
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        long dateMin = sdf.parse(dateInf).toInstant().toEpochMilli();
+        long dateMax = sdf.parse(dateSup).toInstant().toEpochMilli();
         return pathRepository
                 .findEntitiesByDateAndNameAndDistance(dateMin, dateMax, nom,
                         distanceMin, distanceMax, id, false);

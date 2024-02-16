@@ -3,6 +3,7 @@ package iut.info3.betterstravaapi.path;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.google.gson.Gson;
 import iut.info3.betterstravaapi.path.jsonmodels.JsonFullPath;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
@@ -100,7 +101,9 @@ public class PathEntity {
         this.date = dateCreation;
         this.points = new ArrayList<>(point);
         this.archive = false;
-        this.statistiques = stats;
+        this.statistiques = new Statistiques(stats.getDuree(),
+                stats.getDistance(), stats.getVitesseMoyenne(),
+                stats.getDenivPos(), stats.getDenivNeg());
     }
 
     /**
@@ -269,7 +272,10 @@ public class PathEntity {
      * @return Les statistiques du parcours.
      */
     public Statistiques getStatistiques() {
-        return statistiques;
+        // Copie profonde pour éviter les modifications
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(statistiques),
+                                Statistiques.class);
     }
 
     /**
@@ -277,7 +283,10 @@ public class PathEntity {
      * @param stat Variable de type Statistiques à set
      */
     public void setStatistiques(final Statistiques stat) {
-        this.statistiques = stat;
+        // Copie profonde pour éviter les modifications
+        Gson gson = new Gson();
+        this.statistiques = gson.fromJson(gson.toJson(stat),
+                                            Statistiques.class);
     }
 
     /**
