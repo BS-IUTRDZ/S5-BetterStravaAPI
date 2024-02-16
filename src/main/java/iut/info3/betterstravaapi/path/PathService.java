@@ -151,11 +151,14 @@ public class PathService {
 
     /**
      * Recupère un parcours par son id.
+     * @param idUtilisateur id unique de l'utilisateur en base de données
      * @param id id d'un parcours
      * @return le parcours correspondant à l'id
      */
-    public PathEntity recupParcoursParId(final ObjectId id) {
-        return pathRepository.findByIdAndArchiveFalse(id);
+    public PathEntity recupParcoursParId(final ObjectId id,
+                                         final int idUtilisateur) {
+        return pathRepository.findByIdAndArchiveFalseAndAndIdUtilisateur(id,
+                idUtilisateur);
     }
 
 }
