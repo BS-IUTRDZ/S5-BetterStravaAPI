@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PointInteretTest {
+class JsonPointInteretTest {
 
-    private PointInteret pointInteret;
+    private JsonPointInteret pointInteret;
     @BeforeEach
     void setUp() {
 
@@ -16,7 +16,7 @@ class PointInteretTest {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            pointInteret = mapper.readValue(pointInteretJson, PointInteret.class);
+            pointInteret = mapper.readValue(pointInteretJson, JsonPointInteret.class);
         } catch (Exception e) {
             fail("Impossible de creer le point d'intéret de test");
         }

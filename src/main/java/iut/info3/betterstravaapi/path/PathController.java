@@ -1,6 +1,6 @@
 package iut.info3.betterstravaapi.path;
 
-import iut.info3.betterstravaapi.path.jsonmodels.FullPath;
+import iut.info3.betterstravaapi.path.jsonmodels.JsonFullPath;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
 import jakarta.validation.Valid;
@@ -75,7 +75,7 @@ public class PathController {
      */
     @PostMapping("/createPath")
     public ResponseEntity<Object> createPath(
-            @RequestBody @Valid final FullPath pathBody,
+            @RequestBody @Valid final JsonFullPath pathBody,
             @RequestHeader("token") final String token) {
 
         /*JSONObject response = new JSONObject();

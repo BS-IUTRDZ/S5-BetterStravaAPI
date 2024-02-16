@@ -3,11 +3,11 @@ package iut.info3.betterstravaapi.path.jsonmodels;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 
-public class PointInteret {
+public class JsonPointInteret {
 
     @NotNull
     @JsonProperty("pos")
-    private Point pos;
+    private JsonPoint pos;
 
     @NotNull
     @JsonProperty("nom")
@@ -26,7 +26,7 @@ public class PointInteret {
                 '}';
     }
 
-    public Point getPos() {
+    public JsonPoint getPos() {
         return pos;
     }
 

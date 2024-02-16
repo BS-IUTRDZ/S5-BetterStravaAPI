@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PointTest {
+class JsonPointTest {
 
-    private Point point;
+    private JsonPoint jsonPoint;
     @BeforeEach
     void setUp() {
 
@@ -16,7 +16,7 @@ class PointTest {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            point = mapper.readValue(pointJson, Point.class);
+            jsonPoint = mapper.readValue(pointJson, JsonPoint.class);
         } catch (Exception e) {
             fail("Impossible de creer le point de test");
         }
@@ -25,13 +25,13 @@ class PointTest {
 
     @Test
     void testToString() {
-        assertEquals("Point{lat=24.7162, lon=-12.7261, alt=1330.62}", point.toString());
+        assertEquals("Point{lat=24.7162, lon=-12.7261, alt=1330.62}", jsonPoint.toString());
     }
 
     @Test
     void toCoordonnees() {
-        assertEquals(24.7162, point.toCoordonnees().getLatitude());
-        assertEquals(-12.7261, point.toCoordonnees().getLongitude());
-        assertEquals(1330.62, point.toCoordonnees().getAltitude());
+        assertEquals(24.7162, jsonPoint.toCoordonnees().getLatitude());
+        assertEquals(-12.7261, jsonPoint.toCoordonnees().getLongitude());
+        assertEquals(1330.62, jsonPoint.toCoordonnees().getAltitude());
     }
 }

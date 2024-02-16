@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FullPathTest {
+class JsonFullPathTest {
 
-    private FullPath path;
+    private JsonFullPath path;
 
     @BeforeEach
     void setUp() {
@@ -17,7 +17,7 @@ class FullPathTest {
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            path = mapper.readValue(pathJson, FullPath.class);
+            path = mapper.readValue(pathJson, JsonFullPath.class);
         } catch (Exception e) {
             fail("Impossible de creer le parcours de test");
         }
