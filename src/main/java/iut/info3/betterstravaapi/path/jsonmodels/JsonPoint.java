@@ -3,6 +3,9 @@ package iut.info3.betterstravaapi.path.jsonmodels;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import iut.info3.betterstravaapi.path.Coordonnees;
 
+/**
+ * Classe représentant un point obtenus par une requête à l'API.
+ */
 public class JsonPoint {
 
     /**

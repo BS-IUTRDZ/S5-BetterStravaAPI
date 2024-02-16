@@ -1,14 +1,20 @@
 package iut.info3.betterstravaapi.path.jsonmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import iut.info3.betterstravaapi.path.Coordonnees;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe représentant un parcours obtenu par une requête à l'API.
+ */
 public class JsonFullPath {
 
     /**
@@ -90,7 +96,10 @@ public class JsonFullPath {
      * @return la liste des points
      */
     public List<JsonPoint> getPoints() {
-        return jsonPoints;
+        // Copie profonde pour éviter les modifications
+        Type type = new TypeToken<List<JsonPoint>>() { }.getType();
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(jsonPoints), type);
     }
 
     /**
@@ -110,6 +119,8 @@ public class JsonFullPath {
      * @return la liste des points d'interets
      */
     public List<JsonPointInteret> getPointsInteret() {
-        return pointsInterets;
+        Type type = new TypeToken<List<JsonPointInteret>>() { }.getType();
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(pointsInterets), type);
     }
 }

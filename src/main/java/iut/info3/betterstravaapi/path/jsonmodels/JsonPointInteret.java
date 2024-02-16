@@ -3,6 +3,9 @@ package iut.info3.betterstravaapi.path.jsonmodels;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Classe représentant un point d'interet obtenus par une requête à l'API.
+ */
 public class JsonPointInteret {
 
     /**
