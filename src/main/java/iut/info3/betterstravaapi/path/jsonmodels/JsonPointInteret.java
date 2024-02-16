@@ -25,9 +25,4 @@ public class JsonPointInteret {
                 ", description=" + description +
                 '}';
     }
-
-    public JsonPoint getPos() {
-        return pos;
-    }
-
 }
