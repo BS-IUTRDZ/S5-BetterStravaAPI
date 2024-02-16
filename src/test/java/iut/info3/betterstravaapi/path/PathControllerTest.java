@@ -253,11 +253,12 @@ public class PathControllerTest {
     }
 
     @Test
-    public void testAddPointUnauthorized() throws Exception {
+    public void testAddPointInternalServerError() throws Exception {
 
         PathEntity pathEntity = new PathEntity();
         pathEntity.setId(new ObjectId());
 
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
 
         JSONObject object = new JSONObject();
@@ -267,28 +268,50 @@ public class PathControllerTest {
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/addPoint")
+                        .header("token", "token")
                         .content(asJsonString(object))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isUnauthorized());
+                        .andExpect(status().isInternalServerError());
 
     }
 
     @Test
-    public void testAddPoint() throws Exception {
+    public void testAddPointUnauthorized() throws Exception {
 
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId(), 2)).thenReturn(pathEntity);
 
         JSONObject object = new JSONObject();
         object.put("id", pathEntity.getId());
         object.put("longitude", 12.25);
         object.put("latitude", 48.25);
 
-        System.out.println(object);
+        mockMvc.perform( MockMvcRequestBuilders
+                        .post("/api/path/addPoint")
+                        .header("token", "mauvaisToken")
+                        .content(String.valueOf(object))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void testAddPoint() throws Exception {
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId(), 2)).thenReturn(pathEntity);
+
+        JSONObject object = new JSONObject();
+        object.put("id", pathEntity.getId());
+        object.put("longitude", 12.25);
+        object.put("latitude", 48.25);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/addPoint")
+                        .header("token", "token")
                         .content(String.valueOf(object))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -412,7 +435,7 @@ public class PathControllerTest {
     public void testArchivingPathSuccess() throws Exception {
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId(),2)).thenReturn(pathEntity);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/archivingPath")
@@ -429,7 +452,7 @@ public class PathControllerTest {
     public void testArchivingPathUnauthorized() throws Exception {
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId(),2)).thenReturn(pathEntity);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/archivingPath")
@@ -444,7 +467,7 @@ public class PathControllerTest {
     public void testArchivingPathInternalServerError() throws Exception {
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupParcoursParId(pathEntity.getId())).thenReturn(pathEntity);
+        when(pathService.recupParcoursParId(pathEntity.getId(),2)).thenReturn(pathEntity);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/path/archivingPath")

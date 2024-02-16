@@ -83,10 +83,12 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
 
     /**
      * Recupère un parcours par son id.
+     * @param idUtilisateur id unique de l'utilisateur en base de données
      * @param id id d'un parcours
      * @return le parcours correspondant à l'id
      */
-    PathEntity findByIdAndArchiveFalse(ObjectId id);
+    PathEntity findByIdAndArchiveFalseAndAndIdUtilisateur(ObjectId id,
+                                                          int idUtilisateur);
 
 
 

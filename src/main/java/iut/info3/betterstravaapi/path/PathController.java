@@ -115,13 +115,15 @@ public class PathController {
 
     /**
      * Route d'ajout d'un point.
+     * @param token token d'accès de l'utilisateur.
      * @param pointEtId string avec id du parcours,
      *                  longitude et latitude.
      * @return message point ajouté.
      */
     @PostMapping("/addPoint")
     public ResponseEntity<Object> addPoint(
-            @RequestBody final String pointEtId) {
+            @RequestBody final String pointEtId,
+            @RequestHeader("token") final String token) {
 
         System.out.println("addpoint " + pointEtId);
 
@@ -131,6 +133,16 @@ public class PathController {
 
         Map<String, String> responseBody = new HashMap<>();
 
+        JSONObject response = new JSONObject();
+
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur",
+                    "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                    HttpStatus.UNAUTHORIZED);
+        }
+
         try {
             JSONObject jsonObject = new JSONObject(pointEtId);
 
@@ -138,13 +150,13 @@ public class PathController {
             longitude = jsonObject.getDouble("longitude");
             latitude = jsonObject.getDouble("latitude");
         } catch (Exception e) {
-            Map<String, String> response = new HashMap<String, String>();
             response.put("erreur", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(response,
+                    HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         PathEntity parcoursVise =
-                pathService.recupParcoursParId(new ObjectId(id));
+                pathService.recupParcoursParId(new ObjectId(id), user.getId());
 
         Coordonnees aAjouter = new Coordonnees(latitude, longitude);
 
@@ -338,7 +350,8 @@ public class PathController {
         // Archivage du parcours
         try {
             PathEntity parcoursVise =
-                    pathService.recupParcoursParId(new ObjectId(id));
+                    pathService.recupParcoursParId(new ObjectId(id),
+                            user.getId());
             parcoursVise.setArchive(true);
             pathRepository.save(parcoursVise);
 
