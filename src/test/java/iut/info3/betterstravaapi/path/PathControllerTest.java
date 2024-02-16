@@ -62,6 +62,7 @@ public class PathControllerTest {
                 points,
                 stats
         );
+        pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
         pathEntity.setPointsInterets(pointsInteret);
 
         userEntity = new UserEntity(

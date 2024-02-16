@@ -230,15 +230,6 @@ public class PathEntity {
     }
 
     /**
-     * getter du temps.
-     * @return le temps
-     */
-    public long getTemps() {
-        return temps;
-    }
-
-
-    /**
      * getter de la date.
      * @return la date en long
      */
