@@ -151,12 +151,14 @@ public class PathController {
      */
     @GetMapping("/findPath")
     public ResponseEntity<List<PathEntity>> findPath(
-    @RequestParam("nom") final String nom,
-    @RequestParam("dateInf") final String dateInf,
-    @RequestParam("dateSup") final String dateSup,
-    @RequestParam("distanceMin") final int distanceMin,
-    @RequestParam("distanceMax") final int distanceMax,
-    @RequestHeader("token") final String token) throws ParseException {
+            @RequestParam("nom") final String nom,
+            @RequestParam("dateInf") final String dateInf,
+            @RequestParam("dateSup") final String dateSup,
+            @RequestParam("distanceMin") final int distanceMin,
+            @RequestParam("distanceMax") final int distanceMax,
+            @RequestHeader( value = "nbPathAlreadyLoaded")
+            final int nbPathAlreadyLoaded,
+            @RequestHeader("token") final String token) throws ParseException {
 
         if (!userService.isTokenNotExpired(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -166,10 +168,10 @@ public class PathController {
         if (distanceMax != 0 || distanceMin != 0) {
             entities = pathService
                     .findParcourByDateAndNameAndDistance(nom, dateInf,
-                            dateSup, distanceMin, distanceMax, userId);
+                            dateSup, distanceMin, distanceMax, userId, nbPathAlreadyLoaded);
         } else {
             entities = pathService.findParcourByDateAndName(
-                    nom, dateInf, dateSup, userId);
+                    nom, dateInf, dateSup, userId, nbPathAlreadyLoaded);
         }
 
         return new ResponseEntity<>(entities, HttpStatus.OK);
