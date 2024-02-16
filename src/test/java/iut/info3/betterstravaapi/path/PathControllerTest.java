@@ -349,7 +349,7 @@ public class PathControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1);
+        verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1, PathService.DEFAULT_PAGE_SIZE);
 
 
     }
@@ -388,7 +388,7 @@ public class PathControllerTest {
                 .andExpect(status().isOk());
 
         verify(pathService).findParcourByDateAndNameAndDistance(
-                nom, dateMin, dateMax , distanceMin, distanceMax,1);
+                nom, dateMin, dateMax , distanceMin, distanceMax,1,PathService.DEFAULT_PAGE_SIZE);
 
 
     }

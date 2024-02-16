@@ -3,6 +3,8 @@ package iut.info3.betterstravaapi.path;
 import org.json.JSONObject;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -16,6 +18,8 @@ import java.util.Locale;
  */
 @Service
 public class PathService {
+
+    public static final int DEFAULT_PAGE_SIZE = 10;
 
     /**
      * repository connecter a la base nosql.
@@ -81,7 +85,8 @@ public class PathService {
             final String nom,
             final String dateInf,
             final String dateSup,
-            final int id) throws ParseException {
+            final int id,
+            final int nbPathAlreadyLoaded) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
                 Locale.FRANCE);
 
@@ -89,7 +94,8 @@ public class PathService {
         long dateMax = sdf.parse(dateSup).getTime();
         return pathRepository
                 .findEntitiesByDateAndName(
-                        dateMin, dateMax, nom, id, false);
+                        dateMin, dateMax, nom, id, false,
+                        getNextPage(nbPathAlreadyLoaded));
     }
 
     /**
@@ -111,15 +117,18 @@ public class PathService {
             final String dateSup,
             final int distanceMin,
             final int distanceMax,
-            final int id) throws ParseException {
+            final int id,
+            final int nbPathAlreadyLoaded) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
                 Locale.FRANCE);
 
         long dateMin = sdf.parse(dateInf).getTime();
         long dateMax = sdf.parse(dateSup).getTime();
+
         return pathRepository
                 .findEntitiesByDateAndNameAndDistance(dateMin, dateMax, nom,
-                        distanceMin, distanceMax, id, false);
+                        distanceMin, distanceMax, id, false,
+                        getNextPage(nbPathAlreadyLoaded));
     }
 
     /**
@@ -159,6 +168,11 @@ public class PathService {
                                          final int idUtilisateur) {
         return pathRepository.findByIdAndArchiveFalseAndAndIdUtilisateur(id,
                 idUtilisateur);
+    }
+
+    public Pageable getNextPage(int pageIndexStart) {
+        return PageRequest.of(pageIndexStart,
+                pageIndexStart + DEFAULT_PAGE_SIZE);
     }
 
 }

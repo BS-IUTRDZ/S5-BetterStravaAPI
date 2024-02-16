@@ -1,6 +1,7 @@
 package iut.info3.betterstravaapi.path;
 
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -58,7 +59,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
     @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, "
             + "'idUtilisateur': ?3, 'archive': ?4}")
     List<PathEntity> findEntitiesByDateAndName(
-            long dateInf, long dateSup, String nom, int id, boolean archive);
+            long dateInf, long dateSup, String nom, int id, boolean archive, Pageable pageable);
 
     /**
      *
@@ -78,7 +79,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
             + "'idUtilisateur': ?5, 'archive': ?6}")
     List<PathEntity> findEntitiesByDateAndNameAndDistance(
             long dateInf, long dateSup, String nom,
-            int distanceMin, int distanceMax, int id, boolean archive);
+            int distanceMin, int distanceMax, int id, boolean archive, Pageable pageable);
 
 
     /**
