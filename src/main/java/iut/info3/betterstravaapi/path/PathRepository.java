@@ -90,7 +90,4 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
     PathEntity findByIdAndArchiveFalseAndAndIdUtilisateur(ObjectId id,
                                                           int idUtilisateur);
 
-
-
-
 }
