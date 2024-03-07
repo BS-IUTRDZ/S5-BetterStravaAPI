@@ -460,7 +460,7 @@ public class PathControllerTest {
         String id = "a1a1a1a1a1a1a1a1a1a1a1a1";
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1")))
+        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"), userEntity.getId()))
                 .thenReturn(pathEntity);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -482,7 +482,7 @@ public class PathControllerTest {
         String id = "a1a1a1a1a1a1a1a1a1a1a1a1";
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1")))
+        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"), userEntity.getId()))
                 .thenReturn(pathEntity);
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -499,7 +499,7 @@ public class PathControllerTest {
         String id = "a1a1a1a1a1a1a1a1a1a1a1a1";
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1")))
+        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"), userEntity.getId()))
                 .thenReturn(null);
 
         mockMvc.perform(MockMvcRequestBuilders
