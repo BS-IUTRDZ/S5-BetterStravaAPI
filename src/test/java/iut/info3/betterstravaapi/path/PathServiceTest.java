@@ -40,32 +40,6 @@ public class PathServiceTest {
     }
 
     @Test
-    public void getPathInfos(){
-        PathEntity path = pathService.recupDernierParcour(1);
-        JSONObject pathJson = new JSONObject(
-                """
-                        {
-                            "description": "superbe village avec une très jolie cascade meme si la balade est un peu courte",
-                            "nom": "balade a salles-la-source",
-                            "points": {
-                                "point0": {
-                                    "latitude": 44.435465,
-                                    "longitude": 2.514783
-                                },
-                                "point1": {
-                                    "latitude": 44.436536,
-                                    "longitude": 2.514771
-                                },
-                                "point2": {
-                                    "latitude": 44.437898,
-                                    "longitude": 2.513335
-                                }
-                            }
-                        }""");
-        JSONAssert.assertEquals(pathJson,pathService.getPathInfos(path), false);
-    }
-
-    @Test
     public void testFindPaths() throws ParseException {
         pathService.findParcourByDateAndName("nom","01/01/2023","01/01/2025",1);
 

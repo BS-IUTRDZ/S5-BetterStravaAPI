@@ -384,11 +384,10 @@ public class PathController {
         //TODO verif id user = id user du parcours et id path = id transmit
 
         PathEntity path = pathService.recupParcoursParId(new ObjectId(id), user.getId());
-        System.out.println(path);
 
         if (path == null) {
             response.put("erreur", "Aucun parcours correspondant à cet id");
-            return new ResponseEntity<>(path, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(response.toMap(), HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(path, HttpStatus.OK);
