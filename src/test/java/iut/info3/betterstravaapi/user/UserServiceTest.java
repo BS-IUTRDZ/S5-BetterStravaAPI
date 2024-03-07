@@ -3,7 +3,6 @@ package iut.info3.betterstravaapi.user;
 import iut.info3.betterstravaapi.EnvGetter;
 import iut.info3.betterstravaapi.path.PathEntity;
 import iut.info3.betterstravaapi.path.Statistiques;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -91,7 +90,6 @@ class UserServiceTest {
     }
 
     @Test
-    @Disabled
     public void testCalculerPerformance() {
         PathEntity path = new PathEntity();
         path.setDate(Calendar.getInstance().getTime().getTime());

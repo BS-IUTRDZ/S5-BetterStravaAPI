@@ -380,8 +380,6 @@ public class PathController {
             return new ResponseEntity<>(response.toMap(),
                                         HttpStatus.UNAUTHORIZED);
         }
-        //TODO verif id = 24 caractères Catch IllegalArgumentException
-        //TODO verif id user = id user du parcours et id path = id transmit
 
         PathEntity path = pathService.recupParcoursParId(new ObjectId(id), user.getId());
 

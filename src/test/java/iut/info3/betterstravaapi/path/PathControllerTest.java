@@ -1,20 +1,12 @@
 package iut.info3.betterstravaapi.path;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
-import iut.info3.betterstravaapi.EnvGetter;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
-import org.apache.catalina.User;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import iut.info3.betterstravaapi.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -134,9 +126,6 @@ public class PathControllerTest {
                 .andExpect(jsonPath("$.idUtilisateur").value("2"))
                 .andExpect(jsonPath("$.nom").value("reussi"))
                 .andExpect(jsonPath("$.description").value("path success"))
-//                .andExpect(jsonPath("$.points").value("[{\"latitude\":48.25,\"longitude\":12.25},{\"latitude\":43.85,\"longitude\":17.855}]"))
-//                .andExpect(jsonPath("$.pointsInterets").value("[{\"nom\":\"test\",\"description\":\"super\",\"coordonnees\":{\"latitude\":78.58,\"longitude\":69.54}}]"))
-//                .andExpect(jsonPath("$.statistiques").value("{duree=0, distance=0.0, vitesseMoyenne=0.0, denivPos=0.0, denivNeg=0.0}"))
                 .andExpect(jsonPath("$.archive").value(false))
                 .andExpect(jsonPath("$.date").value(pathEntity.getDate()));
     }
@@ -483,9 +472,6 @@ public class PathControllerTest {
                 .andExpect(jsonPath("$.idUtilisateur").value("2"))
                 .andExpect(jsonPath("$.nom").value("reussi"))
                 .andExpect(jsonPath("$.description").value("path success"))
-//                .andExpect(jsonPath("$.points").value("[{\"latitude\":48.25,\"longitude\":12.25},{\"latitude\":43.85,\"longitude\":17.855}]"))
-//                .andExpect(jsonPath("$.pointsInterets").value("[{\"nom\":\"test\",\"description\":\"super\",\"coordonnees\":{\"latitude\":78.58,\"longitude\":69.54}}]"))
-//                .andExpect(jsonPath("$.statistiques").value("{duree=0, distance=0.0, vitesseMoyenne=0.0, denivPos=0.0, denivNeg=0.0}"))
                 .andExpect(jsonPath("$.archive").value(false))
                 .andExpect(jsonPath("$.date").value(pathEntity.getDate()));
     }
