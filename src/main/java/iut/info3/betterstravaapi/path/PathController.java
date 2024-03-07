@@ -7,19 +7,11 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.GetMapping;
-import java.util.ArrayList;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Controller du parcours.
@@ -99,7 +91,7 @@ public class PathController {
         // Création du parcours
         try {
             PathEntity path = new PathEntity(idUser, nom,
-                    description, date, new ArrayList<>());
+                    description, date, new ArrayList<>(), new Statistiques());
             pathRepository.save(path);
             response.put("message", "parcours correctement cree");
             response.put("id", path.getId().toString());
@@ -248,8 +240,8 @@ public class PathController {
 
         PathEntity dernierParcours =
                 pathService.recupDernierParcour(user.getId());
-        JSONObject pathJson = pathService.getPathInfos(dernierParcours);
-        return new ResponseEntity<>(pathJson.toMap(), HttpStatus.OK);
+
+        return new ResponseEntity<>(dernierParcours, HttpStatus.OK);
     }
 
     /**
@@ -362,5 +354,40 @@ public class PathController {
         }
 
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
+    }
+    /**
+     * Récupération d'un parcours par son id.
+     * @param id id du parcours
+     * @return le parcours au format Json
+     * Code de retour :
+     * <ul>
+     *  <li> 200 si le parcours existe </li>
+     *  <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
+     *  <li> 404 si l'id du parcours est introuvable </li>
+     *  <li> 500 si une erreur interne est survenue </li>
+     * </ul>
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getPath(
+            @PathVariable(name="id") String id,
+            @RequestHeader("token") final String token) {
+
+        JSONObject response = new JSONObject();
+        // Authentification de l'utilisateur
+        UserEntity user = userService.findUserByToken(token);
+        if (user == null) {
+            response.put("erreur", "Aucun utilisateur correspond à ce token");
+            return new ResponseEntity<>(response.toMap(),
+                                        HttpStatus.UNAUTHORIZED);
+        }
+
+        PathEntity path = pathService.recupParcoursParId(new ObjectId(id), user.getId());
+
+        if (path == null) {
+            response.put("erreur", "Aucun parcours correspondant à cet id");
+            return new ResponseEntity<>(response.toMap(), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(path, HttpStatus.OK);
     }
 }

@@ -1,20 +1,12 @@
 package iut.info3.betterstravaapi.path;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import io.cucumber.cienvironment.internal.com.eclipsesource.json.Json;
-import iut.info3.betterstravaapi.EnvGetter;
 import iut.info3.betterstravaapi.user.UserEntity;
 import iut.info3.betterstravaapi.user.UserService;
-import org.apache.catalina.User;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import iut.info3.betterstravaapi.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -29,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PathController.class)
 public class PathControllerTest {
@@ -59,12 +51,15 @@ public class PathControllerTest {
         ArrayList<PointInteret> pointsInteret = new ArrayList<>();
         pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54)));
 
+        Statistiques stats = new Statistiques();
+
         pathEntity = new PathEntity(
                 2,
                 "reussi",
                 "path success",
                 1707732412782L,
-                points
+                points,
+                stats
         );
 
         pathEntity.setPointsInterets(pointsInteret);
@@ -119,57 +114,39 @@ public class PathControllerTest {
 
     @Test
     public void testLastPathSuccess() throws Exception {
-        JSONObject jsonObject = new JSONObject(
-                """
-                        {"description": "path success"}
-                       """);
-
         when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-        when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/path/lastPath")
                         .header("token", "token")
-                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("a1a1a1a1a1a1a1a1a1a1a1a1"))
+                .andExpect(jsonPath("$.idUtilisateur").value("2"))
+                .andExpect(jsonPath("$.nom").value("reussi"))
+                .andExpect(jsonPath("$.description").value("path success"))
+                .andExpect(jsonPath("$.archive").value(false))
+                .andExpect(jsonPath("$.date").value(pathEntity.getDate()));
     }
 
     @Test
     public void testLastPathTokenInvalid() throws Exception {
-        JSONObject jsonObject = new JSONObject(
-                """
-                        {"description": "path success"}
-                       """);
-
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-        when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/path/lastPath")
                         .header("token", "mauvaisToken")
-                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().json("{'erreur': 'Aucun utilisateur correspond à ce token'}"));
     }
 
     @Test
     public void testLastPathParamInvalid() throws Exception {
-        JSONObject jsonObject = new JSONObject(
-                """
-                        {"description": "path success"}
-                       """);
-
-        when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
-        when(pathService.getPathInfos(pathEntity)).thenReturn(jsonObject);
-
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/path/lastPath")
                         .header("mauvaisToken", "mauvaisToken")
-                        .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -478,4 +455,59 @@ public class PathControllerTest {
                 .andExpect(status().isInternalServerError());
     }
 
+    @Test
+    public void testGetPathSuccess() throws Exception {
+        String id = "a1a1a1a1a1a1a1a1a1a1a1a1";
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"), userEntity.getId()))
+                .thenReturn(pathEntity);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/path/" + id)
+                        .header("token", "token")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("a1a1a1a1a1a1a1a1a1a1a1a1"))
+                .andExpect(jsonPath("$.idUtilisateur").value("2"))
+                .andExpect(jsonPath("$.nom").value("reussi"))
+                .andExpect(jsonPath("$.description").value("path success"))
+                .andExpect(jsonPath("$.archive").value(false))
+                .andExpect(jsonPath("$.date").value(pathEntity.getDate()));
+    }
+
+    @Test
+    public void testGetPathUnauthorized() throws Exception {
+
+        String id = "a1a1a1a1a1a1a1a1a1a1a1a1";
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"), userEntity.getId()))
+                .thenReturn(pathEntity);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/path/" + id)
+                        .header("token", "mauvaisToken")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().json("{'erreur': 'Aucun utilisateur correspond à ce token'}"));
+    }
+
+    @Test
+    public void testGetPathNotFound() throws Exception {
+
+        String id = "a1a1a1a1a1a1a1a1a1a1a1a1";
+
+        when(userService.findUserByToken("token")).thenReturn(userEntity);
+        when(pathService.recupParcoursParId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"), userEntity.getId()))
+                .thenReturn(null);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/path/" + id)
+                        .header("token", "token")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(content().json("{'erreur':  'Aucun parcours correspondant à cet id'}"));
+
+    }
 }

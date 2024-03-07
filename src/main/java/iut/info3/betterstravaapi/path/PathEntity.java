@@ -1,6 +1,8 @@
 package iut.info3.betterstravaapi.path;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -29,6 +31,7 @@ public class PathEntity {
      * Id du parcours.
      */
     @Id
+    @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
 
     /**
@@ -56,25 +59,12 @@ public class PathEntity {
      */
     private List<PointInteret> pointsInterets;
 
+    private Statistiques statistiques;
+
     /**
      * bollean de parcours archivé ou non.
      */
     private boolean archive;
-
-    /**
-     * temps du parcours.
-     */
-    private long temps;
-
-    /**
-     * distance parcourus pendant le parcours.
-     */
-    private double distance;
-
-    /**
-     * vistesse moyenne de la course.
-     */
-    private double vitesse;
 
     /**
      * Date de creation du parcours.
@@ -97,13 +87,15 @@ public class PathEntity {
     public PathEntity(final Integer idUser, final String name,
                       final String descri,
                       final Long dateCreation,
-                      final List<Coordonnees> point) {
+                      final List<Coordonnees> point,
+                      final Statistiques stats) {
         this.idUtilisateur = idUser;
         this.nom = name;
         this.description = descri;
         this.date = dateCreation;
         this.points = new ArrayList<>(point);
         this.archive = false;
+        this.statistiques = stats;
     }
 
     /**
@@ -226,53 +218,6 @@ public class PathEntity {
         return archive;
     }
 
-    /**
-     * getter du temps.
-     * @return le temps
-     */
-    public long getTemps() {
-        return temps;
-    }
-
-    /**
-     * setter du temps.
-     * @param temp temps du parcours
-     */
-    public void setTemps(final long temp) {
-        this.temps = temp;
-    }
-
-    /**
-     * getter de la distance.
-     * @return la distance
-     */
-    public double getDistance() {
-        return distance;
-    }
-
-    /**
-     * setter de la distance.
-     * @param distances parcourus
-     */
-    public void setDistance(final double distances) {
-        this.distance = distances;
-    }
-
-    /**
-     * getter de la vitesse.
-     * @return la vitesse
-     */
-    public double getVitesse() {
-        return vitesse;
-    }
-
-    /**
-     * setter de la vitesse.
-     * @param vit vitessedu parcours
-     */
-    public void setVitesse(final double vit) {
-        this.vitesse = vit;
-    }
 
     /**
      * getter de la date.
@@ -301,6 +246,22 @@ public class PathEntity {
     }
 
     /**
+     *
+     * @return
+     */
+    public Statistiques getStatistiques() {
+        return statistiques;
+    }
+
+    /**
+     *
+     * @param statistiques
+     */
+    public void setStatistiques(Statistiques statistiques) {
+        this.statistiques = statistiques;
+    }
+
+    /**
      * toString de l'entity.
      * @return un string de l'entity
      */
@@ -314,10 +275,8 @@ public class PathEntity {
                 + ", description='" + description + '\''
                 + ", points=" + points
                 + ", pointsInterets=" + pointsInterets
+                + ", statistiques=" + statistiques
                 + ", archive=" + archive
-                + ", temps=" + temps
-                + ", distance=" + distance
-                + ", vitesse=" + vitesse
                 + ", date=" + date
                 + '}';
     }

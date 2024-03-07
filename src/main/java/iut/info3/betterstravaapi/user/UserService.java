@@ -119,21 +119,21 @@ public class UserService {
 
     /**
      * fonction d'arrangement des statistique des parcours donner dans un json.
-     * @param parcours la liste des parcours a analyser
+     * @param parcoursList la liste des parcours a analyser
      * @return une HashMap correpondant au json des statistique
      */
     public HashMap<String, String> calculerPerformance(
-            final List<PathEntity> parcours) {
+            final List<PathEntity> parcoursList) {
 
         HashMap<String, String> map = new HashMap<>();
 
         float temps = 0;
-        float distance = 0;
-        for (PathEntity parcour : parcours) {
-            temps += parcour.getTemps();
-            distance += parcour.getDistance();
+        double distance = 0;
+        for (PathEntity parcours : parcoursList) {
+            temps += parcours.getStatistiques().getDuree();
+            distance += parcours.getStatistiques().getDistance();
         }
-        map.put("nombre_parcours", String.valueOf(parcours.size()));
+        map.put("nombre_parcours", String.valueOf(parcoursList.size()));
         map.put("temps", String.valueOf(temps));
         map.put("distance", String.valueOf(distance));
 
