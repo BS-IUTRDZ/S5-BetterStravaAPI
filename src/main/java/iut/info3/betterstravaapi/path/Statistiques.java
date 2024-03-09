@@ -38,19 +38,20 @@ public class Statistiques {
 
     /**
      * Constructeur de statistique.
-     * @param duree la durée du parcours
-     * @param distance la distance du parcours
-     * @param vitesseMoyenne la vitesse moyenne du parcours
-     * @param denivPos le cumul des dénivelés positifs du parcours
-     * @param denivNeg le cumul des dénivelés positifs du parcours
+     * @param dureeStat la durée du parcours
+     * @param distStat la distance du parcours
+     * @param vitMoyStat la vitesse moyenne du parcours
+     * @param denivPosStat le cumul des dénivelés positifs du parcours
+     * @param denivNegStat le cumul des dénivelés positifs du parcours
      */
-    public Statistiques(long duree, double distance, double vitesseMoyenne,
-                        double denivPos, double denivNeg) {
-        this.duree = duree;
-        this.distance = distance;
-        this.vitesseMoyenne = vitesseMoyenne;
-        this.denivPos = denivPos;
-        this.denivNeg = denivNeg;
+    public Statistiques(final long dureeStat, final double distStat,
+                        final double vitMoyStat, final double denivPosStat,
+                        final double denivNegStat) {
+        this.duree = dureeStat;
+        this.distance = distStat;
+        this.vitesseMoyenne = vitMoyStat;
+        this.denivPos = denivPosStat;
+        this.denivNeg = denivNegStat;
     }
 
     /** @return le temps */
@@ -60,10 +61,10 @@ public class Statistiques {
 
     /**
      * setter du temps.
-     * @param duree temps du parcours
+     * @param newDuree temps du parcours
      */
-    public void setDuree(final long duree) {
-        this.duree = duree;
+    public void setDuree(final long newDuree) {
+        this.duree = newDuree;
     }
 
     /** @return la distance */
@@ -73,10 +74,10 @@ public class Statistiques {
 
     /**
      * setter de la distance.
-     * @param distance parcourus
+     * @param newDistance parcourus
      */
-    public void setDistance(final double distance) {
-        this.distance = distance;
+    public void setDistance(final double newDistance) {
+        this.distance = newDistance;
     }
 
     /** @return la vitesse */
@@ -86,7 +87,7 @@ public class Statistiques {
 
     /**
      * setter de la vitesse.
-     * @param vitMoy vitessedu parcours
+     * @param vitMoy vitesse du parcours
      */
     public void setVitesseMoyenne(final double vitMoy) {
         this.vitesseMoyenne = vitMoy;
@@ -99,10 +100,10 @@ public class Statistiques {
 
     /**
      * Associe un denivele positif à un parcours.
-     * @param denivPos le nouvel email
+     * @param newDenivPos le nouvel email
      */
-    public void setDenivPos(double denivPos) {
-        this.denivPos = denivPos;
+    public void setDenivPos(final double newDenivPos) {
+        this.denivPos = newDenivPos;
     }
 
     /** @return le denivele negatif */
@@ -112,20 +113,24 @@ public class Statistiques {
 
     /**
      * Associe un denivele negatif à un parcours.
-     * @param denivNeg le nouvel email
+     * @param newDenivNeg le nouvel email
      */
-    public void setDenivNeg(double denivNeg) {
-        this.denivNeg = denivNeg;
+    public void setDenivNeg(final double newDenivNeg) {
+        this.denivNeg = newDenivNeg;
     }
 
+    /**
+     * Méthode toString pour afficher les statistiques.
+     * @return les statistiques sous le format d'une chaine de caractères
+     */
     @Override
     public String toString() {
-        return "{" +
-                "duree=" + duree +
-                ", distance=" + distance +
-                ", vitesseMoyenne=" + vitesseMoyenne +
-                ", denivPos=" + denivPos +
-                ", denivNeg=" + denivNeg +
-                '}';
+        return "{"
+                + "duree=" + duree
+                + ", distance=" + distance
+                + ", vitesseMoyenne=" + vitesseMoyenne
+                + ", denivPos=" + denivPos
+                + ", denivNeg=" + denivNeg
+                + '}';
     }
 }

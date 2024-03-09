@@ -3,6 +3,8 @@ package iut.info3.betterstravaapi.path;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.google.gson.Gson;
+import iut.info3.betterstravaapi.path.jsonmodels.JsonFullPath;
 import jakarta.persistence.Id;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -59,6 +61,9 @@ public class PathEntity {
      */
     private List<PointInteret> pointsInterets;
 
+    /**
+     * statistiques du parcours.
+     */
     private Statistiques statistiques;
 
     /**
@@ -83,6 +88,7 @@ public class PathEntity {
      * @param descri descri du parcours donnee par l'utilisateur
      * @param dateCreation date de création du parcours
      * @param point liste des point de coordonnees composant le parcours
+     * @param stats statistiques du parcours
      */
     public PathEntity(final Integer idUser, final String name,
                       final String descri,
@@ -95,7 +101,24 @@ public class PathEntity {
         this.date = dateCreation;
         this.points = new ArrayList<>(point);
         this.archive = false;
-        this.statistiques = stats;
+        this.statistiques = new Statistiques(stats.getDuree(),
+                stats.getDistance(), stats.getVitesseMoyenne(),
+                stats.getDenivPos(), stats.getDenivNeg());
+    }
+
+    /**
+     * Création d'un parcours.
+     * @param idUser id de l'utilisateur a qui apartiens le parcours
+     * @param path parcours complet
+     */
+    public PathEntity(final int idUser, final JsonFullPath path) {
+        this.idUtilisateur = idUser;
+        this.nom = path.getNom();
+        this.description = path.getDescription();
+        this.date = path.getDate();
+        this.points = path.pointsToCoordonnees();
+        this.archive = false;
+        this.statistiques = new Statistiques();
     }
 
     /**
@@ -218,7 +241,6 @@ public class PathEntity {
         return archive;
     }
 
-
     /**
      * getter de la date.
      * @return la date en long
@@ -246,26 +268,31 @@ public class PathEntity {
     }
 
     /**
-     *
-     * @return
+     * Getter des statistiques.
+     * @return Les statistiques du parcours.
      */
     public Statistiques getStatistiques() {
-        return statistiques;
+        // Copie profonde pour éviter les modifications
+        Gson gson = new Gson();
+        return gson.fromJson(gson.toJson(statistiques),
+                                Statistiques.class);
     }
 
     /**
-     *
-     * @param statistiques
+     * Setter des statistiques.
+     * @param stat Variable de type Statistiques à set
      */
-    public void setStatistiques(Statistiques statistiques) {
-        this.statistiques = statistiques;
+    public void setStatistiques(final Statistiques stat) {
+        // Copie profonde pour éviter les modifications
+        Gson gson = new Gson();
+        this.statistiques = gson.fromJson(gson.toJson(stat),
+                                            Statistiques.class);
     }
 
     /**
      * toString de l'entity.
      * @return un string de l'entity
      */
-
     @Override
     public String toString() {
         return "PathEntity{"
