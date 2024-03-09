@@ -9,14 +9,14 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -320,6 +320,7 @@ public class PathController {
     /**
      * Récupération d'un parcours par son id.
      * @param id id du parcours
+     * @param token token d'identification de l'utilisateur
      * @return le parcours au format Json
      * Code de retour :
      * <ul>
@@ -331,7 +332,7 @@ public class PathController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Object> getPath(
-            @PathVariable(name="id") String id,
+            @PathVariable(name = "id") final String id,
             @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
@@ -343,7 +344,8 @@ public class PathController {
                                         HttpStatus.UNAUTHORIZED);
         }
 
-        PathEntity path = pathService.recupParcoursParId(new ObjectId(id), user.getId());
+        PathEntity path = pathService.recupParcoursParId(new ObjectId(id),
+                                                         user.getId());
 
         if (path == null) {
             response.put("erreur", "Aucun parcours correspondant à cet id");
