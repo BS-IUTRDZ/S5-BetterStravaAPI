@@ -1,6 +1,7 @@
 package iut.info3.betterstravaapi.path.jsonmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import iut.info3.betterstravaapi.path.PointInteret;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -40,5 +41,13 @@ public class JsonPointInteret {
                 + ", nom=" + nom
                 + ", description=" + description
                 + '}';
+    }
+
+    /**
+     * Convertit le point d'interet json en un point d'interet.
+     * @return le point d'interet
+     */
+    public PointInteret toPointInteret() {
+        return new PointInteret(nom, description, pos.toCoordonnees());
     }
 }

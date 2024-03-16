@@ -117,6 +117,7 @@ public class PathEntity {
         this.description = path.getDescription();
         this.date = path.getDate();
         this.points = path.pointsToCoordonnees();
+        this.pointsInterets = path.getListPointInteret();
         this.archive = false;
         this.statistiques = new Statistiques();
     }

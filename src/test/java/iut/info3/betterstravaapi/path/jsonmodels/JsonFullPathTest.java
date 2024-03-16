@@ -63,7 +63,7 @@ class JsonFullPathTest {
 
     @Test
     void getPointsInteret() {
-        assertEquals(1, jsonFullPath.getPointsInteret().size());
+        assertEquals(1, jsonFullPath.getJsonPointsInteret().size());
 
         Field privatePointInteretField = null;
         try {
@@ -76,7 +76,7 @@ class JsonFullPathTest {
 
         JsonPoint jsonPoint = null;
         try {
-            jsonPoint = (JsonPoint) privatePointInteretField.get(jsonFullPath.getPointsInteret().get(0));
+            jsonPoint = (JsonPoint) privatePointInteretField.get(jsonFullPath.getJsonPointsInteret().get(0));
         } catch (IllegalAccessException e) {
             fail("Impossible d'accéder au champ privé pos");
         }
@@ -84,5 +84,17 @@ class JsonFullPathTest {
         assertEquals(1, jsonPoint.toCoordonnees().getLatitude());
         assertEquals(2, jsonPoint.toCoordonnees().getLongitude());
         assertEquals(3, jsonPoint.toCoordonnees().getAltitude());
+    }
+
+    @Test
+    void getListPointInteret() {
+        assertEquals(1, jsonFullPath.getListPointInteret().size());
+
+        assertEquals(1, jsonFullPath.getListPointInteret().get(0).getCoordonnees().getLatitude());
+        assertEquals(2, jsonFullPath.getListPointInteret().get(0).getCoordonnees().getLongitude());
+        assertEquals(3, jsonFullPath.getListPointInteret().get(0).getCoordonnees().getAltitude());
+
+        assertEquals("points d'interet", jsonFullPath.getListPointInteret().get(0).getNom());
+        assertEquals("description du point d'interet", jsonFullPath.getListPointInteret().get(0).getDescription());
     }
 }

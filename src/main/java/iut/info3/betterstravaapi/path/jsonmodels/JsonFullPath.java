@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import iut.info3.betterstravaapi.path.Coordonnees;
+import iut.info3.betterstravaapi.path.PointInteret;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -55,7 +56,7 @@ public class JsonFullPath {
     /**
      * Liste des points d'interets sur le parcours.
      */
-    @NotEmpty
+    @NotNull
     @JsonProperty("pointsInterets")
     private List<JsonPointInteret> pointsInterets;
 
@@ -118,9 +119,21 @@ public class JsonFullPath {
      * Getter de la liste des points d'interets.
      * @return la liste des points d'interets
      */
-    public List<JsonPointInteret> getPointsInteret() {
+    public List<JsonPointInteret> getJsonPointsInteret() {
         Type type = new TypeToken<List<JsonPointInteret>>() { }.getType();
         Gson gson = new Gson();
         return gson.fromJson(gson.toJson(pointsInterets), type);
+    }
+
+    /**
+     * Convertit les points d'interets json en liste de points d'interets.
+     * @return la liste des points d'interets
+     */
+    public List<PointInteret> getListPointInteret() {
+        List<PointInteret> pointInterets = new ArrayList<>();
+        for (JsonPointInteret jsonPointInteret : pointsInterets) {
+            pointInterets.add(jsonPointInteret.toPointInteret());
+        }
+        return pointInterets;
     }
 }
