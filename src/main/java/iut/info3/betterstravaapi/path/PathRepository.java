@@ -75,7 +75,7 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @return les parcours respectant tout les filtres
      */
     @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, "
-            + "distance: {$gte:  ?3, $lte: ?4},"
+            + "'statistiques.distance': {$gte:  ?3, $lte: ?4},"
             + "'idUtilisateur': ?5, 'archive': ?6}")
     List<PathEntity> findEntitiesByDateAndNameAndDistance(
             long dateInf, long dateSup, String nom,

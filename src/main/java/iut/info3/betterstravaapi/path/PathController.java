@@ -9,14 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -287,9 +280,9 @@ public class PathController {
      *     <li> 500 si une erreur interne est survenue </li>
      * </ul>
      */
-    @PostMapping("/archivingPath")
+    @PutMapping("/archivingPath")
     public ResponseEntity<Object> archivingPath(
-            @RequestBody final String id,
+            @RequestBody final PathEntity pathEntity,
             @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
@@ -306,7 +299,7 @@ public class PathController {
         // Archivage du parcours
         try {
             PathEntity parcoursVise =
-                    pathService.recupParcoursParId(new ObjectId(id),
+                    pathService.recupParcoursParId(pathEntity.getId(),
                             user.getId());
             parcoursVise.setArchive(true);
             pathRepository.save(parcoursVise);

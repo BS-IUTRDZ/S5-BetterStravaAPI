@@ -147,7 +147,7 @@ public class PathService {
     }
 
     public Pageable getNextPage(int pageIndexStart) {
-        return PageRequest.of(pageIndexStart,
+        return PageRequest.of(0,
                 pageIndexStart + DEFAULT_PAGE_SIZE);
     }
 

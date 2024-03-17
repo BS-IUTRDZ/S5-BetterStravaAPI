@@ -224,6 +224,7 @@ public class PathControllerTest {
                         .post("/api/path/modifyDescription")
                         .content(invalidJson)
                         .header("token", "token")
+
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -257,11 +258,13 @@ public class PathControllerTest {
                         + "&distanceMin=" + 0
                         + "&distanceMax=" + 0)
                         .header("token","")
+                        .header("nbPathAlreadyLoaded","0")
+
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1, PathService.DEFAULT_PAGE_SIZE);
+        verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1, 0);
 
 
     }
@@ -295,12 +298,14 @@ public class PathControllerTest {
                                 + "&distanceMin=" + distanceMin
                                 + "&distanceMax=" + distanceMax)
                         .header("token","")
+                        .header("nbPathAlreadyLoaded","0")
+
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         verify(pathService).findParcourByDateAndNameAndDistance(
-                nom, dateMin, dateMax , distanceMin, distanceMax,1,PathService.DEFAULT_PAGE_SIZE);
+                nom, dateMin, dateMax , distanceMin, distanceMax,1, 0);
 
 
     }
@@ -335,6 +340,7 @@ public class PathControllerTest {
                                 + "&distanceMin=" + distanceMin
                                 + "&distanceMax=" + distanceMax)
                         .header("token","")
+                        .header("nbPathAlreadyLoaded","0")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
@@ -348,10 +354,14 @@ public class PathControllerTest {
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(pathService.recupParcoursParId(pathEntity.getId(),2)).thenReturn(pathEntity);
-
+        JSONObject jsonObject = new JSONObject(
+                """
+                        {"description": "path success",
+                        "id": "a1a1a1a1a1a1a1a1a1a1a1a1"}
+                       """);
         mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/archivingPath")
-                        .content(pathEntity.getId().toString())
+                        .put("/api/path/archivingPath")
+                        .content(jsonObject.toString())
                         .header("token", "token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -365,10 +375,14 @@ public class PathControllerTest {
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(pathService.recupParcoursParId(pathEntity.getId(),2)).thenReturn(pathEntity);
-
+        JSONObject jsonObject = new JSONObject(
+                """
+                        {"description": "path success",
+                        "id": "a2a2a2a2a2a2a2a2a2a2a2a2"}
+                       """);
         mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/archivingPath")
-                        .content(pathEntity.getId().toString())
+                        .put("/api/path/archivingPath")
+                        .content(jsonObject.toString())
                         .header("token", "mauvaisToken")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -380,10 +394,14 @@ public class PathControllerTest {
 
         when(userService.findUserByToken("token")).thenReturn(userEntity);
         when(pathService.recupParcoursParId(pathEntity.getId(),2)).thenReturn(pathEntity);
-
+        JSONObject jsonObject = new JSONObject(
+                """
+                        {"description": "path success",
+                        "id": "a2a1a1a1a1a1a1a1a1a1a1a1"}
+                       """);
         mockMvc.perform( MockMvcRequestBuilders
-                        .post("/api/path/archivingPath")
-                        .content("a2a1a1a1a1a1a1a1a1a1a1a1")
+                        .put("/api/path/archivingPath")
+                        .content(jsonObject.toString())
                         .header("token", "token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

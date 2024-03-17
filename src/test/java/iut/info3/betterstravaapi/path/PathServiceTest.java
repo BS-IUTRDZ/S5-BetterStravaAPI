@@ -46,7 +46,7 @@ public class PathServiceTest {
         pathService.findParcourByDateAndName("nom","01/01/2023","01/01/2025",1,5);
 
 
-        verify(repository).findEntitiesByDateAndName(1672527600000L, 1735686000000L,"nom",1,false,any());
+        verify(repository).findEntitiesByDateAndName(eq(1672531200000L), eq(1735689600000L),eq("nom"),eq(1),eq(false),any());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class PathServiceTest {
         pathService.findParcourByDateAndNameAndDistance("nom","01/01/2023","01/01/2025", 15,15,1,5);
 
 
-        verify(repository).findEntitiesByDateAndNameAndDistance(1672527600000L, 1735686000000L,"nom", 15 , 15,1,false, any());
+        verify(repository).findEntitiesByDateAndNameAndDistance(eq(1672531200000L), eq(1735689600000L),eq("nom"), eq(15) , eq(15),eq(1),eq(false), any());
     }
 
 
