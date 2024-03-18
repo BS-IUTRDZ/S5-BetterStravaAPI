@@ -18,7 +18,11 @@ import java.util.TimeZone;
  */
 @Service
 public class PathService {
-
+    /**
+     * Nombre de parcours supplémentaires envoyer.
+     * Nombre de parcours supplémentaires envoyer lors
+     * d'une nouvelle tentative de chargement sur l'application
+     */
     public static final int DEFAULT_PAGE_SIZE = 10;
 
     /**
@@ -78,6 +82,8 @@ public class PathService {
      *                parcours avec une date supérieure
      * @param id id unique de l'utilisateur en base de données
      * @throws ParseException erreur de parsing de date
+     * @param nbPathAlreadyLoaded nombre de parcours déjà
+     *                            chargé sur l'application
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
      *         respectant tout les filtres et n'étant pas archiver
      */
@@ -110,6 +116,8 @@ public class PathService {
      * @param distanceMin distance minimale du parcours recherché
      * @param distanceMax distance maximale du parcours recherché
      * @throws ParseException erreur de parsing de date
+     * @param nbPathAlreadyLoaded nombre de parcours déjà
+     *                            chargé sur l'application
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
      *         respectant tout les filtres et n'étant pas archiver
      */
@@ -146,9 +154,15 @@ public class PathService {
                 idUtilisateur);
     }
 
-    public Pageable getNextPage(int pageIndexStart) {
+    /**
+     * Renvoie le filtre permettant la pagination.
+     * @param nbPathAlreadyLoaded nombre de parcours déjà charger
+     *                            dans l'application
+     * @return le filtre permettant la pagination.
+     */
+    public Pageable getNextPage(final int nbPathAlreadyLoaded) {
         return PageRequest.of(0,
-                pageIndexStart + DEFAULT_PAGE_SIZE);
+                nbPathAlreadyLoaded + DEFAULT_PAGE_SIZE);
     }
 
 }

@@ -3,6 +3,7 @@ package iut.info3.betterstravaapi.path;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -27,7 +28,7 @@ class PathRepositoryTest {
         long dateMax = 1676023910010L;
 
         // When la fonction du repository est appeler avec ce paramètre
-        List<PathEntity> entities = pathRepository.findEntitiesByDateAndName(dateMin, dateMax, nom, 1,false, any());
+        List<PathEntity> entities = pathRepository.findEntitiesByDateAndName(dateMin, dateMax, nom, 1,false, PageRequest.of(0,10));
         // Then on obtient aucun parcour
         assertEquals(0,entities.size());
 
@@ -43,7 +44,7 @@ class PathRepositoryTest {
         long dateMax = 1676023910010L;
 
         // When la fonction du repository est appeler avec ce paramètre
-        List<PathEntity> entities = pathRepository.findEntitiesByDateAndName(dateMin, dateMax, nom, 1, false,any());
+        List<PathEntity> entities = pathRepository.findEntitiesByDateAndName(dateMin, dateMax, nom, 1, false, PageRequest.of(0,10));
         // Then on obtient le parcours rechercher
         assertEquals(1,entities.size());
         PathEntity entity = entities.get(0);

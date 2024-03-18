@@ -54,12 +54,16 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @param nom chaine permettant de faire le filtre sur le champ nom
      * @param id id unique de l'utilisateur en base de données
      * @param archive filtre sur le champ archive permettant
+     * @param pageable filtre permettant de limiter le nombre de parcours
+     *                 renvoyer en fonction du nombre de parcours déjà charger
+     *                 dans l'application.
      * @return les parcours respectant tout les filtres
      */
     @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, "
             + "'idUtilisateur': ?3, 'archive': ?4}")
     List<PathEntity> findEntitiesByDateAndName(
-            long dateInf, long dateSup, String nom, int id, boolean archive, Pageable pageable);
+            long dateInf, long dateSup, String nom, int id,
+            boolean archive, Pageable pageable);
 
     /**
      *
@@ -72,6 +76,9 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
      * @param distanceMax distance maximale du parcours recherché
      * @param id id unique de l'utilisateur en base de données
      * @param archive filtre sur le champ archive permettant
+     * @param pageable filtre permettant de limiter le nombre de parcours
+     *                 renvoyer en fonction du nombre de parcours déjà charger
+     *                 dans l'application.
      * @return les parcours respectant tout les filtres
      */
     @Query("{'date':  {$gte: ?0, $lte: ?1}, nom: {$regex: ?2}, "
@@ -79,7 +86,9 @@ public interface PathRepository extends MongoRepository<PathEntity, ObjectId> {
             + "'idUtilisateur': ?5, 'archive': ?6}")
     List<PathEntity> findEntitiesByDateAndNameAndDistance(
             long dateInf, long dateSup, String nom,
-            int distanceMin, int distanceMax, int id, boolean archive, Pageable pageable);
+            int distanceMin, int distanceMax, int id,
+            boolean archive, Pageable pageable);
+
 
 
     /**
