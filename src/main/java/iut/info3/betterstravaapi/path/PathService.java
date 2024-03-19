@@ -2,6 +2,8 @@ package iut.info3.betterstravaapi.path;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -16,6 +18,12 @@ import java.util.TimeZone;
  */
 @Service
 public class PathService {
+    /**
+     * Nombre de parcours supplémentaires envoyer.
+     * Nombre de parcours supplémentaires envoyer lors
+     * d'une nouvelle tentative de chargement sur l'application
+     */
+    public static final int DEFAULT_PAGE_SIZE = 10;
 
     /**
      * repository connecter a la base nosql.
@@ -74,6 +82,8 @@ public class PathService {
      *                parcours avec une date supérieure
      * @param id id unique de l'utilisateur en base de données
      * @throws ParseException erreur de parsing de date
+     * @param nbPathAlreadyLoaded nombre de parcours déjà
+     *                            chargé sur l'application
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
      *         respectant tout les filtres et n'étant pas archiver
      */
@@ -81,7 +91,8 @@ public class PathService {
             final String nom,
             final String dateInf,
             final String dateSup,
-            final int id) throws ParseException {
+            final int id,
+            final int nbPathAlreadyLoaded) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
                 Locale.FRANCE);
 
@@ -91,7 +102,8 @@ public class PathService {
         long dateMax = sdf.parse(dateSup).getTime();
         return pathRepository
                 .findEntitiesByDateAndName(
-                        dateMin, dateMax, nom, id, false);
+                        dateMin, dateMax, nom, id, false,
+                        getNextPage(nbPathAlreadyLoaded));
     }
 
     /**
@@ -104,6 +116,8 @@ public class PathService {
      * @param distanceMin distance minimale du parcours recherché
      * @param distanceMax distance maximale du parcours recherché
      * @throws ParseException erreur de parsing de date
+     * @param nbPathAlreadyLoaded nombre de parcours déjà
+     *                            chargé sur l'application
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
      *         respectant tout les filtres et n'étant pas archiver
      */
@@ -113,7 +127,8 @@ public class PathService {
             final String dateSup,
             final int distanceMin,
             final int distanceMax,
-            final int id) throws ParseException {
+            final int id,
+            final int nbPathAlreadyLoaded) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
                 Locale.FRANCE);
 
@@ -123,7 +138,8 @@ public class PathService {
         long dateMax = sdf.parse(dateSup).toInstant().toEpochMilli();
         return pathRepository
                 .findEntitiesByDateAndNameAndDistance(dateMin, dateMax, nom,
-                        distanceMin, distanceMax, id, false);
+                        distanceMin, distanceMax, id, false,
+                        getNextPage(nbPathAlreadyLoaded));
     }
 
     /**
@@ -136,6 +152,17 @@ public class PathService {
                                          final int idUtilisateur) {
         return pathRepository.findByIdAndArchiveFalseAndAndIdUtilisateur(id,
                 idUtilisateur);
+    }
+
+    /**
+     * Renvoie le filtre permettant la pagination.
+     * @param nbPathAlreadyLoaded nombre de parcours déjà charger
+     *                            dans l'application
+     * @return le filtre permettant la pagination.
+     */
+    public Pageable getNextPage(final int nbPathAlreadyLoaded) {
+        return PageRequest.of(0,
+                nbPathAlreadyLoaded + DEFAULT_PAGE_SIZE);
     }
 
 }

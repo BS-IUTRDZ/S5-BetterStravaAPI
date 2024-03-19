@@ -9,14 +9,16 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 import java.util.List;
 
@@ -142,6 +144,8 @@ public class PathController {
      * @param token token d'identification de l'utilisateur
      * @param distanceMin distance minimale du parcours rechercher
      * @param distanceMax distance maximale du parcours rechercher
+     * @param nbPathAlreadyLoaded nombre de parcours déjà
+     *                            chargé sur l'application
      * @throws ParseException si les dates ne sont pas au bon format
      * @return un code de retour :
      * <ul>
@@ -151,12 +155,14 @@ public class PathController {
      */
     @GetMapping("/findPath")
     public ResponseEntity<List<PathEntity>> findPath(
-    @RequestParam("nom") final String nom,
-    @RequestParam("dateInf") final String dateInf,
-    @RequestParam("dateSup") final String dateSup,
-    @RequestParam("distanceMin") final int distanceMin,
-    @RequestParam("distanceMax") final int distanceMax,
-    @RequestHeader("token") final String token) throws ParseException {
+            @RequestParam("nom") final String nom,
+            @RequestParam("dateInf") final String dateInf,
+            @RequestParam("dateSup") final String dateSup,
+            @RequestParam("distanceMin") final int distanceMin,
+            @RequestParam("distanceMax") final int distanceMax,
+            @RequestHeader(value = "nbPathAlreadyLoaded")
+            final int nbPathAlreadyLoaded,
+            @RequestHeader("token") final String token) throws ParseException {
 
         if (!userService.isTokenNotExpired(token)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -166,10 +172,11 @@ public class PathController {
         if (distanceMax != 0 || distanceMin != 0) {
             entities = pathService
                     .findParcourByDateAndNameAndDistance(nom, dateInf,
-                            dateSup, distanceMin, distanceMax, userId);
+                            dateSup, distanceMin, distanceMax, userId,
+                            nbPathAlreadyLoaded);
         } else {
             entities = pathService.findParcourByDateAndName(
-                    nom, dateInf, dateSup, userId);
+                    nom, dateInf, dateSup, userId, nbPathAlreadyLoaded);
         }
 
         return new ResponseEntity<>(entities, HttpStatus.OK);
@@ -275,7 +282,7 @@ public class PathController {
 
     /**
      * Route d'archivage d'un parcours.
-     * @param id id d'un parcours.
+     * @param pathEntity version réduite d'un pathEntity avec son id
      * @param token token d'identification de l'utilisateur
      * @return un code de retour :
      * <ul>
@@ -285,9 +292,9 @@ public class PathController {
      *     <li> 500 si une erreur interne est survenue </li>
      * </ul>
      */
-    @PostMapping("/archivingPath")
+    @PutMapping("/archivingPath")
     public ResponseEntity<Object> archivingPath(
-            @RequestBody final String id,
+            @RequestBody final PathEntity pathEntity,
             @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
@@ -304,7 +311,7 @@ public class PathController {
         // Archivage du parcours
         try {
             PathEntity parcoursVise =
-                    pathService.recupParcoursParId(new ObjectId(id),
+                    pathService.recupParcoursParId(pathEntity.getId(),
                             user.getId());
             parcoursVise.setArchive(true);
             pathRepository.save(parcoursVise);
