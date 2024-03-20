@@ -81,42 +81,6 @@ public class PathController {
             @RequestBody @Valid final JsonFullPath pathBody,
             @RequestHeader("token") final String token) {
 
-        /*JSONObject response = new JSONObject();
-
-        // Authentification de l'utilisateur
-        UserEntity user = userService.findUserByToken(token);
-        if (user == null) {
-            response.put("erreur", "Aucun utilisateur correspond à ce token");
-            return new ResponseEntity<>(response.toMap(),
-                    HttpStatus.UNAUTHORIZED);
-        }
-
-        // Récupération de l'id de l'utilisateur via le token
-        int idUser = user.getId();
-
-        JSONObject requestBody = new JSONObject(pathBody);
-        String nom = requestBody.getString("nom");
-        String description = requestBody.getString("description");
-        long date = requestBody.getLong("date");
-
-        // Création du parcours
-        try {
-            PathEntity path = new PathEntity(idUser, nom,
-                    description, date, new ArrayList<>(), new Statistiques());
-            pathRepository.save(path);
-            response.put("message", "parcours correctement cree");
-            response.put("id", path.getId().toString());
-            return new ResponseEntity<>(response.toMap(), HttpStatus.CREATED);
-
-        } catch (Exception e) {
-            response.put("message", "erreur de creation du parcours");
-            response.put("erreur", e.getMessage());
-            return new ResponseEntity<>(response.toMap(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }*/
-
-        // ---------------------------------------------------------------------
-
         JSONObject response = new JSONObject();
 
         // Authentification de l'utilisateur
@@ -129,6 +93,7 @@ public class PathController {
 
         // Création et sauvegarde du parcours dans la base de données.
         PathEntity entity = new PathEntity(user.getId(), pathBody);
+        entity.calculStatistiques();
         pathRepository.save(entity);
 
         response.put("message", "parcours correctement cree");

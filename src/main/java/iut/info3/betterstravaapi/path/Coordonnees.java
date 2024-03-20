@@ -21,6 +21,12 @@ public class Coordonnees {
     private double altitude;
 
     /**
+     * rayon de la terre en metre.
+     */
+    public static final double EARTH_RADIUS = 6371000.0;
+
+
+    /**
      * constructeur par default pour la compilation.
      */
     public Coordonnees() { }
@@ -63,4 +69,21 @@ public class Coordonnees {
         return altitude;
     }
 
+    /**
+     * Calcul de la distance entre deux coordonnees.
+     * @param coordonnees coordonnees a comparer.
+     * @return la distance entre les deux coordonnees en metre.
+     */
+    public double distanceTo(final Coordonnees coordonnees) {
+        double dLat = Math.toRadians(coordonnees.getLatitude()
+                                     - this.getLatitude());
+        double dLng = Math.toRadians(coordonnees.getLongitude()
+                                     - this.getLongitude());
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                   + Math.cos(Math.toRadians(this.getLatitude()))
+                   * Math.cos(Math.toRadians(coordonnees.getLatitude()))
+                   * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return EARTH_RADIUS * c;
+    }
 }

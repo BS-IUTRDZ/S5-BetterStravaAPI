@@ -1,5 +1,7 @@
 package iut.info3.betterstravaapi.path;
 
+import java.util.List;
+
 /**
  * Classe de statisques associées à un parcours.
  */
@@ -29,6 +31,16 @@ public class Statistiques {
      * Dénivelé négatif du parcours.
      */
     private double denivNeg;
+
+    /**
+     * Constante pour les conversions.
+     */
+    public static final double METERS_TO_KM = 1000.0;
+
+    /**
+     * Constante pour les conversions.
+     */
+    public static final double SECONDS_TO_HOURS = 3600.0;
 
     /**
      * Constructeur par défaut pour permettre la compilation.
@@ -132,5 +144,34 @@ public class Statistiques {
                 + ", denivPos=" + denivPos
                 + ", denivNeg=" + denivNeg
                 + '}';
+    }
+
+    /**
+     * Méthode pour effectuer le calcul des statistiques.
+     * @param points liste des points du parcours
+     */
+    public void calculStatistiques(final List<Coordonnees> points) {
+        // Calcul de la distance en km
+        this.distance = 0;
+        for (int i = 0; i < points.size() - 1; i++) {
+            this.distance += points.get(i).distanceTo(points.get(i + 1));
+        }
+        this.distance = this.distance / METERS_TO_KM;
+
+        // Calcul de la vitesse moyenne en km/h
+        this.vitesseMoyenne = this.distance / (this.duree / SECONDS_TO_HOURS);
+
+        // Calcul du dénivelé positif et négatif
+        denivPos = 0;
+        denivNeg = 0;
+        for (int i = 0; i < points.size() - 1; i++) {
+            double diff = points.get(i + 1).getAltitude()
+                    - points.get(i).getAltitude();
+            if (diff > 0) {
+                denivPos += diff;
+            } else {
+                denivNeg -= diff;
+            }
+        }
     }
 }

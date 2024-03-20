@@ -367,7 +367,7 @@ public class PathControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertTrue(pathEntity.getArchive());
+        assertTrue(pathEntity.isArchive());
     }
 
     @Test

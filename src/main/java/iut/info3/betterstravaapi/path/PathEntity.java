@@ -120,6 +120,8 @@ public class PathEntity {
         this.pointsInterets = path.getListPointInteret();
         this.archive = false;
         this.statistiques = new Statistiques();
+
+        this.statistiques.setDuree(path.getDuree());
     }
 
     /**
@@ -235,14 +237,6 @@ public class PathEntity {
     }
 
     /**
-     * getter de l'archive.
-     * @return le boolean de l'archive
-     */
-    public boolean getArchive() {
-        return archive;
-    }
-
-    /**
      * getter de la date.
      * @return la date en long
      */
@@ -256,16 +250,6 @@ public class PathEntity {
      */
     public void setDate(final long dateLong) {
         this.date = dateLong;
-    }
-
-    /**
-     * Ajoute un point au parcours courant.
-     * @param coord les coordonnées du point
-     * @return le parcours
-     */
-    public PathEntity addPoint(final Coordonnees coord) {
-        this.points.add(coord);
-        return this;
     }
 
     /**
@@ -307,5 +291,12 @@ public class PathEntity {
                 + ", archive=" + archive
                 + ", date=" + date
                 + '}';
+    }
+
+    /**
+     * Méthode pour effectuer le calcul des statistiques.
+     */
+    public void calculStatistiques() {
+        this.statistiques.calculStatistiques(this.points);
     }
 }
