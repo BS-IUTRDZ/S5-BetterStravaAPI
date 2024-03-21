@@ -55,7 +55,7 @@ class UserServiceTest {
 
         String real = userService.generateToken(entity,date);
 
-        assertEquals("1",real);
+        assertEquals(expected,real);
 
     }
 
