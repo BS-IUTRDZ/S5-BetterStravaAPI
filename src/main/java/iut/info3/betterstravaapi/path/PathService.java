@@ -4,6 +4,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -85,7 +86,8 @@ public class PathService {
      * @param nbPathAlreadyLoaded nombre de parcours déjà
      *                            chargé sur l'application
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
-     *         respectant tout les filtres et n'étant pas archiver
+     *         respectant tout les filtres, n'étant pas archiver
+     *         et trier par ordre décroissant de la date d'enregistrement
      */
     public List<PathEntity> findParcourByDateAndName(
             final String nom,
@@ -100,6 +102,7 @@ public class PathService {
 
         long dateMin = sdf.parse(dateInf).getTime();
         long dateMax = sdf.parse(dateSup).getTime();
+
         return pathRepository
                 .findEntitiesByDateAndName(
                         dateMin, dateMax, nom, id, false,
@@ -119,7 +122,8 @@ public class PathService {
      * @param nbPathAlreadyLoaded nombre de parcours déjà
      *                            chargé sur l'application
      * @return la liste des parcours de l'utilisateur avec l'id 'id'
-     *         respectant tout les filtres et n'étant pas archiver
+     *         respectant tout les filtres, n'étant pas archiver
+     *         et trier par ordre décroissant de la date d'enregistrement
      */
     public List<PathEntity> findParcourByDateAndNameAndDistance(
             final String nom,
@@ -136,6 +140,7 @@ public class PathService {
 
         long dateMin = sdf.parse(dateInf).toInstant().toEpochMilli();
         long dateMax = sdf.parse(dateSup).toInstant().toEpochMilli();
+
         return pathRepository
                 .findEntitiesByDateAndNameAndDistance(dateMin, dateMax, nom,
                         distanceMin, distanceMax, id, false,
@@ -157,12 +162,14 @@ public class PathService {
     /**
      * Renvoie le filtre permettant la pagination.
      * @param nbPathAlreadyLoaded nombre de parcours déjà charger
-     *                            dans l'application
-     * @return le filtre permettant la pagination.
+     *                            dans l'application.
+     * @return le filtre permettant la pagination et le classement
+     *         par ordre décroissant.
      */
     public Pageable getNextPage(final int nbPathAlreadyLoaded) {
         return PageRequest.of(0,
-                nbPathAlreadyLoaded + DEFAULT_PAGE_SIZE);
+                nbPathAlreadyLoaded + DEFAULT_PAGE_SIZE)
+                .withSort(Sort.by(Sort.Direction.DESC, "date"));
     }
 
 }

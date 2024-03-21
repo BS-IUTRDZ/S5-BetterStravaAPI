@@ -11,6 +11,7 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.domain.PageRequest;
 
 import java.text.ParseException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,6 +56,27 @@ public class PathServiceTest {
 
 
         verify(repository).findEntitiesByDateAndNameAndDistance(eq(1672531200000L), eq(1735689600000L),eq("nom"), eq(15) , eq(15),eq(1),eq(false), any());
+    }
+
+    @Test
+    void verifyDescOrder() throws ParseException {
+        // Given Une requête d'une application android avec des paramètres
+        // qui devrait retourner un seul parcour
+        String nom = "";
+        String dateMin = "01/01/2022";
+        String dateMax = "01/01/2025";
+        int distMin = 0;
+        int distMax = 1000;
+
+        // When la fonction du repository est appeler avec ce paramètre
+        List<PathEntity> entities =
+        pathService.findParcourByDateAndNameAndDistance(nom,dateMin,dateMax,
+                distMin,distMax,1,10);
+        // Then on obtient le parcours rechercher
+        assertEquals(2,entities.size());
+        PathEntity entity = entities.get(0);
+        assertEquals("balade a salles-la-source", entity.getNom());
+
     }
 
 
