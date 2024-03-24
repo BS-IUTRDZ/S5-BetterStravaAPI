@@ -22,43 +22,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Controller de la partie gestion des Utilisateurs de l'API.
+ * Controller of user related routes.
  */
 @RestController
 @RequestMapping(value = "/api/users")
 public class UserController {
 
-    /** Message d'erreur pour utilisateur non trouver lors d'une requête sql. */
+    /** Error message when user is not found. */
     private static final String ERROR_MESSAGE_USER_NOT_FOUND
             = "Utilisateur inconnu(e)";
 
     /**
-     * service de gestion des parcours.
+     * Service to manage paths.
      */
     @Autowired
     private PathService pathService;
 
     /**
-     * Repository associé à la table utilisateur de la base MySQL.
+     * Repository associated to the user table in the MySQL database.
      */
     @Autowired
     private UserRepository userRepository;
 
     /**
-     * Service de gestion d'utilisateur.
+     * Service to manage users.
      */
     @Autowired
     private UserService userService;
 
 
     /**
-     * Methode d'authefication d'un utilisateur.
+     * Method to authenticate a user.
      *
-     * @param email email entree par l'utilisateur
-     * @param password mot de pass entree par l'utilisateur
-     * @return une reponse http contenant le token
-     * et le code 202 si la connexion est effectuer,
-     * un message d'erreur et un code 401
+     * @param email email entered by the user
+     * @param password password entered by the user
+     * @return the new token of the user. Response code :
+     * <ul>
+     *     <li> 202 if the connection is successful</li>
+     *     <li> 401 if the user is not found</li>
+     * </ul>
      */
     @GetMapping(path = "/login")
     public ResponseEntity<Object> authenticate(
@@ -84,14 +86,13 @@ public class UserController {
     }
 
     /**
-     * Route de création d'un utilisateur.
-     * @param userBody body de la requête au format JSON contenant les
-     *                 informations permettant de créer un utilisateur
-     * @return un code de retour :
+     * Method to create a user.
+     * @param userBody the body of the request containing the user information
+     * @return a response code :
      * <ul>
-     *     <li> 201 si l'utilisateur est créé</li>
-     *     <li> 409 si l'email est déjà associé à un compte</li>
-     *     <li> 400 si il y a une erreur dans le body reçu</li>
+     *     <li> 201 if the user is created</li>
+     *     <li> 409 if the email is already used</li>
+     *     <li> 400 if the body is not valid</li>
      * </ul>
      */
     @PostMapping (path = "/createAccount")
@@ -99,22 +100,23 @@ public class UserController {
             @Validated @RequestBody final UserEntity userBody) {
 
         String email = userBody.getEmail();
-        String nom = userBody.getNom();
-        String prenom = userBody.getPrenom();
+        String lastname = userBody.getNom();
+        String firstname = userBody.getPrenom();
         String password = userBody.getMotDePasse();
 
         Map<String, String> responseBody = new HashMap<>();
 
-        if (userService.checkPresenceEmail(email)) {
+        if (userService.emailExists(email)) {
             responseBody.put(
                     "Message",
                     "Un utilisateur existe déjà pour cette adresse email");
             return new ResponseEntity<>(responseBody, HttpStatus.CONFLICT);
         }
 
-        String passwordCrypt = DigestUtils.sha256Hex(password);
+        String encryptedPassword = DigestUtils.sha256Hex(password);
 
-        UserEntity user = new UserEntity(email, nom, prenom, passwordCrypt);
+        UserEntity user = new UserEntity(email, lastname, firstname,
+                                        encryptedPassword);
         userRepository.save(user);
 
         responseBody.put("message", "Utilisateur correctement insérer");
@@ -123,9 +125,9 @@ public class UserController {
     }
 
     /**
-     * Gestion des erreurs de body mal formé dans les requêtes reçues.
+     * Error management for malformed body in received requests.
      * @param ex exception trigger
-     * @return un code de retour 400 avec un message indiquant l'erreur
+     * @return a 400 return code with the error message
      */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -145,23 +147,26 @@ public class UserController {
 
 
     /**
-     * fonction retournant les informations necessaires.
-     * a la creation de la page d'acceuil.
-     * @param jsonToken le token de l'utilisateur
-     * @return un tableau de json
+     * Method to get the necessary information for the home page.
+     * @param body the body of the request containing the token
+     * @return the information of the user. Response code :
+     * <ul>
+     *     <li>200 if the information is returned</li>
+     *     <li>401 if the token is not valid</li>
+     *     <li>400 if the body is not valid</li>
+     * </ul>
      */
     @PostMapping (path = "/getInfo")
     public ResponseEntity<Object> recupInfo(
-            @RequestBody final String jsonToken
-    ) {
+            @RequestBody final String body) {
 
         String token = "";
         HashMap<String, HashMap> reponse = new HashMap<>();
 
         try {
-            JSONObject jsonObject = new JSONObject(jsonToken.toString());
+            JSONObject jsonObject = new JSONObject(body.toString());
 
-            // Récupérer la valeur associée à la clé "token"
+            // Get the token from the body
             token = jsonObject.getString("token");
         } catch (Exception e) {
             Map<String, String> response = new HashMap<String, String>();
@@ -175,14 +180,15 @@ public class UserController {
         infoUser.put("prenom", user.getPrenom());
         infoUser.put("email", user.getEmail());
 
-        HashMap<String, String> stats30Jours = userService.calculerPerformance(
-                pathService.recupParcours30Jours(user.getId()));
+        HashMap<String, String> statsLastMonth =
+                userService.calculerPerformance(
+                        pathService.getPathsLastMonth(user.getId()));
 
         HashMap<String, String> statsGlobal = userService.calculerPerformance(
-                pathService.recupParcoursAll(user.getId()));
+                pathService.getAllPaths(user.getId()));
 
         reponse.put("user", infoUser);
-        reponse.put("30jours", stats30Jours);
+        reponse.put("30jours", statsLastMonth);
         reponse.put("global", statsGlobal);
 
         return new ResponseEntity<>(reponse, HttpStatus.OK);

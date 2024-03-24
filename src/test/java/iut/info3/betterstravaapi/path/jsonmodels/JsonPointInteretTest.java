@@ -42,8 +42,8 @@ class JsonPointInteretTest {
 
     @Test
     void getPos() throws IllegalAccessException {
-        assertEquals(1, ((JsonPoint) privatePointInteretField.get(jsonPointInteret)).toCoordonnees().getLatitude());
-        assertEquals(2, ((JsonPoint) privatePointInteretField.get(jsonPointInteret)).toCoordonnees().getLongitude());
-        assertEquals(3, ((JsonPoint) privatePointInteretField.get(jsonPointInteret)).toCoordonnees().getAltitude());
+        assertEquals(1, ((JsonPoint) privatePointInteretField.get(jsonPointInteret)).toCoordinates().getLatitude());
+        assertEquals(2, ((JsonPoint) privatePointInteretField.get(jsonPointInteret)).toCoordinates().getLongitude());
+        assertEquals(3, ((JsonPoint) privatePointInteretField.get(jsonPointInteret)).toCoordinates().getAltitude());
     }
 }

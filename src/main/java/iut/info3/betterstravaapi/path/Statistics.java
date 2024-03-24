@@ -3,60 +3,60 @@ package iut.info3.betterstravaapi.path;
 import java.util.List;
 
 /**
- * Classe de statisques associées à un parcours.
+ * Class to store the statistics of a path.
  */
-public class Statistiques {
+public class Statistics {
 
     /**
-     * Durée du parcours.
+     * Duration of the path.
      */
     private long duree;
 
     /**
-     * Distance du parcours.
+     * Length of the path.
      */
     private double distance;
 
     /**
-     * Vitesse moyenne au cours du parcours.
+     * Average speed of the path.
      */
     private double vitesseMoyenne;
 
     /**
-     * Dénivelé positif du parcours.
+     * Positive elevation of the path.
      */
     private double denivPos;
 
     /**
-     * Dénivelé négatif du parcours.
+     * Negative elevation of the path.
      */
     private double denivNeg;
 
     /**
-     * Constante pour les conversions.
+     * Constant for conversions.
      */
     public static final double METERS_TO_KM = 1000.0;
 
     /**
-     * Constante pour les conversions.
+     * Constant for conversions.
      */
     public static final double SECONDS_TO_HOURS = 3600.0;
 
     /**
-     * Constructeur par défaut pour permettre la compilation.
+     * Default constructor.
      */
-    public Statistiques() {
+    public Statistics() {
     }
 
     /**
-     * Constructeur de statistique.
-     * @param dureeStat la durée du parcours
-     * @param distStat la distance du parcours
-     * @param vitMoyStat la vitesse moyenne du parcours
-     * @param denivPosStat le cumul des dénivelés positifs du parcours
-     * @param denivNegStat le cumul des dénivelés positifs du parcours
+     * Constructor of the statistics.
+     * @param dureeStat the duration of the path
+     * @param distStat the length of the path
+     * @param vitMoyStat the average speed of the path
+     * @param denivPosStat the positive elevation of the path
+     * @param denivNegStat the negative elevation of the path
      */
-    public Statistiques(final long dureeStat, final double distStat,
+    public Statistics(final long dureeStat, final double distStat,
                         final double vitMoyStat, final double denivPosStat,
                         final double denivNegStat) {
         this.duree = dureeStat;
@@ -72,68 +72,68 @@ public class Statistiques {
     }
 
     /**
-     * setter du temps.
-     * @param newDuree temps du parcours
+     * Setter of the duration.
+     * @param newDuration the new duration
      */
-    public void setDuree(final long newDuree) {
-        this.duree = newDuree;
+    public void setDuree(final long newDuration) {
+        this.duree = newDuration;
     }
 
-    /** @return la distance */
+    /** @return the length */
     public double getDistance() {
         return distance;
     }
 
     /**
-     * setter de la distance.
-     * @param newDistance parcourus
+     * Setter of the length.
+     * @param newLength the new length
      */
-    public void setDistance(final double newDistance) {
-        this.distance = newDistance;
+    public void setDistance(final double newLength) {
+        this.distance = newLength;
     }
 
-    /** @return la vitesse */
+    /** @return the average speed */
     public double getVitesseMoyenne() {
         return vitesseMoyenne;
     }
 
     /**
-     * setter de la vitesse.
-     * @param vitMoy vitesse du parcours
+     * Setter of the average speed.
+     * @param newAvgSpeed the new average speed
      */
-    public void setVitesseMoyenne(final double vitMoy) {
-        this.vitesseMoyenne = vitMoy;
+    public void setVitesseMoyenne(final double newAvgSpeed) {
+        this.vitesseMoyenne = newAvgSpeed;
     }
 
-    /** @return le denivele positif */
+    /** @return the positive elevation */
     public double getDenivPos() {
         return denivPos;
     }
 
     /**
-     * Associe un denivele positif à un parcours.
-     * @param newDenivPos le nouvel email
+     * Setter of the positive elevation.
+     * @param newElevPos the new positive elevation
      */
-    public void setDenivPos(final double newDenivPos) {
-        this.denivPos = newDenivPos;
+    public void setDenivPos(final double newElevPos) {
+        this.denivPos = newElevPos;
     }
 
-    /** @return le denivele negatif */
+    /** @return the negative elevation */
     public double getDenivNeg() {
         return denivNeg;
     }
 
     /**
-     * Associe un denivele negatif à un parcours.
-     * @param newDenivNeg le nouvel email
+     * Setter of the negative elevation.
+     * @param newElevNeg the new negative elevation
      */
-    public void setDenivNeg(final double newDenivNeg) {
-        this.denivNeg = newDenivNeg;
+    public void setDenivNeg(final double newElevNeg) {
+        this.denivNeg = newElevNeg;
     }
 
     /**
-     * Méthode toString pour afficher les statistiques.
-     * @return les statistiques sous le format d'une chaine de caractères
+     * toString method to display the statistics.
+     * @return the statistics in a string
      */
     @Override
     public String toString() {
@@ -147,21 +147,21 @@ public class Statistiques {
     }
 
     /**
-     * Méthode pour effectuer le calcul des statistiques.
-     * @param points liste des points du parcours
+     * Method to calculate the statistics of a path.
+     * @param points list of coordinates representing the path
      */
-    public void calculStatistiques(final List<Coordonnees> points) {
-        // Calcul de la distance en km
+    public void computeStatistics(final List<Coordinates> points) {
+        // Computing the length of the path in km
         this.distance = 0;
         for (int i = 0; i < points.size() - 1; i++) {
             this.distance += points.get(i).distanceTo(points.get(i + 1));
         }
         this.distance = this.distance / METERS_TO_KM;
 
-        // Calcul de la vitesse moyenne en km/h
+        // Computing the average speed of the path in km/h
         this.vitesseMoyenne = this.distance / (this.duree / SECONDS_TO_HOURS);
 
-        // Calcul du dénivelé positif et négatif
+        // Computing both elevations of the path
         denivPos = 0;
         denivNeg = 0;
         for (int i = 0; i < points.size() - 1; i++) {

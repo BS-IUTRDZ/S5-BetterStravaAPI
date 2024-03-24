@@ -1,6 +1,6 @@
 /**
- * Package user de l'API BetterStrava.
- * Contient la partie portant sur les features liées aux utilisateurs.
+ * Package user of the BetterStrava API.
+ * Contains the class related to the user.
  */
 
 package iut.info3.betterstravaapi.user;

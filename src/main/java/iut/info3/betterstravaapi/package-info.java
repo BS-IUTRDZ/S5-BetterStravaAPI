@@ -1,5 +1,5 @@
 /**
- * Package principal du l'API BetterStrava.
- * Contient uniquement la partie lancement de l'application
+ * Main package of the application.
+ * Contains the main class of the application.
  */
 package iut.info3.betterstravaapi;

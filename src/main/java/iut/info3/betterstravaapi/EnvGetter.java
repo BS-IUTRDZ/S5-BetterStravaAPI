@@ -4,35 +4,35 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * Service de recuperation des variables d'environement.
+ * Service to get environment variables.
  */
 
 @Service
 public class EnvGetter {
 
     /**
-     * Phrase secrete pour codage jwt.
+     * Secret sentence to encode the token.
      */
     @Value("${SECRET_SENTENCE}")
     private String secretSentence;
 
     /**
-     * Duree de validite du token.
+     * Duration before token expiration.
      */
     @Value("${TOKEN_EXPIRATION_DURATION}")
     private long tokenExpirationDuration;
 
     /**
-     * getter de la Secret Sentence.
-     * @return la phrase secrete.
+     * Getter of the secret sentence.
+     * @return the secret sentence.
      */
     public String getSentence() {
         return secretSentence;
     }
 
     /**
-     * getter de la duréée avant expiration du token.
-     * @return la duréé avant expiration.
+     * Getter of the token expiration duration.
+     * @return the token expiration duration.
      */
     public long getExpiration() {
         return tokenExpirationDuration;

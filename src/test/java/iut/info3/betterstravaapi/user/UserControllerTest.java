@@ -64,7 +64,7 @@ public class UserControllerTest {
     @Test
     public void testCreateAccountWithEmailAlreadyTake() throws Exception
     {
-        when(userService.checkPresenceEmail("utilisateur@test.com")).thenReturn(true);
+        when(userService.emailExists("utilisateur@test.com")).thenReturn(true);
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/users/createAccount")
                         .content(asJsonString(new UserEntity(
@@ -110,9 +110,9 @@ public class UserControllerTest {
         user.setId(1);
 
         when(userService.findUserByToken("biche")).thenReturn(user);
-        when(pathService.recupDernierParcour(1)).thenReturn(new PathEntity());
-        when(pathService.recupParcoursAll(1)).thenReturn(new ArrayList<>());
-        when(pathService.recupParcours30Jours(1)).thenReturn(new ArrayList<>());
+        when(pathService.getLastPath(1)).thenReturn(new PathEntity());
+        when(pathService.getAllPaths(1)).thenReturn(new ArrayList<>());
+        when(pathService.getPathsLastMonth(1)).thenReturn(new ArrayList<>());
 
         mockMvc.perform( MockMvcRequestBuilders
                         .post("/api/users/getInfo")

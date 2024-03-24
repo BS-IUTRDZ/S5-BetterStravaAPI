@@ -25,35 +25,35 @@ import java.util.List;
 import java.text.ParseException;
 
 /**
- * Controller du parcours.
+ * Controller of path related routes.
  */
 @RestController
 @RequestMapping(value = "/api/path")
 public class PathController {
 
     /**
-     * service d'acces a la base nosql.
+     * Access service to the noSQL database.
      */
     @Autowired
     private final PathService pathService;
 
     /**
-     * repository associer a la base noSQL.
+     * Repository associated with the noSQL database.
      */
     @Autowired
     private final PathRepository pathRepository;
 
     /**
-     * service d'acces a la base mysql.
+     * Access service to the SQL database.
      */
     @Autowired
     private final UserService userService;
 
     /**
-     * Controlleur permettant d'autowired le pathRepository.
-     * @param pathRepo pathRepository a Autowired.
-     * @param userServ userService a Autowired.
-     * @param pathServ pathService a Autowired.
+     * Controller allowing to autowire the pathRepository.
+     * @param pathRepo pathRepository to Autowire.
+     * @param userServ userService to Autowire.
+     * @param pathServ pathService to Autowire.
      */
     public PathController(final PathRepository pathRepo,
                           final UserService userServ,
@@ -65,15 +65,15 @@ public class PathController {
 
 
     /**
-     * Route de création d'un utilisateur.
-     * @param pathBody body de la requête au format JSON contenant les
-     *                 informations permettant de créer un parcour.
-     * @param token token d'accès de l'utilisateur.
-     * @return un code de retour :
+     * Route to create a path.
+     * @param pathBody body of the request in JSON format containing the
+     *                 information to create a path.
+     * @param token access token of the user
+     * @return a return code :
      * <ul>
-     *     <li> 201 si le parcour est créé </li>
-     *     <li> 401 si le parcours n'a pas pus etre cree </li>
-     *     <li> 401 si le token est inconnue / invalide </li>
+     *     <li> 201 if the path has been created </li>
+     *     <li> 401 if the path cannot be created </li>
+     *     <li> 401 if the token is invalid </li>
      * </ul>
      */
     @PostMapping("/createPath")
@@ -83,7 +83,7 @@ public class PathController {
 
         JSONObject response = new JSONObject();
 
-        // Authentification de l'utilisateur
+        // Auth the user
         UserEntity user = userService.findUserByToken(token);
         if (user == null) {
             response.put("erreur", "Aucun utilisateur correspond à ce token");
@@ -91,9 +91,9 @@ public class PathController {
                     HttpStatus.UNAUTHORIZED);
         }
 
-        // Création et sauvegarde du parcours dans la base de données.
+        // Creating and saving the path in the database.
         PathEntity entity = new PathEntity(user.getId(), pathBody);
-        entity.calculStatistiques();
+        entity.computeStatistics();
         pathRepository.save(entity);
 
         response.put("message", "parcours correctement cree");
@@ -102,20 +102,20 @@ public class PathController {
     }
 
     /**
-     * Route de recherche d'un parcour.
-     * @param nom nom du parcour rechercher
-     * @param dateInf date minimale du parcour au format jj/mm/aaaa
-     * @param dateSup date maximale du parcour au format jj/mm/aaaa
-     * @param token token d'identification de l'utilisateur
-     * @param distanceMin distance minimale du parcours rechercher
-     * @param distanceMax distance maximale du parcours rechercher
-     * @param nbPathAlreadyLoaded nombre de parcours déjà
-     *                            chargé sur l'application
-     * @throws ParseException si les dates ne sont pas au bon format
-     * @return un code de retour :
+     * Route to search for a path.
+     * @param nom name of the searched path
+     * @param dateInf minimal date of the path in the format dd/mm/yyyy
+     * @param dateSup maximal date of the path in the format dd/mm/yyyy
+     * @param token access token of the user
+     * @param distanceMin minimal distance of the searched path
+     * @param distanceMax maximal distance of the searched path
+     * @param nbPathAlreadyLoaded number of paths already loaded
+     *                            (used for pagination)
+     * @throws ParseException if the date are not in the correct format
+     * @return The list of matched path in JSON. Return code :
      * <ul>
-     *     <li> 200 si les champs sont correctement renseigné</li>
-     *     <li> 400 sinon </li>
+     *     <li> 200 if the fields are correctly filled </li>
+     *     <li> 400 otherwise </li>
      * </ul>
      */
     @GetMapping("/findPath")
@@ -140,7 +140,7 @@ public class PathController {
                             dateSup, distanceMin, distanceMax, userId,
                             nbPathAlreadyLoaded);
         } else {
-            entities = pathService.findParcourByDateAndName(
+            entities = pathService.findPathsByDateAndName(
                     nom, dateInf, dateSup, userId, nbPathAlreadyLoaded);
         }
 
@@ -149,13 +149,12 @@ public class PathController {
 
 
     /**
-     * Route de récupération du dernier parcours au format Json.
-     * @param token token d'identification de l'utilisateur
-     * @return un code de retour :
+     * Route for getting the last path of the user in Json format.
+     * @param token token of the user
+     * @return The last path in JSON. Return code :
      * <ul>
-     *     <li> 200 si les champs sont correctement renseigné</li>
-     *     <li> 401 si token de l'utilisateur inconnu </li>
-     *     <li> 401 si token en parametre incorrect </li>
+     *     <li> 200 if the fields are correctly filled </li>
+     *     <li> 401 if the user token is unknown / invalid </li>
      * </ul>
      */
     @GetMapping("/lastPath")
@@ -172,23 +171,23 @@ public class PathController {
                     HttpStatus.UNAUTHORIZED);
         }
 
-        PathEntity dernierParcours =
-                pathService.recupDernierParcour(user.getId());
+        PathEntity lastPath =
+                pathService.getLastPath(user.getId());
 
-        return new ResponseEntity<>(dernierParcours, HttpStatus.OK);
+        return new ResponseEntity<>(lastPath, HttpStatus.OK);
     }
 
     /**
-     * Route d'archivage d'un parcours.
-     * @param pathBody body de la requête au format JSON contenant
-     *                l'id d'un parcours.
-     * @param token token d'identification de l'utilisateur
-     * @return un code de retour :
+     * Route edit the description of a path.
+     * @param pathBody body of the request in JSON format containing the
+     *                 id of the path
+     * @param token access token of the user
+     * @return a return code :
      * <ul>
-     *     <li> 200 si le parcour a été archivé </li>
-     *     <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
-     *     <li> 400 si l'id du parcours est invalide </li>
-     *     <li> 500 si une erreur interne est survenue </li>
+     *     <li> 200 if the description has been modified </li>
+     *     <li> 401 if the user token is unknown / invalid </li>
+     *     <li> 400 if the path id is invalid </li>
+     *     <li> 500 if an internal error occurred </li>
      * </ul>
      */
     @PostMapping("/modifyDescription")
@@ -200,7 +199,7 @@ public class PathController {
         ObjectId id;
         String description;
 
-        // Authentification de l'utilisateur
+        // Auth the user
         UserEntity user = userService.findUserByToken(token);
         if (user == null) {
             response.put("erreur",
@@ -218,7 +217,7 @@ public class PathController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Récupération du parcours designé par l'id
+        // Getting the path id to modify
         PathEntity path;
         try {
             path = pathRepository.findById(id).orElse(null);
@@ -232,7 +231,7 @@ public class PathController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Modification de la description
+        // Modifying the description
         try {
             path.setDescription(description);
             pathRepository.save(path);
@@ -246,15 +245,15 @@ public class PathController {
     }
 
     /**
-     * Route d'archivage d'un parcours.
-     * @param pathEntity version réduite d'un pathEntity avec son id
-     * @param token token d'identification de l'utilisateur
-     * @return un code de retour :
+     * Route to archive a path.
+     * @param pathEntity shortened version of a pathEntity with its id
+     * @param token access token of the user
+     * @return a return code :
      * <ul>
-     *     <li> 200 si le parcour a été archivé </li>
-     *     <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
-     *     <li> 400 si l'id du parcours est invalide </li>
-     *     <li> 500 si une erreur interne est survenue </li>
+     *     <li> 200 if the path has been archived </li>
+     *     <li> 401 if the user token is unknown / invalid </li>
+     *     <li> 400 if the path id is invalid </li>
+     *     <li> 500 if an internal error occurred </li>
      * </ul>
      */
     @PutMapping("/archivingPath")
@@ -264,7 +263,7 @@ public class PathController {
 
         JSONObject response = new JSONObject();
 
-        // Authentification de l'utilisateur
+        // Auth the user
         UserEntity user = userService.findUserByToken(token);
         if (user == null) {
             response.put("erreur",
@@ -273,7 +272,7 @@ public class PathController {
                     HttpStatus.UNAUTHORIZED);
         }
 
-        // Archivage du parcours
+        // Archiving the path
         try {
             PathEntity parcoursVise =
                     pathService.recupParcoursParId(pathEntity.getId(),
@@ -290,16 +289,15 @@ public class PathController {
         return new ResponseEntity<>(response.toMap(), HttpStatus.OK);
     }
     /**
-     * Récupération d'un parcours par son id.
-     * @param id id du parcours
-     * @param token token d'identification de l'utilisateur
-     * @return le parcours au format Json
-     * Code de retour :
+     * Getting a path by its id.
+     * @param id id of the path
+     * @param token token of the user
+     * @return the path in JSON format. return code :
      * <ul>
-     *  <li> 200 si le parcours existe </li>
-     *  <li> 401 si le token de l'utilisateur est inconnu/invalide </li>
-     *  <li> 404 si l'id du parcours est introuvable </li>
-     *  <li> 500 si une erreur interne est survenue </li>
+     *  <li> 200 if the path has been found </li>
+     *  <li> 401 if the user token is unknown / invalid </li>
+     *  <li> 404 if no path corresponds to this id </li>
+     *  <li> 500 if an internal error occurred </li>
      * </ul>
      */
     @GetMapping("/{id}")
@@ -308,7 +306,7 @@ public class PathController {
             @RequestHeader("token") final String token) {
 
         JSONObject response = new JSONObject();
-        // Authentification de l'utilisateur
+        // Auth the user
         UserEntity user = userService.findUserByToken(token);
         if (user == null) {
             response.put("erreur", "Aucun utilisateur correspond à ce token");

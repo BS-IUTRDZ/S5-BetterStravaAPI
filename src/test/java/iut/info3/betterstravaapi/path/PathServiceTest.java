@@ -1,14 +1,9 @@
 package iut.info3.betterstravaapi.path;
 
-import org.bson.types.ObjectId;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.data.domain.PageRequest;
 
 import java.text.ParseException;
 import java.util.List;
@@ -29,22 +24,22 @@ public class PathServiceTest {
 
     @Test
     public void testRecupDernierParcour() throws Exception{
-        assertEquals(14.6,pathService.recupDernierParcour(1).getStatistiques().getDistance());
+        assertEquals(14.6,pathService.getLastPath(1).getStatistiques().getDistance());
     }
 
     @Test
     public void testRecup30Jour(){
-        assertEquals(1,pathService.recupParcours30Jours(1).size());
+        assertEquals(1,pathService.getPathsLastMonth(1).size());
     }
 
     @Test
     public void testRecupGlobal(){
-        assertEquals(2,pathService.recupParcoursAll(1).size());
+        assertEquals(2,pathService.getAllPaths(1).size());
     }
 
     @Test
     public void testFindPaths() throws ParseException {
-        pathService.findParcourByDateAndName("nom","01/01/2023","01/01/2025",1,5);
+        pathService.findPathsByDateAndName("nom","01/01/2023","01/01/2025",1,5);
 
 
         verify(repository).findEntitiesByDateAndName(eq(1672531200000L), eq(1735689600000L),eq("nom"),eq(1),eq(false),any());

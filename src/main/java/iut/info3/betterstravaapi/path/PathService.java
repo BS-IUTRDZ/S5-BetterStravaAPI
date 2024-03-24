@@ -15,84 +15,78 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * Service des parcours.
+ * Service related to Path functionality.
  */
 @Service
 public class PathService {
     /**
-     * Nombre de parcours supplémentaires envoyer.
-     * Nombre de parcours supplémentaires envoyer lors
-     * d'une nouvelle tentative de chargement sur l'application
+     * Number of elements to display per page.
      */
     public static final int DEFAULT_PAGE_SIZE = 10;
 
     /**
-     * repository connecter a la base nosql.
+     * Repository associated with the noSQL database.
      */
     @Autowired
     private PathRepository pathRepository;
 
     /**
-     * nombre d'heure en une journée.
+     * Number of hours in a day.
      */
-    private static final int NB_HEURE_JOURNEE = 24;
+    private static final int HOURS_IN_DAY = 24;
 
     /**
-     * nombre de jours en arriere pour recuperer les parcours.
+     * Number of day to get paths from the last month.
      */
-    private static final int NB_JOURS_MOIS = -30;
+    private static final int DAY_IN_MONTH = -30;
 
     /**
-     * recuperation des parcours de l'utilisateur.
-     * des 30 derniers jours.
-     * @param idUser id de l'utilisateur
-     * @return la liste des parcours des 30 derniers jours.
+     * Getting all paths from a user since the last 30 days.
+     * @param userId id of the user
+     * @return list of paths from the last 30 days
      */
-    public List<PathEntity> recupParcours30Jours(final int idUser) {
+    public List<PathEntity> getPathsLastMonth(final int userId) {
         Calendar calendrier = Calendar.getInstance();
-        calendrier.add(Calendar.HOUR, NB_JOURS_MOIS * NB_HEURE_JOURNEE);
+        calendrier.add(Calendar.HOUR, DAY_IN_MONTH * HOURS_IN_DAY);
         return  pathRepository.findPathByIdUtilisateurAndArchiveAndDateAfter(
-                idUser, false, calendrier.getTime().getTime());
+                userId, false, calendrier.getTime().getTime());
     }
 
     /**
-     *recuperation des parcours d'un utilisateur.
-     * @param idUser id de l'utilisateur
-     * @return la liste des parcours de l'utilisateur
+     * Getting all paths from a user.
+     * @param userId id of the user
+     * @return list of paths from the user
      */
-    public List<PathEntity> recupParcoursAll(final int idUser) {
+    public List<PathEntity> getAllPaths(final int userId) {
         return  pathRepository.findPathByIdUtilisateurAndArchive(
-                idUser, false);
+                userId, false);
     }
 
     /**
-     * recuperation du dernier parcours de l'utilisateur.
-     * @param idUser id de l'utilisateur
-     * @return le PathEntity du parcours du dernier utilisateurs.
+     * Getting the last path from a user.
+     * @param userId id of the user
+     * @return the last path from the user
      */
-    public PathEntity recupDernierParcour(final int idUser) {
+    public PathEntity getLastPath(final int userId) {
         return pathRepository.findTopByIdUtilisateurAndArchiveOrderByDateDesc(
-                idUser, false);
+                userId, false);
     }
 
     /**
-     * @param nom chaine permettant de faire le filtre sur le champ nom
-     * @param dateInf date permettant de ne récupérer que les
-     *                parcours avec une date inférieure
-     * @param dateSup date permettant de ne récupérer que les
-     *                parcours avec une date supérieure
-     * @param id id unique de l'utilisateur en base de données
-     * @throws ParseException erreur de parsing de date
-     * @param nbPathAlreadyLoaded nombre de parcours déjà
-     *                            chargé sur l'application
-     * @return la liste des parcours de l'utilisateur avec l'id 'id'
-     *         respectant tout les filtres, n'étant pas archiver
-     *         et trier par ordre décroissant de la date d'enregistrement
+     * Getting paths from a user with a name and date filters.
+     * @param name filter on the name of the path
+     * @param infDate inferior date to filter the paths
+     * @param supDate superior date to filter the paths
+     * @param id filter path with the user id
+     * @throws ParseException if the date format is incorrect
+     * @param nbPathAlreadyLoaded number of paths already loaded
+     * @return list of paths from the user respecting all the filters
+     *         ordered by the date of creation in descending order
      */
-    public List<PathEntity> findParcourByDateAndName(
-            final String nom,
-            final String dateInf,
-            final String dateSup,
+    public List<PathEntity> findPathsByDateAndName(
+            final String name,
+            final String infDate,
+            final String supDate,
             final int id,
             final int nbPathAlreadyLoaded) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
@@ -100,37 +94,35 @@ public class PathService {
 
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        long dateMin = sdf.parse(dateInf).getTime();
-        long dateMax = sdf.parse(dateSup).getTime();
+        long dateMin = sdf.parse(infDate).getTime();
+        long dateMax = sdf.parse(supDate).getTime();
 
         return pathRepository
                 .findEntitiesByDateAndName(
-                        dateMin, dateMax, nom, id, false,
+                        dateMin, dateMax, name, id, false,
                         getNextPage(nbPathAlreadyLoaded));
     }
 
     /**
-     * @param nom chaine permettant de faire le filtre sur le champ nom
-     * @param dateInf date permettant de ne récupérer que les
-     *                parcours avec une date inférieure
-     * @param dateSup date permettant de ne récupérer que les
-     *                parcours avec une date supérieure
-     * @param id id unique de l'utilisateur en base de données
-     * @param distanceMin distance minimale du parcours recherché
-     * @param distanceMax distance maximale du parcours recherché
-     * @throws ParseException erreur de parsing de date
-     * @param nbPathAlreadyLoaded nombre de parcours déjà
-     *                            chargé sur l'application
-     * @return la liste des parcours de l'utilisateur avec l'id 'id'
-     *         respectant tout les filtres, n'étant pas archiver
-     *         et trier par ordre décroissant de la date d'enregistrement
+     * Getting paths from a user with a name, date and distance filters.
+     * @param name filter on the name of the path
+     * @param infDate inferior date to filter the paths
+     * @param supDate superior date to filter the paths
+     * @param id filter path with the user id
+     * @param minLength minimum length of the path
+     * @param maxLength maximum length of the path
+     * @throws ParseException if the date format is incorrect
+     * @param nbPathAlreadyLoaded number of paths already loaded
+     * @return list of paths from the user respecting all the filters
+     *         ordered by the date of creation in descending order
+     *         and respecting the pagination
      */
     public List<PathEntity> findParcourByDateAndNameAndDistance(
-            final String nom,
-            final String dateInf,
-            final String dateSup,
-            final int distanceMin,
-            final int distanceMax,
+            final String name,
+            final String infDate,
+            final String supDate,
+            final int minLength,
+            final int maxLength,
             final int id,
             final int nbPathAlreadyLoaded) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy",
@@ -138,33 +130,31 @@ public class PathService {
 
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        long dateMin = sdf.parse(dateInf).toInstant().toEpochMilli();
-        long dateMax = sdf.parse(dateSup).toInstant().toEpochMilli();
+        long minDate = sdf.parse(infDate).toInstant().toEpochMilli();
+        long maxDate = sdf.parse(supDate).toInstant().toEpochMilli();
 
         return pathRepository
-                .findEntitiesByDateAndNameAndDistance(dateMin, dateMax, nom,
-                        distanceMin, distanceMax, id, false,
+                .findEntitiesByDateAndNameAndDistance(minDate, maxDate, name,
+                        minLength, maxLength, id, false,
                         getNextPage(nbPathAlreadyLoaded));
     }
 
     /**
-     * Recupère un parcours par son id.
-     * @param idUtilisateur id unique de l'utilisateur en base de données
-     * @param id id d'un parcours
-     * @return le parcours correspondant à l'id
+     * Get a path by its id.
+     * @param userId id of the user
+     * @param id id of the path
+     * @return the path found
      */
     public PathEntity recupParcoursParId(final ObjectId id,
-                                         final int idUtilisateur) {
+                                         final int userId) {
         return pathRepository.findByIdAndArchiveFalseAndAndIdUtilisateur(id,
-                idUtilisateur);
+                userId);
     }
 
     /**
-     * Renvoie le filtre permettant la pagination.
-     * @param nbPathAlreadyLoaded nombre de parcours déjà charger
-     *                            dans l'application.
-     * @return le filtre permettant la pagination et le classement
-     *         par ordre décroissant.
+     * Get the filter for the pagination and the sorting.
+     * @param nbPathAlreadyLoaded number of paths already loaded
+     * @return the filter for the pagination and the sorting
      */
     public Pageable getNextPage(final int nbPathAlreadyLoaded) {
         return PageRequest.of(0,

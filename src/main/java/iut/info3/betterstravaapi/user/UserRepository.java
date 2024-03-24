@@ -7,33 +7,33 @@ import java.util.List;
 
 
 /**
- * Repository de UserEntity.
+ * Repository associated to the user table in the MySQL database.
  */
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     /**
-     * Recherche d'un email spécifique dans la base de données.
-     * @param email email à chercher en base
-     * @return l'utilisateur associé à l'email s'il existe
+     * Query to search a user with a specific email.
+     * @param email email to search in the database
+     * @return the user found with this email
      */
     @Query(value = "SELECT * FROM utilisateurs where email = ?",
             nativeQuery = true)
     UserEntity findByEmail(String email);
 
     /**
-     * Recherche d'un email spécifique dans la base de données.
-     * @param idUser id à chercher en base
-     * @return le token associé à l'id s'il existe
+     * Query to search a user with a specific id.
+     * @param userId id of the user to search in the database
+     * @return the token of the user found with this id
      */
     @Query(value = "SELECT jwt_token FROM utilisateurs where id = ?",
             nativeQuery = true)
-    String findTokenById(Integer idUser);
+    String findTokenById(Integer userId);
 
     /**
-     * questionement de la bd sur l'existence d'un utilisateur.
-     * @param email email de l'utilisateur.
-     * @param password mdp de l'utilisateur.
-     * @return la list des utilisateur trouve.
+     * Query to search a user with a specific email and password.
+     * @param email email of the user
+     * @param password password of the user
+     * @return list of users found with this email and password
      */
     @Query(value = "SELECT * from utilisateurs WHERE email = ?1"
            + " AND mot_de_passe = ?2", nativeQuery = true)
@@ -41,10 +41,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Integer> {
                                                    String password);
 
     /**
-     * questionement de la bd sur un utiliateur possedant
-     * le token passe en argument.
-     * @param token le token donnee
-     * @return l'utilisateur trouvé avec ce token
+     * Query to search a user with a specific token.
+     * @param token token to search in the database
+     * @return the user found with this token
      */
     @Query (value = "SELECT * from utilisateurs WHERE jwt_token = ?1",
             nativeQuery = true)

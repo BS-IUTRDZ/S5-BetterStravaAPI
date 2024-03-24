@@ -1,5 +1,5 @@
 /**
- * Package contenant les objets obtenus lors des requêtes.
- * Contient les objets JSON.
+ * Package containing the objects obtained during the requests.
+ * Contains the JSON objects.
  */
 package iut.info3.betterstravaapi.path.jsonmodels;

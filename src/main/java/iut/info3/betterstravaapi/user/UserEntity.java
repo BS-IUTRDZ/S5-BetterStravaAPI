@@ -10,14 +10,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 /**
- * Entité représentant un utilisateur.
- * Un utilisateur est caractérisé par :
+ * Entity representing an user.
+ * A user is defined by :
  * <ul>
- *     <li>un identifiant,</li>
- *     <li>un email,</li>
- *     <li>un nom,</li>
- *     <li>un prénom,</li>
- *     <li>et un mot de passe</li>
+ *     <li>an id,</li>
+ *     <li>an email,</li>
+ *     <li>an last name,</li>
+ *     <li>an first name,</li>
+ *     <li>and a password.</li>
  * </ul>
  */
 @Entity
@@ -25,180 +25,180 @@ import jakarta.validation.constraints.Size;
 public class UserEntity {
 
     /**
-     * Taille minimale d'un mot de passe saisi par l'utilisateur.
+     * Minimum size of a password entered by the user.
      */
-    private static final int MIN_CHAMP_MDP = 8;
+    private static final int PASSWORD_MIN_SIZE = 8;
     /**
-     * Taille maximale d'un mot de passe saisi par l'utilisateur.
+     * Maximum size of a password entered by the user.
      */
-    private static final int MAX_CHAMP_MDP = 80;
+    private static final int PASSWORD_MAX_SIZE = 80;
     /**
-     * Taille maximale du champ (nom, prénom).
+     * Maximum size of a field (first name, last name).
      */
-    private static final int MAX_CHAMP = 50;
+    private static final int MAX_FIELD_SIZE = 50;
     /**
-     * Taille maximale du champ email.
+     * Maximum size of an email.
      */
-    private static final int MAX_CHAMP_EMAIL = 100;
+    private static final int EMAIL_MAX_SIZE = 100;
 
     /**
-     * Id de l'utilisateur en base de données.
+     * User id.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     /**
-     * Email d'un utilisateur.
+     * Email of the user.
      */
     @NotEmpty(message = "Le champ \"email\" est obligatoire et "
             + "ne doit pas être vide")
-    @Size(min = 2, max = MAX_CHAMP_EMAIL, message = "L' \"email\" doit faire "
+    @Size(min = 2, max = EMAIL_MAX_SIZE, message = "L' \"email\" doit faire "
             + "entre 2 et 100 caractères")
     private String email;
 
     /**
-     * Nom de l'utilisateur.
+     * Last name of the user.
      */
     @NotEmpty(message = "Le champ \"nom\" est obligatoire et "
             + "ne doit pas être vide")
-    @Size(min = 2, max = MAX_CHAMP, message = "Le \"nom\" doit faire "
+    @Size(min = 2, max = MAX_FIELD_SIZE, message = "Le \"nom\" doit faire "
             + "entre 2 et 50 caractères")
     private String nom;
 
     /**
-     * Prénom de l'utilisateur.
+     * Fist name of the user.
      */
     @NotEmpty(message = "Le champ \"prenom\" est obligatoire "
             + "et ne doit pas être vide")
-    @Size(min = 2, max = MAX_CHAMP, message = "Le \"prenom\" doit faire "
+    @Size(min = 2, max = MAX_FIELD_SIZE, message = "Le \"prenom\" doit faire "
             + "entre 2 et 50 caractères")
     private String prenom;
 
     /**
-     * Mot de passe de l'utilisateur.
+     * Password of the user.
      */
     @NotEmpty(message = "Le champ \"mot de passe\" est obligatoire et "
             + "ne doit pas être vide")
-    @Size(min = MIN_CHAMP_MDP, max = MAX_CHAMP_MDP,
+    @Size(min = PASSWORD_MIN_SIZE, max = PASSWORD_MAX_SIZE,
             message = "Le \"mot de passe\" doit faire entre 8 et 80 caractères")
     private String motDePasse;
 
     /**
-     * Token de validite du compte.
+     * Token of the user.
      */
     private String jwtToken;
 
     /**
-     * Constructeur par défaut pour permettre la compilation.
+     * Default constructor.
      */
     public UserEntity() { }
 
     /**
-     * Création d'un utilisateur.
-     * @param adresseEmail adresse email de l'utilisateur à créer
-     * @param nomUtil nom de l'utilisateur à créer
-     * @param prenomUtil prénom de l'utilisateur à créer
-     * @param motDePasseUtil mot de passe de l'utilisateur à créer
+     * Constructor of the user.
+     * @param userEmail email of the user to create
+     * @param userLastName last name of the user to create
+     * @param userFirstName first name of the user to create
+     * @param userPassword password of the user to create
      */
-    public UserEntity(final String adresseEmail, final String nomUtil,
-                      final String prenomUtil, final String motDePasseUtil) {
-        this.email = adresseEmail;
-        this.nom = nomUtil;
-        this.prenom = prenomUtil;
-        this.motDePasse = motDePasseUtil;
+    public UserEntity(final String userEmail, final String userLastName,
+                      final String userFirstName, final String userPassword) {
+        this.email = userEmail;
+        this.nom = userLastName;
+        this.prenom = userFirstName;
+        this.motDePasse = userPassword;
 
     }
 
     /**
-     * Création d'un utilisateur avec un token.
-     * @param adresseEmail adresse email de l'utilisateur à créer
-     * @param nomUtil nom de l'utilisateur à créer
-     * @param prenomUtil prénom de l'utilisateur à créer
-     * @param motDePasseUtil mot de passe de l'utilisateur à créer
-     * @param token token de connexion.
+     * Constructor of the user with a token.
+     * @param userEmail email of the user to create
+     * @param userLastName last name of the user to create
+     * @param userFirstName first name of the user to create
+     * @param userPassword password of the user to create
+     * @param token token of the user to create
      */
-    public UserEntity(final String adresseEmail, final String nomUtil,
-                      final String prenomUtil, final String motDePasseUtil,
+    public UserEntity(final String userEmail, final String userLastName,
+                      final String userFirstName, final String userPassword,
                       final String token) {
-        this.email = adresseEmail;
-        this.nom = nomUtil;
-        this.prenom = prenomUtil;
-        this.motDePasse = motDePasseUtil;
+        this.email = userEmail;
+        this.nom = userLastName;
+        this.prenom = userFirstName;
+        this.motDePasse = userPassword;
         this.jwtToken = token;
     }
 
-    /** @return l'id de l'utilisateur */
+    /** @return if of the user */
     public Integer getId() {
         return id;
     }
 
     /**
-     * Associe un id à l'utilisateur.
-     * @param idUtil le nouvel id
+     * Set the id of the user.
+     * @param newId the new id
      */
-    public void setId(final Integer idUtil) {
-        this.id = idUtil;
+    public void setId(final Integer newId) {
+        this.id = newId;
     }
 
-    /** @return l'email de l'utilisateur */
+    /** @return the email of the user */
     public String getEmail() {
         return email;
     }
 
     /**
-     * Associe un email à l'utilisateur.
-     * @param emailUtil le nouvel email
+     * Set the email of the user.
+     * @param newEmail the new email
      */
-    public void setEmail(final String emailUtil) {
-        this.email = emailUtil;
+    public void setEmail(final String newEmail) {
+        this.email = newEmail;
     }
 
-    /** @return le nom de l'utilisateur */
+    /** @return the last name of the user */
     public String getNom() {
         return nom;
     }
 
     /**
-     * Associe un nom à l'utilisateur.
-     * @param nomUtil le nouveau nom
+     * Set the last name of the user.
+     * @param newLastName the new last name
      */
-    public void setNom(final String nomUtil) {
-        this.nom = nomUtil;
+    public void setNom(final String newLastName) {
+        this.nom = newLastName;
     }
-    /** @return le prénom de l'utilisateur */
+    /** @return the first name of the user */
     public String getPrenom() {
         return prenom;
     }
 
     /**
-     * Associe un prénom à l'utilisateur.
-     * @param prenomUtil le nouveau prénom
+     * Set the first name of the user.
+     * @param newFirstName the new first name
      */
-    public void setPrenom(final String prenomUtil) {
-        this.prenom = prenomUtil;
+    public void setPrenom(final String newFirstName) {
+        this.prenom = newFirstName;
     }
 
-    /** @return le mot de passe (SHA256) de l'utilisateur */
+    /** @return the password of the user (SHA256) */
     public String getMotDePasse() {
         return motDePasse;
     }
 
     /**
-     * Associe un email à l'utilisateur.
-     * @param motDePasseUtil le nouveau mot de passe
+     * Set the password of the user (SHA256).
+     * @param newPassword the new password
      */
-    public void setMotDePasse(final String motDePasseUtil) {
-        this.motDePasse = motDePasseUtil;
+    public void setMotDePasse(final String newPassword) {
+        this.motDePasse = newPassword;
     }
 
-    /** @return le token de l'utilisateur */
+    /** @return the token of the user */
     public String getJwtToken() {
         return jwtToken;
     }
 
     /**
-     * Associe un token à l'utilisateur.
+     * Set the token of the user.
      * @param token le nouveau token
      */
     public void setJwtToken(final String token) {
@@ -206,8 +206,8 @@ public class UserEntity {
     }
 
     /**
-     * to string d'un UserEntity.
-     * @return un string du UsrEntity
+     * to string method.
+     * @return the string representation of the user
      */
     @Override
     public String toString() {

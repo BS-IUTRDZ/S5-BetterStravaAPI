@@ -2,7 +2,7 @@ package iut.info3.betterstravaapi.user;
 
 import iut.info3.betterstravaapi.EnvGetter;
 import iut.info3.betterstravaapi.path.PathEntity;
-import iut.info3.betterstravaapi.path.Statistiques;
+import iut.info3.betterstravaapi.path.Statistics;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,12 +26,12 @@ class UserServiceTest {
 
     @Test
     public void testCheckPresenceEmailWithEmailAlreadyTaken() {
-        assertTrue(userService.checkPresenceEmail("utilisateur@test.com"));
+        assertTrue(userService.emailExists("utilisateur@test.com"));
     }
 
     @Test
     public void testCheckPresenceEmailWithoutEmailAlreadyTaken() {
-        assertFalse(userService.checkPresenceEmail("utilisateurnonexistant@test.com"));
+        assertFalse(userService.emailExists("utilisateurnonexistant@test.com"));
     }
 
     @Test
@@ -93,7 +93,7 @@ class UserServiceTest {
     public void testCalculerPerformance() {
         PathEntity path = new PathEntity();
         path.setDate(Calendar.getInstance().getTime().getTime());
-        Statistiques stat = new Statistiques();
+        Statistics stat = new Statistics();
         stat.setDuree(1500);
         stat.setDistance(15);
         path.setStatistiques(stat);

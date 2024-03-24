@@ -16,38 +16,38 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Service associé à la gestion des utilisateurs.
+ * Service related to users functionalities.
  */
 @Service
 public class UserService {
 
     /**
-     * Service associé a la recuperation des variables d'environement.
-      */
+     * Service associated to the environment variables.
+     */
     @Autowired
     private EnvGetter envGetter;
 
     /**
-     * Repository associé à la table utilisateur de la base MySQL.
+     * Repository associated to the user table in the MySQL database.
      */
     @Autowired
     private UserRepository userRepository;
 
     /**
-     * Vérification que l'email passait en paramètre est présent en base.
-     * @param email email à vérifier
-     * @return true si l'email est présent, false sinon
+     * Method to check if an email is already present in the database.
+     * @param email email to check
+     * @return true if the email is already present, false otherwise
      */
-    public boolean checkPresenceEmail(final String email) {
+    public boolean emailExists(final String email) {
         UserEntity user = userRepository.findByEmail(email);
         return user != null;
     }
 
     /**
-     * recherche d'un utilisatur a partir se son mail et mdp.
-     * @param email mail de l'utilisateur.
-     * @param password mdp de l'utilisateur.
-     * @return la list des utilisateur trouve.
+     * Method to get a user by its email and password.
+     * @param email email of the user.
+     * @param password password of the user.
+     * @return the user found with this email and password or null if not found
      */
     public UserEntity findByEmailAndPassword(final String email,
                                                    final String password) {
@@ -57,10 +57,10 @@ public class UserService {
     }
 
     /**
-     * generation dun token jwt.
-     * @param user l'utilisateur concerne par le jwt.
-     * @param currentDate la dte au moment de la creation du token.
-     * @return une string correspondant au token.
+     * Method to generate a token for a user.
+     * @param user the user for which the token is generated.
+     * @param currentDate the current date.
+     * @return the token generated
      */
     public String generateToken(final UserEntity user,
                                 final Instant currentDate) {
@@ -77,27 +77,27 @@ public class UserService {
     }
 
     /**
-     * recuperation du token d'un utilisateur.
-     * @param idUser id de l'utilisateur dont on veut le token
-     * @return le token de l'utilisateur s'il existe
+     * Method to get the token of a user by its id.
+     * @param userId the id of the user.
+     * @return the token of the user found with this id
      */
-    public String getTokenBd(final Integer idUser) {
-        return userRepository.findTokenById(idUser);
+    public String getTokenBd(final Integer userId) {
+        return userRepository.findTokenById(userId);
     }
 
     /**
-     * appel de la methode de recherche par token.
-     * @param token le tokenb rechercher
-     * @return l'UserEntity correspondant au token
+     * Method to find a user by its token.
+     * @param token the token of the user.
+     * @return the user found with this token
      */
     public UserEntity findUserByToken(final String token) {
         return userRepository.findByToken(token);
     }
 
     /**
-     * fonction de verification que le token donnée n'est pas expirée.
-     * @param jwtToken le token a tester
-     * @return true si le token est encore valide, false sinon
+     * Method to check if a token is still valid.
+     * @param jwtToken the token to check
+     * @return true if the token is still valid, false otherwise
      */
     public boolean isTokenNotExpired(final String jwtToken) {
         try {
@@ -105,37 +105,37 @@ public class UserService {
             JWTVerifier verifier = JWT.require(algorithm).build();
             DecodedJWT jwt = verifier.verify(jwtToken);
 
-            // Récupérer les revendications du JWT
+            // Get the expiration date of the token
             Date dateExpiration = jwt.getExpiresAt();
             Date dateActuelle = new Date();
 
             return !dateExpiration.before(dateActuelle);
 
         } catch (JWTVerificationException e) {
-            // Le JWT a expiré ou est invalide
+            // Invalid / Expired JWT
             return false;
         }
     }
 
     /**
-     * fonction d'arrangement des statistique des parcours donner dans un json.
-     * @param parcoursList la liste des parcours a analyser
-     * @return une HashMap correpondant au json des statistique
+     * Method to calculate the statistics displayed on the home page.
+     * @param pathList list of paths of the user
+     * @return the statistics calculated
      */
     public HashMap<String, String> calculerPerformance(
-            final List<PathEntity> parcoursList) {
+            final List<PathEntity> pathList) {
 
         HashMap<String, String> map = new HashMap<>();
 
         float temps = 0;
         double distance = 0;
-        for (PathEntity parcours : parcoursList) {
+        for (PathEntity parcours : pathList) {
             if (parcours.getStatistiques() != null) {
                 temps += parcours.getStatistiques().getDuree();
                 distance += parcours.getStatistiques().getDistance();
             }
         }
-        map.put("nombre_parcours", String.valueOf(parcoursList.size()));
+        map.put("nombre_parcours", String.valueOf(pathList.size()));
         map.put("temps", String.valueOf(temps));
         map.put("distance", String.valueOf(distance));
 

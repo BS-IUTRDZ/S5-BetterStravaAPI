@@ -1,34 +1,34 @@
 package iut.info3.betterstravaapi.path.jsonmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import iut.info3.betterstravaapi.path.Coordonnees;
+import iut.info3.betterstravaapi.path.Coordinates;
 
 /**
- * Classe représentant un point obtenus par une requête à l'API.
+ * Class representing a point obtained by a request to the API.
  */
 public class JsonPoint {
 
     /**
-     * Latitude du point.
+     * Latitude of the point.
      */
     @JsonProperty("lat")
     private double lat;
 
     /**
-     * Longitude du point.
+     * Longitude of the point.
      */
     @JsonProperty("lon")
     private double lon;
 
     /**
-     * Altitude du point.
+     * Altitude of the point.
      */
     @JsonProperty("alt")
     private double alt;
 
     /**
-     * Méthode toString pour afficher les informations du point.
-     * @return le point sous le format d'une chaine de caractères
+     * Method toString to display the point's information.
+     * @return the point as a string
      */
     @Override
     public String toString() {
@@ -40,11 +40,11 @@ public class JsonPoint {
     }
 
     /**
-     * Convertit un point en coordonnées.
-     * @return les coordonnées du point
+     * Convert a point to coordinates.
+     * @return the coordinates of the point
      */
-    public Coordonnees toCoordonnees() {
-        return new Coordonnees(lat, lon, alt);
+    public Coordinates toCoordinates() {
+        return new Coordinates(lat, lon, alt);
     }
 
 }

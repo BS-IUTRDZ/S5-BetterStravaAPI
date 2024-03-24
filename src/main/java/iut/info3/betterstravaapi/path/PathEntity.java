@@ -1,6 +1,7 @@
 package iut.info3.betterstravaapi.path;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.google.gson.Gson;
@@ -13,16 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Entité représentant un parcour.
- * Un parcour est caractérisé par :
+ * Entity representing a path.
+ * A path is characterized by:
  * <ul>
- *     <li>un identifiant,</li>
- *     <li>l'identifiant de l'utilisateur ayant créer le parcour</li>
- *     <li>une description,</li>
- *     <li>une liste de liste de coordonees geographiques,</li>
+ *     <li>an id,</li>
+ *     <li>the id of the user who created the path,</li>
+ *     <li>an description</li>
+ *     <li>a list of points making the path,</li>
  *     <li>une liste de point d'interet caracterisé par leur nom
- *     et leur description et leur coordonées</li>
- *     <li>l'id de l'utilisateur a qui appartiens le parcour</li>
+ *     <li>a list of points of interest characterized by their name,
+ *     their description and their coordinates,</li>
+ *     <li>statistics on the path</li>
  * </ul>
  */
 
@@ -30,253 +32,209 @@ import java.util.List;
 public class PathEntity {
 
     /**
-     * Id du parcours.
+     * Id of the path.
      */
     @Id
     @JsonSerialize(using = ToStringSerializer.class)
     private ObjectId id;
 
     /**
-     * Id de l'utilisateur.
+     * Id of the user who created the path.
      */
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     private int idUtilisateur;
 
     /**
-     * Nom du parcour.
+     * Name of the path.
      */
     private String nom;
 
     /**
-     * Description du parcour.
+     * Description of the path.
      */
     private String description;
 
     /**
-     * liste des point composant le parcours.
+     * List of points making the path.
      */
-    private List<Coordonnees> points;
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    private List<Coordinates> points;
 
     /**
-     * liste des points d'interets sur le parcours.
+     * List of points of interest.
      */
-    private List<PointInteret> pointsInterets;
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    private List<InterestPoint> pointsInterets;
 
     /**
-     * statistiques du parcours.
+     * Statistics on the path.
      */
-    private Statistiques statistiques;
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    private Statistics statistiques;
 
     /**
-     * bollean de parcours archivé ou non.
+     * Boolean to know if the path is archived.
      */
     private boolean archive;
 
     /**
-     * Date de creation du parcours.
+     * Creation date of the path.
      */
     private long date;
 
     /**
-     * constructeur par default pour permettre la compilation.
+     * Default constructor.
      */
     public PathEntity() { }
 
     /**
-     * Création d'un parcours.
-     * @param idUser id de l'utilisateur a qui apartiens le parcours
-     * @param name name du parcours choisit par l'utilisateur
-     * @param descri descri du parcours donnee par l'utilisateur
-     * @param dateCreation date de création du parcours
-     * @param point liste des point de coordonnees composant le parcours
-     * @param stats statistiques du parcours
+     * Constructor of the path.
+     * @param idUser id of the user who created the path
+     * @param name name of the path
+     * @param desc description of the path
+     * @param creationDate creation date of the path
+     * @param point list of points making the path
+     * @param stats statistics on the path
      */
     public PathEntity(final Integer idUser, final String name,
-                      final String descri,
-                      final Long dateCreation,
-                      final List<Coordonnees> point,
-                      final Statistiques stats) {
+                      final String desc,
+                      final Long creationDate,
+                      final List<Coordinates> point,
+                      final Statistics stats) {
         this.idUtilisateur = idUser;
         this.nom = name;
-        this.description = descri;
-        this.date = dateCreation;
+        this.description = desc;
+        this.date = creationDate;
         this.points = new ArrayList<>(point);
         this.archive = false;
-        this.statistiques = new Statistiques(stats.getDuree(),
+        this.statistiques = new Statistics(stats.getDuree(),
                 stats.getDistance(), stats.getVitesseMoyenne(),
                 stats.getDenivPos(), stats.getDenivNeg());
     }
 
     /**
-     * Création d'un parcours.
-     * @param idUser id de l'utilisateur a qui apartiens le parcours
-     * @param path parcours complet
+     * Constructor of the path.
+     * @param idUser id of the user who created the path
+     * @param path path obtained when a user submits the creation of a path
      */
     public PathEntity(final int idUser, final JsonFullPath path) {
         this.idUtilisateur = idUser;
-        this.nom = path.getNom();
+        this.nom = path.getName();
         this.description = path.getDescription();
         this.date = path.getDate();
-        this.points = path.pointsToCoordonnees();
-        this.pointsInterets = path.getListPointInteret();
+        this.points = path.pointsToCoordinates();
+        this.pointsInterets = path.getListPointInterest();
         this.archive = false;
-        this.statistiques = new Statistiques();
+        this.statistiques = new Statistics();
 
-        this.statistiques.setDuree(path.getDuree());
+        this.statistiques.setDuree(path.getDuration());
     }
 
     /**
-     * getter de l'id du parcours.
-     * @return l'id
+     * Getter of the path id.
+     * @return the id of the path
      */
     public ObjectId getId() {
         return this.id == null ? null : new ObjectId(this.id.toByteArray());
     }
 
     /**
-     * setter de l'id du parcours.
-     * @param idParcours id du parcours
+     * Setter of the path id.
+     * @param pathId id of the path
      */
-    public void setId(final ObjectId idParcours) {
-        this.id = new ObjectId(idParcours.toByteArray());
+    public void setId(final ObjectId pathId) {
+        this.id = new ObjectId(pathId.toByteArray());
     }
 
     /**
-     * getter de l'id de l'utilisateur du Parcour.
-     * @return l'id de l'utilisateur du parcours
-     */
-    public int getidUtilisateur() {
-        return idUtilisateur;
-    }
-
-    /**
-     * setter de l'id de l'utilisateur.
-     * @param idUser id de l'utilisateur
-     */
-    public void setidUtilisateur(final Integer idUser) {
-        this.idUtilisateur = idUser;
-    }
-
-    /**
-     * getter du nom.
-     * @return le nom du parcour
+     * Getter of the name.
+     * @return the name of the path
      */
     public String getNom() {
         return nom;
     }
 
     /**
-     * setter du nom.
-     * @param name nom du parcours
-     */
-    public void setNom(final String name) {
-        this.nom = name;
-    }
-
-    /**
-     * getter de la description.
-     * @return la description du parcour
+     * Getter of the description of the path.
+     * @return the description of the path
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * setter de la description.
-     * @param descri descriptif parcours
+     * Setter of the description of the path.
+     * @param desc description of the path
      */
-    public void setDescription(final String descri) {
-        this.description = descri;
+    public void setDescription(final String desc) {
+        this.description = desc;
     }
 
     /**
-     * getter de la listes des points composant le trajet.
-     * @return la liste des point
+     * Setter of the list of interest points.
+     * @param interestPoints the list of interest points
      */
-    public List<Coordonnees> getPoints() {
-        return new ArrayList<>(points);
+    public void setPointsInterests(final List<InterestPoint> interestPoints) {
+        this.pointsInterets = new ArrayList<>(interestPoints);
     }
 
     /**
-     * setter de la liste de points.
-     * @param point point composant le parcours
-     */
-    public void setPoints(final List<Coordonnees> point) {
-        this.points = new ArrayList<>(point);
-    }
-
-    /**
-     * getter de la liste des points d'interets.
-     * @return la listes des points d'interets
-     */
-    public List<PointInteret> getPointsInterets() {
-        return new ArrayList<>(pointsInterets);
-    }
-
-    /**
-     * setter de la dlistes des points d'interets.
-     * @param interets liste des points d'interets
-     */
-    public void setPointsInterets(final List<PointInteret> interets) {
-        this.pointsInterets = new ArrayList<>(interets);
-    }
-
-    /**
-     * getter du boolean archive.
-     * @return true pour archive, flase sinon
+     * Getter of the archived status.
+     * @return true if the path is archived, false otherwise
      */
     public boolean isArchive() {
         return archive;
     }
 
     /**
-     * setter de l'archive.
-     * @param archi boolean pour parcours a archive ou non
+     * Setter of the archived status.
+     * @param newStatus true if the path is archived, false otherwise
      */
-    public void setArchive(final boolean archi) {
-        this.archive = archi;
+    public void setArchive(final boolean newStatus) {
+        this.archive = newStatus;
     }
 
     /**
-     * getter de la date.
-     * @return la date en long
+     * Getter of creation date.
+     * @return the date in the UNIX format
      */
     public long getDate() {
         return date;
     }
 
     /**
-     * setter de la date.
-     * @param dateLong date en long
+     * Setter of the creation date.
+     * @param newDate date in the UNIX format
      */
-    public void setDate(final long dateLong) {
-        this.date = dateLong;
+    public void setDate(final long newDate) {
+        this.date = newDate;
     }
 
     /**
-     * Getter des statistiques.
-     * @return Les statistiques du parcours.
+     * Getter of the statistics.
+     * @return Statistics of the path
      */
-    public Statistiques getStatistiques() {
-        // Copie profonde pour éviter les modifications
+    public Statistics getStatistiques() {
+        // Deep copy to avoid modifications
         Gson gson = new Gson();
         return gson.fromJson(gson.toJson(statistiques),
-                                Statistiques.class);
+                                Statistics.class);
     }
 
     /**
-     * Setter des statistiques.
-     * @param stat Variable de type Statistiques à set
+     * Setter of the statistics.
+     * @param newStatistics new statistics of the path
      */
-    public void setStatistiques(final Statistiques stat) {
-        // Copie profonde pour éviter les modifications
+    public void setStatistiques(final Statistics newStatistics) {
+        // Deep copy to avoid modifications
         Gson gson = new Gson();
-        this.statistiques = gson.fromJson(gson.toJson(stat),
-                                            Statistiques.class);
+        this.statistiques = gson.fromJson(gson.toJson(newStatistics),
+                                            Statistics.class);
     }
 
     /**
-     * toString de l'entity.
-     * @return un string de l'entity
+     * toString method to display the entity.
+     * @return string representing the entity
      */
     @Override
     public String toString() {
@@ -294,9 +252,9 @@ public class PathEntity {
     }
 
     /**
-     * Méthode pour effectuer le calcul des statistiques.
+     * Start the calculation of the statistics.
      */
-    public void calculStatistiques() {
-        this.statistiques.calculStatistiques(this.points);
+    public void computeStatistics() {
+        this.statistiques.computeStatistics(this.points);
     }
 }

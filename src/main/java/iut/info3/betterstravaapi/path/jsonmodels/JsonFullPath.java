@@ -3,8 +3,8 @@ package iut.info3.betterstravaapi.path.jsonmodels;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import iut.info3.betterstravaapi.path.Coordonnees;
-import iut.info3.betterstravaapi.path.PointInteret;
+import iut.info3.betterstravaapi.path.Coordinates;
+import iut.info3.betterstravaapi.path.InterestPoint;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -14,126 +14,126 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe représentant un parcours obtenu par une requête à l'API.
+ * Class representing a path obtained by a request to the API.
  */
 public class JsonFullPath {
 
     /**
-     * Nom du parcours.
+     * Name of the path.
      */
     @NotNull
     @JsonProperty("nom")
-    private String nom;
+    private String name;
 
     /**
-     * Description du parcours.
+     * Description of the path.
      */
     @NotNull
     @JsonProperty("description")
     private String description;
 
     /**
-     * Date du parcours.
+     * Date of the path.
      */
     @Positive
     @JsonProperty("date")
     private long date;
 
     /**
-     * Durée du parcours.
+     * Duration of the path in seconds.
      */
     @Positive
     @JsonProperty("duree")
-    private long duree;
+    private long duration;
 
     /**
-     * Liste des points composant le parcours.
+     * List of points composing the path.
      */
     @NotEmpty
     @JsonProperty("points")
     private List<JsonPoint> jsonPoints;
 
     /**
-     * Liste des points d'interets sur le parcours.
+     * List of points of interest.
      */
     @NotNull
     @JsonProperty("pointsInterets")
-    private List<JsonPointInteret> pointsInterets;
+    private List<JsonPointInteret> pointsInterests;
 
     /**
-     * Getter du nom du parcours.
-     * @return le nom du parcours
+     * Getter of the name of the path.
+     * @return the name of the path
      */
-    public String getNom() {
-        return nom;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Getter de la description du parcours.
-     * @return la description du parcours
+     * Getter of the description of the path.
+     * @return the description of the path
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * Getter de la date du parcours.
-     * @return la date du parcours sous le format UNIX
+     * Getter of the date of the path.
+     * @return the date of the path in the UNIX format
      */
     public long getDate() {
         return date;
     }
 
     /**
-     * Getter de la durée du parcours.
-     * @return la durée du parcours en secondes
+     * Getter of the duration of the path.
+     * @return the duration of the path in seconds
      */
-    public long getDuree() {
-        return duree;
+    public long getDuration() {
+        return duration;
     }
 
     /**
-     * Getter de la liste des points composant le parcours.
-     * @return la liste des points
+     * Getter of the list of points.
+     * @return the list of points
      */
     public List<JsonPoint> getPoints() {
-        // Copie profonde pour éviter les modifications
+        // Deep copy to avoid modifications
         Type type = new TypeToken<List<JsonPoint>>() { }.getType();
         Gson gson = new Gson();
         return gson.fromJson(gson.toJson(jsonPoints), type);
     }
 
     /**
-     * Convertit les points en coordonnées.
-     * @return la liste des coordonnées
+     * Convert the points to coordinates.
+     * @return the list of coordinates
      */
-    public List<Coordonnees> pointsToCoordonnees() {
-        List<Coordonnees> coordonnees = new ArrayList<>();
+    public List<Coordinates> pointsToCoordinates() {
+        List<Coordinates> coordinates = new ArrayList<>();
         for (JsonPoint jsonPoint : jsonPoints) {
-            coordonnees.add(jsonPoint.toCoordonnees());
+            coordinates.add(jsonPoint.toCoordinates());
         }
-        return coordonnees;
+        return coordinates;
     }
 
     /**
-     * Getter de la liste des points d'interets.
-     * @return la liste des points d'interets
+     * Getter of the list of points of interest.
+     * @return the list of points of interest
      */
-    public List<JsonPointInteret> getJsonPointsInteret() {
+    public List<JsonPointInteret> getJsonPointsInterests() {
         Type type = new TypeToken<List<JsonPointInteret>>() { }.getType();
         Gson gson = new Gson();
-        return gson.fromJson(gson.toJson(pointsInterets), type);
+        return gson.fromJson(gson.toJson(pointsInterests), type);
     }
 
     /**
-     * Convertit les points d'interets json en liste de points d'interets.
-     * @return la liste des points d'interets
+     * Convert the json points of interest to a list of points of interest.
+     * @return the list of points of interest
      */
-    public List<PointInteret> getListPointInteret() {
-        List<PointInteret> pointInterets = new ArrayList<>();
-        for (JsonPointInteret jsonPointInteret : pointsInterets) {
-            pointInterets.add(jsonPointInteret.toPointInteret());
+    public List<InterestPoint> getListPointInterest() {
+        List<InterestPoint> pointInterests = new ArrayList<>();
+        for (JsonPointInteret jsonPointInteret : pointsInterests) {
+            pointInterests.add(jsonPointInteret.toPointInterest());
         }
-        return pointInterets;
+        return pointInterests;
     }
 }

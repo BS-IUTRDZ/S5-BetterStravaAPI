@@ -30,8 +30,8 @@ class JsonPointTest {
 
     @Test
     void toCoordonnees() {
-        assertEquals(24.7162, jsonPoint.toCoordonnees().getLatitude());
-        assertEquals(-12.7261, jsonPoint.toCoordonnees().getLongitude());
-        assertEquals(1330.62, jsonPoint.toCoordonnees().getAltitude());
+        assertEquals(24.7162, jsonPoint.toCoordinates().getLatitude());
+        assertEquals(-12.7261, jsonPoint.toCoordinates().getLongitude());
+        assertEquals(1330.62, jsonPoint.toCoordinates().getAltitude());
     }
 }

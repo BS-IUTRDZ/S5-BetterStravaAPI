@@ -1,53 +1,53 @@
 package iut.info3.betterstravaapi.path.jsonmodels;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import iut.info3.betterstravaapi.path.PointInteret;
+import iut.info3.betterstravaapi.path.InterestPoint;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * Classe représentant un point d'interet obtenus par une requête à l'API.
+ * Class representing a point of interest obtained by a request to the API.
  */
 public class JsonPointInteret {
 
     /**
-     * Coordonnées du point d'interet.
+     * Coordinates of the point of interest.
      */
     @NotNull
     @JsonProperty("pos")
     private JsonPoint pos;
 
     /**
-     * Nom du point d'interet.
+     * Name of the point of interest.
      */
     @NotNull
     @JsonProperty("nom")
-    private String nom;
+    private String name;
 
     /**
-     * Description du point d'interet.
+     * Description of the point of interest.
      */
     @NotNull
     @JsonProperty("description")
     private String description;
 
     /**
-     * Méthode toString pour afficher les informations du point d'intéret.
-     * @return le point d'intéret sous le format d'une chaine de caractères
+     * Method toString to display the point of interest's information.
+     * @return the point of interest as a string
      */
     @Override
     public String toString() {
         return "PointInteret{"
                 + "pos=" + pos
-                + ", nom=" + nom
+                + ", nom=" + name
                 + ", description=" + description
                 + '}';
     }
 
     /**
-     * Convertit le point d'interet json en un point d'interet.
-     * @return le point d'interet
+     * Convert a json point of interest to a point of interest.
+     * @return the point of interest
      */
-    public PointInteret toPointInteret() {
-        return new PointInteret(nom, description, pos.toCoordonnees());
+    public InterestPoint toPointInterest() {
+        return new InterestPoint(name, description, pos.toCoordinates());
     }
 }

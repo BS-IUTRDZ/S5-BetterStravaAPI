@@ -6,20 +6,20 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.FileSystemResource;
 
 /**
- * Configuration de l'application.
+ * Configuration of the application.
  */
 
 @Configuration
 public class AppConfig {
 
     /**
-     * Constructeur par defaut.
+     * Default constructor.
      */
     protected AppConfig() { };
 
     /**
-     * Recuperation de variables d'environements pour les fichiers du main.
-     * @return la configuration.
+     * Getting environment variables for the main files.
+     * @return the configuration
      */
     @Bean
     public static PropertySourcesPlaceholderConfigurer

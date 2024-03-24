@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StatistiquesTest {
 
-    private Statistiques stat;
+    private Statistics stat;
 
     @BeforeEach
     void setUp() {
-        stat = new Statistiques(
+        stat = new Statistics(
             1956,
             14.6,
             7.5,
@@ -81,15 +81,15 @@ class StatistiquesTest {
 
     @Test
     void calculStatistiques() {
-        stat = new Statistiques();
+        stat = new Statistics();
         stat.setDuree(120);
-        List<Coordonnees> coordonnees = new ArrayList<>();
-        coordonnees.add(new Coordonnees(44.36204454087336, 2.565200426862144,0));
-        coordonnees.add(new Coordonnees(44.36149999669016, 2.5698567263639505,10));
-        coordonnees.add(new Coordonnees(44.36204454087336, 2.565200426862144,0));
+        List<Coordinates> coordonnees = new ArrayList<>();
+        coordonnees.add(new Coordinates(44.36204454087336, 2.565200426862144,0));
+        coordonnees.add(new Coordinates(44.36149999669016, 2.5698567263639505,10));
+        coordonnees.add(new Coordinates(44.36204454087336, 2.565200426862144,0));
 
 
-        stat.calculStatistiques(coordonnees);
+        stat.computeStatistics(coordonnees);
         assertEquals(0.75016, stat.getDistance(), 0.0005);
         assertEquals(120, stat.getDuree());
         assertEquals(22.5, stat.getVitesseMoyenne(), 0.05);

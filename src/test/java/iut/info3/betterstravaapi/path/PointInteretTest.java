@@ -7,14 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PointInteretTest {
 
-    private PointInteret pointInteret;
+    private InterestPoint pointInteret;
 
     @BeforeEach
     void setUp() {
-        pointInteret = new PointInteret(
+        pointInteret = new InterestPoint(
             "Nom du point",
             "Description du point",
-            new Coordonnees(1, 2, 3)
+            new Coordinates(1, 2, 3)
         );
     }
 
@@ -25,7 +25,7 @@ class PointInteretTest {
 
     @Test
     void setNom() {
-        pointInteret.setNom("Nouveau nom");
+        pointInteret.setName("Nouveau nom");
         assertEquals("Nouveau nom", pointInteret.getNom());
     }
 
@@ -49,7 +49,7 @@ class PointInteretTest {
 
     @Test
     void setCoordonnees() {
-        pointInteret.setCoordonnees(new Coordonnees(4, 5, 6));
+        pointInteret.setCoordonnees(new Coordinates(4, 5, 6));
         assertEquals(4, pointInteret.getCoordonnees().getLatitude());
         assertEquals(5, pointInteret.getCoordonnees().getLongitude());
         assertEquals(6, pointInteret.getCoordonnees().getAltitude());

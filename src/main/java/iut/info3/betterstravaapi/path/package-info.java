@@ -1,6 +1,6 @@
 /**
- * Package user de l'API BetterStrava.
- * Contient la partie portant sur les features liées aux parcours.
+ * Package path of the BetterStrava API.
+ * Contains the classes related to the paths.
  */
 
 package iut.info3.betterstravaapi.path;

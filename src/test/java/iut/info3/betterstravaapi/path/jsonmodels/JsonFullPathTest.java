@@ -29,7 +29,7 @@ class JsonFullPathTest {
 
     @Test
     void getNom() {
-        assertEquals("parcours de test", jsonFullPath.getNom());
+        assertEquals("parcours de test", jsonFullPath.getName());
     }
 
     @Test
@@ -44,7 +44,7 @@ class JsonFullPathTest {
 
     @Test
     void getDuree() {
-        assertEquals(1996, jsonFullPath.getDuree());
+        assertEquals(1996, jsonFullPath.getDuration());
     }
 
     @Test
@@ -54,16 +54,16 @@ class JsonFullPathTest {
 
     @Test
     void pointsToCoordonnees() {
-        assertEquals(1, jsonFullPath.pointsToCoordonnees().size());
+        assertEquals(1, jsonFullPath.pointsToCoordinates().size());
 
-        assertEquals(24.7162, jsonFullPath.pointsToCoordonnees().get(0).getLatitude());
-        assertEquals(-12.7261, jsonFullPath.pointsToCoordonnees().get(0).getLongitude());
-        assertEquals(1330.62, jsonFullPath.pointsToCoordonnees().get(0).getAltitude());
+        assertEquals(24.7162, jsonFullPath.pointsToCoordinates().get(0).getLatitude());
+        assertEquals(-12.7261, jsonFullPath.pointsToCoordinates().get(0).getLongitude());
+        assertEquals(1330.62, jsonFullPath.pointsToCoordinates().get(0).getAltitude());
     }
 
     @Test
     void getPointsInteret() {
-        assertEquals(1, jsonFullPath.getJsonPointsInteret().size());
+        assertEquals(1, jsonFullPath.getJsonPointsInterests().size());
 
         Field privatePointInteretField = null;
         try {
@@ -76,25 +76,25 @@ class JsonFullPathTest {
 
         JsonPoint jsonPoint = null;
         try {
-            jsonPoint = (JsonPoint) privatePointInteretField.get(jsonFullPath.getJsonPointsInteret().get(0));
+            jsonPoint = (JsonPoint) privatePointInteretField.get(jsonFullPath.getJsonPointsInterests().get(0));
         } catch (IllegalAccessException e) {
             fail("Impossible d'accéder au champ privé pos");
         }
 
-        assertEquals(1, jsonPoint.toCoordonnees().getLatitude());
-        assertEquals(2, jsonPoint.toCoordonnees().getLongitude());
-        assertEquals(3, jsonPoint.toCoordonnees().getAltitude());
+        assertEquals(1, jsonPoint.toCoordinates().getLatitude());
+        assertEquals(2, jsonPoint.toCoordinates().getLongitude());
+        assertEquals(3, jsonPoint.toCoordinates().getAltitude());
     }
 
     @Test
     void getListPointInteret() {
-        assertEquals(1, jsonFullPath.getListPointInteret().size());
+        assertEquals(1, jsonFullPath.getListPointInterest().size());
 
-        assertEquals(1, jsonFullPath.getListPointInteret().get(0).getCoordonnees().getLatitude());
-        assertEquals(2, jsonFullPath.getListPointInteret().get(0).getCoordonnees().getLongitude());
-        assertEquals(3, jsonFullPath.getListPointInteret().get(0).getCoordonnees().getAltitude());
+        assertEquals(1, jsonFullPath.getListPointInterest().get(0).getCoordonnees().getLatitude());
+        assertEquals(2, jsonFullPath.getListPointInterest().get(0).getCoordonnees().getLongitude());
+        assertEquals(3, jsonFullPath.getListPointInterest().get(0).getCoordonnees().getAltitude());
 
-        assertEquals("points d'interet", jsonFullPath.getListPointInteret().get(0).getNom());
-        assertEquals("description du point d'interet", jsonFullPath.getListPointInteret().get(0).getDescription());
+        assertEquals("points d'interet", jsonFullPath.getListPointInterest().get(0).getNom());
+        assertEquals("description du point d'interet", jsonFullPath.getListPointInterest().get(0).getDescription());
     }
 }

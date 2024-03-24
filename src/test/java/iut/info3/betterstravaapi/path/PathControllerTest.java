@@ -44,14 +44,14 @@ public class PathControllerTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        ArrayList<Coordonnees> points = new ArrayList<>();
-        points.add(new Coordonnees(48.25,12.25, 0));
-        points.add(new Coordonnees(43.85,17.855,0));
+        ArrayList<Coordinates> points = new ArrayList<>();
+        points.add(new Coordinates(48.25,12.25, 0));
+        points.add(new Coordinates(43.85,17.855,0));
 
-        ArrayList<PointInteret> pointsInteret = new ArrayList<>();
-        pointsInteret.add(new PointInteret("test","super",new Coordonnees(78.58,69.54,0)));
+        ArrayList<InterestPoint> pointsInteret = new ArrayList<>();
+        pointsInteret.add(new InterestPoint("test","super",new Coordinates(78.58,69.54,0)));
 
-        Statistiques stats = new Statistiques();
+        Statistics stats = new Statistics();
 
         jsonPath = "{\"nom\":\"parcours de test\",\"description\":\"description du parcours\",\"date\":17082145,\"points\":[{\"lat\":24.7162,\"lon\":-12.7261,\"alt\":1330.62}],\"pointsInterets\":[{\"pos\":{\"lat\":0,\"lon\":0,\"alt\":0},\"nom\":\"points d'interet\",\"description\":\"description du point d'interet\"}],\"duree\":1996}";
         pathEntity = new PathEntity(
@@ -63,7 +63,7 @@ public class PathControllerTest {
                 stats
         );
         pathEntity.setId(new ObjectId("a1a1a1a1a1a1a1a1a1a1a1a1"));
-        pathEntity.setPointsInterets(pointsInteret);
+        pathEntity.setPointsInterests(pointsInteret);
 
         userEntity = new UserEntity(
                 "test@mail.com",
@@ -78,7 +78,7 @@ public class PathControllerTest {
 
         when(userService.getTokenBd(2)).thenReturn("token");
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+        when(pathService.getLastPath(2)).thenReturn(pathEntity);
         when(userService.isTokenNotExpired("token")).thenReturn(true);
 
 
@@ -97,7 +97,7 @@ public class PathControllerTest {
     public void testCreatePathTokenInvalid() throws Exception {
 
         when(userService.getTokenBd(2)).thenReturn("token");
-        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+        when(pathService.getLastPath(2)).thenReturn(pathEntity);
         when(userService.isTokenNotExpired("token")).thenReturn(false);
         when(userService.isTokenNotExpired("token")).thenReturn(false);
 
@@ -115,7 +115,7 @@ public class PathControllerTest {
     @Test
     public void testLastPathSuccess() throws Exception {
         when(userService.findUserByToken("token")).thenReturn(userEntity);
-        when(pathService.recupDernierParcour(2)).thenReturn(pathEntity);
+        when(pathService.getLastPath(2)).thenReturn(pathEntity);
 
         mockMvc.perform( MockMvcRequestBuilders
                         .get("/api/path/lastPath")
@@ -264,7 +264,7 @@ public class PathControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(pathService).findParcourByDateAndName("",dateMin,dateMax,1, 0);
+        verify(pathService).findPathsByDateAndName("",dateMin,dateMax,1, 0);
 
 
     }
