@@ -14,7 +14,7 @@ L'application permet aux utilisateurs d'enregistrer des parcours de course à pi
 <br/>
 
 **GitHub project**<br/>
-[Lien Github project](https://github.com/users/ClemFR/projects/3/views/1)
+[Lien Github project]([https://github.com/users/ClemFR/projects/3/views/1](https://github.com/orgs/BS-IUTRDZ/projects/1))
 
 <br/>**Google drive**<br/>
 [Lien Google drive](https://drive.google.com/drive/folders/17wiEpSQNsz28pNdiDjbSDgQ_-lid-wuV)
